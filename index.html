@@ -96,6 +96,18 @@
             font-weight: bold;
             cursor: pointer;
         }
+        .btn-share {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
         .btn-start {
             background-color: #27ae60;
             color: white;
@@ -136,6 +148,17 @@
             justify-content: center;
             margin: 10px 0;
             min-height: 40px;
+        }
+        .ref-input-box {
+            background: #0b0b0d;
+            border: 1px solid #2a2b30;
+            border-radius: 8px;
+            padding: 10px;
+            color: #29a0f5;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 10px 0;
+            text-align: center;
         }
         .bottom-nav {
             position: fixed;
@@ -207,39 +230,34 @@
         </div>
     </div>
 
-    <!-- GÜÇ TABI (MÜDDƏTLİ VIP PAKETLƏR) -->
+    <!-- GÜÇ TABI -->
     <div id="tab-guc" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
         
-        <!-- VIP 1 (7 Günlük) -->
         <div class="card" style="text-align:center;">
             <h4>🌟 VIP 1: +500 GPU (7 Günlük)</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
             <button class="btn-buy" onclick="buyVipPackage(0.1, 500, 7)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 2 (14 Günlük) -->
         <div class="card" style="text-align:center;">
             <h4>🔥 VIP 2: +1,200 GPU (14 Günlük)</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.3 TON (~1.50 USDT)</p>
             <button class="btn-buy" onclick="buyVipPackage(0.3, 1200, 14)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 3 (30 Günlük) -->
         <div class="card" style="text-align:center; border: 1px solid #f39c12;">
             <h4>💎 VIP 3: +3,000 GPU (30 Günlük)</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.7 TON (~3.50 USDT)</p>
             <button class="btn-buy" style="background-color: #f39c12;" onclick="buyVipPackage(0.7, 3000, 30)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 4 (45 Günlük) -->
         <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
             <h4>🚀 VIP 4: +7,000 GPU (45 Günlük)</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
             <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyVipPackage(1.23, 7000, 45)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 5 (90 Günlük) -->
         <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
             <h4>👑 VIP 5: +20,000 GPU (90 Günlük)</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 3.0 TON (~15.00 USDT)</p>
@@ -247,12 +265,27 @@
         </div>
     </div>
 
-    <!-- QAZAN TABI -->
+    <!-- QAZAN TABI (REFERAL SİSTEMİ) -->
     <div id="tab-kazan" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dəvət et)</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
+        
         <div class="card" style="text-align:center;">
-            <p style="font-size:13px; margin-bottom:10px;">Dostlarınızı dəvət edin, +200 GPU qazanın!</p>
-            <button class="btn-buy" onclick="copyReferralLink()">Linki Kopyala</button>
+            <div style="font-size:35px; margin-bottom:5px;">🎁</div>
+            <h4 style="margin-bottom:6px;">Dostlarını dəvət et, pulsuz GPU qazan!</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin-bottom:12px;">Hər gətirdiyiniz aktiv dostunuza görə hesabınıza <b>+200 GPU</b> güc əlavə olunur.</p>
+
+            <div style="font-size:12px; color:#8a8d9b; text-align:left; margin-bottom:4px;">Sizin unikal dəvət linkiniz:</div>
+            <div class="ref-input-box" id="ref-link-display">https://t.me/Honeyfarmbot?start=ref_user</div>
+
+            <button class="btn-buy" onclick="copyReferralLink()">📋 Linki Kopyala</button>
+            <button class="btn-share" onclick="shareReferralLink()">📲 Telegram-da Paylaş</button>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:13px; color:#8a8d9b;">Dəvət etdiyiniz dostlar:</span>
+                <span style="font-weight:bold; font-size:15px; color:#27ae60;" id="invited-count">0 nəfər</span>
+            </div>
         </div>
     </div>
 
@@ -312,21 +345,27 @@
             });
         } catch(e) {}
 
+        // Referal Linkinin Yaranması
+        const userId = tg?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 899999) + 100000;
+        const refLink = `https://t.me/Honeyfarmbot?start=ref_${userId}`;
+        document.getElementById('ref-link-display').innerText = refLink;
+
+        let invitedCount = parseInt(localStorage.getItem('invited_count')) || 0;
+        document.getElementById('invited-count').innerText = invitedCount + " nəfər";
+
         let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.00000;
         let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.000000;
         
-        // Aktiv VIP paketlərin müddət yoxlanışı və güc hesablanması
         let activePackages = JSON.parse(localStorage.getItem('active_packages')) || [];
         let nowTime = Date.now();
         
-        // Vaxtı bitən paketləri təmizlə
         activePackages = activePackages.filter(pkg => pkg.expireTime > nowTime);
         localStorage.setItem('active_packages', JSON.stringify(activePackages));
 
-        // Əsas baza güc 2000 + aktiv VIP paketlərin gücü
         let baseGpu = 2000;
         let bonusGpu = activePackages.reduce((sum, pkg) => sum + pkg.gpu, 0);
-        let gpuPower = baseGpu + bonusGpu;
+        let refGpu = invitedCount * 200;
+        let gpuPower = baseGpu + bonusGpu + refGpu;
 
         document.getElementById('gpu-power').innerText = gpuPower;
         document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
@@ -400,7 +439,6 @@
             try {
                 await tonConnectUI.sendTransaction(transaction);
                 
-                // Paketi aktivləşdir və vaxt təyin et (Gün * 24 saat * 60 dəq * 60 san * 1000 millisec)
                 let expireTime = Date.now() + (days * 24 * 60 * 60 * 1000);
                 activePackages.push({ gpu: addedGpu, expireTime: expireTime });
                 localStorage.setItem('active_packages', JSON.stringify(activePackages));
@@ -444,7 +482,21 @@
         }
 
         function copyReferralLink() {
-            alert('Dəvət linki kopyalandı! Dostlarınızı dəvət edərək +200 GPU qazanın.');
+            navigator.clipboard.writeText(refLink).then(() => {
+                alert('Referal linkiniz buferə kopyalandı!');
+            }).catch(() => {
+                alert('Link kopyalandı: ' + refLink);
+            });
+        }
+
+        function shareReferralLink() {
+            const shareText = encodeURIComponent("🚀 Honey Cloud Miner-də pulsuz USDT qazan! Aşağıdakı linklə qoşul və +200 GPU hədiyyə qazan:");
+            const fullShareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`;
+            if (tg) {
+                tg.openTelegramLink(fullShareUrl);
+            } else {
+                window.open(fullShareUrl, '_blank');
+            }
         }
 
         function switchTab(tabName) {

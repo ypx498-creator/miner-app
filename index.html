@@ -400,7 +400,7 @@
             }
         } catch(e) {}
 
-        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.7309;
+        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.0000;
         let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.0036;
         let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 9100;
         let endTime = parseInt(localStorage.getItem('mining_end_time')) || 0;
@@ -437,14 +437,12 @@
             alert("💎 Cüzdan uğurla bağlandı!");
         }
 
-        // VIP paket seçildikdə cüzdan bölməsinə yönləndirir
         function selectVipPackage(packageName, tonPrice, addedGpu) {
             switchTab('cek');
             document.getElementById('vip-payment-info').style.display = 'block';
             document.getElementById('vip-title-text').innerText = `🛒 Seçilmiş Paket: ${packageName} (+${addedGpu} GPU)`;
             document.getElementById('vip-price-text').innerText = `Ödəniləcək Məbləğ: ${tonPrice} TON`;
             
-            // Çıxarış sahələrini gizlədirik ki, yalnız ödəniş məlumatı görünsün
             document.getElementById('wallet-address').style.display = 'none';
             document.getElementById('withdraw-amount').style.display = 'none';
             document.getElementById('withdrawal-notes').style.display = 'none';
@@ -454,7 +452,6 @@
         function requestWithdrawal() {
             let vipInfoBox = document.getElementById('vip-payment-info');
             
-            // Əgər VIP paket seçilibsə
             if (vipInfoBox.style.display === 'block') {
                 if (!isWalletConnected) {
                     alert("⚠️ Əvvəlcə cüzdanınızı bağlayın!");
@@ -462,7 +459,6 @@
                 }
                 alert("🎉 Ödəniş yoxlanılır! Paketiniz qısa müddətdə aktivləşdiriləcək.");
                 
-                // Paneli təmizləyib əvvəlki hala qaytarırıq
                 vipInfoBox.style.display = 'none';
                 document.getElementById('wallet-address').style.display = 'block';
                 document.getElementById('withdraw-amount').style.display = 'block';
@@ -472,7 +468,6 @@
                 return;
             }
 
-            // Adi balans çıxarış sorğusu
             if (!isWalletConnected) {
                 alert("⚠️ Zəhmət olmasa əvvəlcə cüzdanınızı bağlayın!");
                 return;
@@ -522,7 +517,9 @@
                     startBtn.innerText = "⚡ MAYNİNQ DAVAM EDİR";
                 }
                 
-                hashes += (gpuPower / 2000) * 0.002;
+                // Mayninq sürəti gücə uyğun olaraq qat-qat artırıldı
+                hashes += (gpuPower / 500) * 0.001;
+                
                 let hashElem = document.getElementById('hash-count');
                 let minedElem = document.getElementById('mined-hashes');
                 if(hashElem) hashElem.innerText = hashes.toFixed(4);
@@ -575,15 +572,17 @@
         }
 
         function exchangeHashes() {
-            if(hashes > 0.001) {
-                usdtBalance += hashes * 0.0001;
+            if(hashes > 0.0001) {
+                // Hər yığılan hash birbaşa USDT balansına dəyər qatacaq şəkildə artırıldı
+                let addedUsdt = hashes * 0.01;
+                usdtBalance += addedUsdt;
                 hashes = 0;
                 localStorage.setItem('user_usdt', usdtBalance);
                 localStorage.setItem('user_hashes', 0);
                 document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(4);
                 document.getElementById('hash-count').innerText = "0.0000";
                 document.getElementById('mined-hashes').innerText = "0.0000";
-                alert("Hash-lər USDT-yə çevrildi!");
+                alert("Hash-lər uğurla USDT-yə çevrildi! 💲");
             } else {
                 alert("Çevriləcək kifayət qədər hash yoxdur!");
             }

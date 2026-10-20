@@ -205,7 +205,7 @@
     <div id="tab-kazici">
         <div class="mining-status-card">
             <div class="status-title" id="status-title">MAYNİNQ DAYANIB</div>
-            <div class="timer" id="timer">24:00:00</div>
+            <div class="timer" id="timer">00:00:00</div>
         </div>
 
         <button class="btn-start" id="start-btn" onclick="startMining24h()">⚡ MAYNİNQİ BAŞLAT (24 SAAT)</button>
@@ -289,16 +289,10 @@
             <p style="color:#8a8d9b; font-size:12px; margin-bottom:12px;">Hər gətirdiyiniz aktiv dostunuza görə hesabınıza <b>+200 GPU</b> güc əlavə olunur.</p>
 
             <div style="font-size:12px; color:#8a8d9b; text-align:left; margin-bottom:4px;">Sizin unikal dəvət linkiniz:</div>
-            <div class="ref-input-box" id="ref-link-display">https://t.me/honeyfarmer_bot?start=ref_user</div>
+            <div class="ref-input-box" id="ref-link-display">https://t.me/honeyfarmer_bot</div>
 
             <button class="btn-buy" onclick="copyReferralLink()">📋 Linki Kopyala</button>
             <button class="btn-share" onclick="shareReferralLink()">📲 Telegram-da Paylaş</button>
-        </div>
-        <div class="card" style="margin-top:12px;">
-            <h4 style="font-size:14px; margin-bottom:8px;">🏆 Ən Çox Dəvət Edənlər (Top 3)</h4>
-            <div class="leader-row"><span>🥇 1. Alex_Miner</span><span style="color:#27ae60; font-weight:bold;">142 Dost</span></div>
-            <div class="leader-row"><span>🥈 2. Ferman_S</span><span style="color:#27ae60; font-weight:bold;">89 Dost</span></div>
-            <div class="leader-row"><span>🥉 3. HoneyKing</span><span style="color:#27ae60; font-weight:bold;">64 Dost</span></div>
         </div>
     </div>
 
@@ -306,4 +300,162 @@
     <div id="tab-cek">
         <div class="section-title">💳 Balans Çıxarışı</div>
         <div class="card" style="text-align: center;">
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:1
+            <p style="color:#8a8d9b; font-size:12px; margin-bottom:10px;">Cüzdanınızı bağlayın və balansınızı çıxarın:</p>
+            <button class="btn-buy" onclick="connectWalletSimulate()" style="background-color: #26a17b;">💎 TON Cüzdanı Bağla</button>
+            <div id="wallet-status" style="font-size: 12px; color: #27ae60; margin-top: 8px; font-weight: bold;"></div>
+            <div style="font-size:11px; color:#8a8d9b; margin-top:15px; text-align: left;">
+                * Minimum çıxarış: <b>10.00 USDT</b><br>
+                * Çıxarış komissiyası: <b>10%</b>
+            </div>
+            <button class="btn-buy" style="margin-top:15px;" onclick="requestWithdrawal()">Çıxarış Sorğusu Göndər</button>
+        </div>
+    </div>
+
+    <!-- TAPŞIRIQLAR BÖLMƏSİ -->
+    <div id="tab-gorevler">
+        <div class="section-title">📋 Tapşırıqlar & Promokod</div>
+        <div class="card">
+            <h4 style="font-size:14px; margin-bottom:6px;">🔑 Promokod Daxil Et</h4>
+            <input type="text" class="promo-input" id="promo-code" placeholder="KODU BURAYA YAZIN">
+            <button class="btn-buy" onclick="applyPromoCode()">Bonus Al</button>
+        </div>
+    </div>
+
+    <!-- Alt Navigasiya Menyu -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="nav-kazici" onclick="scrollToSection('tab-kazici', 'nav-kazici')">
+            <span>⚙️ Mayner</span>
+        </div>
+        <div class="nav-item" id="nav-spin" onclick="scrollToSection('tab-spin', 'nav-spin')">
+            <span>🎡 Çarx</span>
+        </div>
+        <div class="nav-item" id="nav-guc" onclick="scrollToSection('tab-guc', 'nav-guc')">
+            <span>⚡ Güç</span>
+        </div>
+        <div class="nav-item" id="nav-kazan" onclick="scrollToSection('tab-kazan', 'nav-kazan')">
+            <span>👥 Qazan</span>
+        </div>
+        <div class="nav-item" id="nav-cek" onclick="scrollToSection('tab-cek', 'nav-cek')">
+            <span>💳 Çıxarış</span>
+        </div>
+        <div class="nav-item" id="nav-gorevler" onclick="scrollToSection('tab-gorevler', 'nav-gorevler')">
+            <span>📋 Tapşırıqlar</span>
+        </div>
+    </div>
+
+    <script>
+        try {
+            if(window.Telegram?.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        } catch(e) {}
+
+        let isWalletConnected = localStorage.getItem('wallet_connected') === 'true';
+        function checkWalletUI() {
+            let statusDiv = document.getElementById('wallet-status');
+            if (statusDiv) {
+                statusDiv.innerText = isWalletConnected ? "✅ Cüzdan Bağlandı" : "❌ Cüzdan Bağlı Deyil";
+            }
+        }
+        checkWalletUI();
+
+        function connectWalletSimulate() {
+            isWalletConnected = true;
+            localStorage.setItem('wallet_connected', 'true');
+            checkWalletUI();
+            alert("TON Cüzdanı uğurla bağlandı!");
+        }
+
+        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.0;
+        let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.0;
+        let gpuPower = 2000;
+
+        document.getElementById('gpu-power').innerText = gpuPower;
+        document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(4);
+        document.getElementById('hash-count').innerText = hashes.toFixed(4);
+        document.getElementById('mined-hashes').innerText = hashes.toFixed(4);
+
+        function startMining24h() {
+            alert("Mayninq aktivləşdirildi!");
+            document.getElementById('status-title').innerText = "MAYNİNQ AKTİVDİR";
+            document.getElementById('status-title').style.color = "#27ae60";
+            document.getElementById('start-btn').disabled = true;
+        }
+
+        function buyVipPackage(addedGpu, days) {
+            if (!isWalletConnected) {
+                alert("Zəhmət olmasa əvvəlcə cüzdanınızı bağlayın!");
+                scrollToSection('tab-cek', 'nav-cek');
+                return;
+            }
+            gpuPower += addedGpu;
+            document.getElementById('gpu-power').innerText = gpuPower;
+            alert(`Təbriklər! +${addedGpu} GPU güc aktivləşdirildi.`);
+        }
+
+        function spinWheel() {
+            alert("🎯 Təbriklər! +100 GPU qazandınız!");
+            gpuPower += 100;
+            document.getElementById('gpu-power').innerText = gpuPower;
+        }
+
+        function applyPromoCode() {
+            let inputElem = document.getElementById('promo-code');
+            if(inputElem && inputElem.value.trim().toUpperCase() === "HONEY2026") {
+                alert('🎉 +300 GPU qazandınız!');
+                gpuPower += 300;
+                document.getElementById('gpu-power').innerText = gpuPower;
+            } else {
+                alert('Keçərsiz promokod!');
+            }
+        }
+
+        function exchangeHashes() {
+            if(hashes > 0.001) {
+                usdtBalance += hashes * 0.0001;
+                hashes = 0;
+                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(4);
+                document.getElementById('hash-count').innerText = "0.0000";
+                document.getElementById('mined-hashes').innerText = "0.0000";
+                alert("Hash-lər USDT-yə çevrildi!");
+            } else {
+                alert("Çevriləcək kifayət qədər hash yoxdur!");
+            }
+        }
+
+        function requestWithdrawal() {
+            if (!isWalletConnected) {
+                alert("Zəhmət olmasa əvvəlcə cüzdanınızı bağlayın!");
+                scrollToSection('tab-cek', 'nav-cek');
+                return;
+            }
+            if (usdtBalance < 10.00) {
+                alert("Minimum çıxarış məbləği 10.00 USDT-dir!");
+                return;
+            }
+            alert("Çıxarış sorğunuz uğurla göndərildi! 10% komissiya tutulacaq.");
+        }
+
+        function copyReferralLink() {
+            navigator.clipboard.writeText("https://t.me/honeyfarmer_bot").then(() => alert('Link kopyalandı!'));
+        }
+
+        function shareReferralLink() {
+            window.open("https://t.me/share/url?url=https://t.me/honeyfarmer_bot", '_blank');
+        }
+
+        function scrollToSection(sectionId, navId) {
+            const elem = document.getElementById(sectionId);
+            if (elem) {
+                elem.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (navId) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                const navElem = document.getElementById(navId);
+                if (navElem) navElem.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -160,6 +160,50 @@
             margin: 10px 0;
             text-align: center;
         }
+        /* Tapşırıqlar UI Dizaynı */
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1e2026;
+        }
+        .task-item:last-child { border-bottom: none; }
+        .task-info { display: flex; align-items: center; gap: 10px; }
+        .task-icon { font-size: 24px; }
+        .task-title { font-size: 13px; font-weight: bold; }
+        .task-reward { font-size: 11px; color: #f39c12; font-weight: bold; }
+        .btn-task {
+            background-color: #29a0f5;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-task:disabled {
+            background-color: #27ae60;
+            cursor: default;
+        }
+        .daily-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .daily-box {
+            background: #101114;
+            border: 1px solid #22242a;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+        }
+        .daily-box.active { border-color: #f39c12; background: #1c1913; }
+        .daily-box.done { border-color: #27ae60; opacity: 0.6; }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -265,7 +309,7 @@
         </div>
     </div>
 
-    <!-- QAZAN TABI (REFERAL SİSTEMİ) -->
+    <!-- QAZAN TABI -->
     <div id="tab-kazan" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
         
@@ -303,12 +347,70 @@
         </div>
     </div>
 
-    <!-- TAPŞIRIQLAR TABI -->
+    <!-- TAPŞIRIQLAR TABI (MARAQLI VƏ ZƏNGİN) -->
     <div id="tab-gorevler" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Tapşırıqlar</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Tapşırıqlar & Bonuslar</h3>
+        
+        <!-- Günlük Giriş Bonusu -->
         <div class="card">
-            <p style="font-size:13px;"><b>Kanalımıza abunə olun</b> (+100 GPU)</p>
-            <button class="btn-buy" style="margin-top:8px;" onclick="alert('Tapşırıq yoxlanılır...')">Yerinə Yetir</button>
+            <h4 style="font-size:14px; margin-bottom:4px;">📅 Günlük Giriş Bonusu</h4>
+            <p style="color:#8a8d9b; font-size:11px;">Hər gün daxil olun, pulsuz GPU güc qazanın!</p>
+            <div class="daily-grid">
+                <div class="daily-box active">1-ci Gün<br><b>+50 GPU</b></div>
+                <div class="daily-box">2-ci Gün<br><b>+100 GPU</b></div>
+                <div class="daily-box">3-cü Gün<br><b>+150 GPU</b></div>
+                <div class="daily-box">7-ci Gün<br><b>+500 GPU</b></div>
+            </div>
+            <button class="btn-buy" style="margin-top:10px;" id="btn-daily-claim" onclick="claimDailyReward()">🎁 Bugünkü Bonusu Götür (+50 GPU)</button>
+        </div>
+
+        <!-- Sosial & Aktivlik Tapşırıqları -->
+        <div class="card">
+            <h4 style="font-size:14px; margin-bottom:8px;">📢 Sosial Media Tapşırıqları</h4>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-icon">✈️</span>
+                    <div>
+                        <div class="task-title">Telegram Kanalına Abunə Ol</div>
+                        <div class="task-reward">+150 GPU Güc</div>
+                    </div>
+                </div>
+                <button class="btn-task" id="task-tg" onclick="completeTask('tg', 'https://t.me/Honeyfarmbot', 150)">Yerinə Yetir</button>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-icon">💬</span>
+                    <div>
+                        <div class="task-title">Telegram Qrupumuza Qoşul</div>
+                        <div class="task-reward">+100 GPU Güc</div>
+                    </div>
+                </div>
+                <button class="btn-task" id="task-group" onclick="completeTask('group', 'https://t.me/Honeyfarmbot', 100)">Yerinə Yetir</button>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-icon">▶️</span>
+                    <div>
+                        <div class="task-title">YouTube Kanalımızı İzlə</div>
+                        <div class="task-reward">+200 GPU Güc</div>
+                    </div>
+                </div>
+                <button class="btn-task" id="task-yt" onclick="completeTask('yt', 'https://youtube.com', 200)">Yerinə Yetir</button>
+            </div>
+
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-icon">💎</span>
+                    <div>
+                        <div class="task-title">TON Cüzdanını Qoş</div>
+                        <div class="task-reward">+250 GPU Güc</div>
+                    </div>
+                </div>
+                <button class="btn-task" id="task-wallet" onclick="completeWalletTask()">Qoş</button>
+            </div>
         </div>
     </div>
 
@@ -345,7 +447,6 @@
             });
         } catch(e) {}
 
-        // Referal Linkinin Yaranması
         const userId = tg?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 899999) + 100000;
         const refLink = `https://t.me/Honeyfarmbot?start=ref_${userId}`;
         document.getElementById('ref-link-display').innerText = refLink;
@@ -362,10 +463,11 @@
         activePackages = activePackages.filter(pkg => pkg.expireTime > nowTime);
         localStorage.setItem('active_packages', JSON.stringify(activePackages));
 
+        let bonusTasksGpu = parseInt(localStorage.getItem('tasks_gpu')) || 0;
         let baseGpu = 2000;
         let bonusGpu = activePackages.reduce((sum, pkg) => sum + pkg.gpu, 0);
         let refGpu = invitedCount * 200;
-        let gpuPower = baseGpu + bonusGpu + refGpu;
+        let gpuPower = baseGpu + bonusGpu + refGpu + bonusTasksGpu;
 
         document.getElementById('gpu-power').innerText = gpuPower;
         document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
@@ -498,6 +600,103 @@
                 window.open(fullShareUrl, '_blank');
             }
         }
+
+        // Tapşırıqlar Məntiqi
+        function claimDailyReward() {
+            let lastClaim = localStorage.getItem('last_daily_claim');
+            let today = new Date().toDateString();
+
+            if (lastClaim === today) {
+                alert('Siz bugünkü bonusu artıq götürmüsünüz! Sabah yenidən cəhd edin.');
+                return;
+            }
+
+            localStorage.setItem('last_daily_claim', today);
+            bonusTasksGpu += 50;
+            localStorage.setItem('tasks_gpu', bonusTasksGpu);
+            gpuPower += 50;
+            document.getElementById('gpu-power').innerText = gpuPower;
+
+            const btn = document.getElementById('btn-daily-claim');
+            btn.innerText = "✅ Bugünkü Bonus Götürüldü";
+            btn.disabled = true;
+
+            alert('Təbriklər! +50 GPU Günlük Giriş Bonusu hesabınıza əlavə olundu.');
+        }
+
+        function completeTask(taskId, url, rewardGpu) {
+            let completed = localStorage.getItem('task_' + taskId);
+            if (completed) {
+                alert('Bu tapşırıq artıq yerinə yetirilib!');
+                return;
+            }
+
+            window.open(url, '_blank');
+
+            setTimeout(() => {
+                localStorage.setItem('task_' + taskId, 'true');
+                bonusTasksGpu += rewardGpu;
+                localStorage.setItem('tasks_gpu', bonusTasksGpu);
+                gpuPower += rewardGpu;
+                document.getElementById('gpu-power').innerText = gpuPower;
+
+                const btn = document.getElementById('task-' + taskId);
+                if (btn) {
+                    btn.innerText = "✅ Tamamlandı";
+                    btn.disabled = true;
+                }
+                alert(`Təbriklər! +${rewardGpu} GPU güc hesabınıza əlavə olundu.`);
+            }, 3000);
+        }
+
+        function completeWalletTask() {
+            let completed = localStorage.getItem('task_wallet');
+            if (completed) {
+                alert('Cüzdan qoşma bonusu artıq götürülüb!');
+                return;
+            }
+
+            if (tonConnectUI && tonConnectUI.connected) {
+                localStorage.setItem('task_wallet', 'true');
+                bonusTasksGpu += 250;
+                localStorage.setItem('tasks_gpu', bonusTasksGpu);
+                gpuPower += 250;
+                document.getElementById('gpu-power').innerText = gpuPower;
+
+                const btn = document.getElementById('task-wallet');
+                if (btn) {
+                    btn.innerText = "✅ Tamamlandı";
+                    btn.disabled = true;
+                }
+                alert('Təbriklər! Cüzdan qoşulduğu üçün +250 GPU hədiyyə olundu.');
+            } else {
+                alert('Zəhmət olmasa əvvəlcə "Çıxarış" bölməsindən cüzdanınızı qoşun!');
+                switchTab('cek');
+            }
+        }
+
+        // Tapşırıq Düymələrinin Vəziyyətini Yoxla
+        window.addEventListener('load', () => {
+            let lastClaim = localStorage.getItem('last_daily_claim');
+            let today = new Date().toDateString();
+            if (lastClaim === today) {
+                const btn = document.getElementById('btn-daily-claim');
+                if(btn) {
+                    btn.innerText = "✅ Bugünkü Bonus Götürüldü";
+                    btn.disabled = true;
+                }
+            }
+
+            ['tg', 'group', 'yt', 'wallet'].forEach(taskId => {
+                if (localStorage.getItem('task_' + taskId)) {
+                    const btn = document.getElementById('task-' + taskId);
+                    if (btn) {
+                        btn.innerText = "✅ Tamamlandı";
+                        btn.disabled = true;
+                    }
+                }
+            });
+        });
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));

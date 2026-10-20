@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Miner</title>
+    <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,7 +20,7 @@
             padding: 15px;
             padding-bottom: 90px;
         }
-        /* Top Navigation Header */
+        /* Üst Menü */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -71,7 +71,7 @@
             justify-content: center;
         }
 
-        /* Mining Header Display */
+        /* Sayaç Kartı */
         .mining-status-card {
             background-color: #141518;
             border-radius: 16px;
@@ -94,24 +94,22 @@
             margin-top: 2px;
         }
 
-        /* GPU Showcase */
-        .gpu-container {
-            position: relative;
+        /* Arı İkonu Alanı */
+        .bee-container {
             text-align: center;
             margin: 10px 0 20px 0;
+            position: relative;
         }
-        .gpu-img {
-            width: 80%;
-            max-width: 280px;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8));
+        .bee-icon {
+            font-size: 90px;
+            margin: 10px 0;
+            filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.3));
+            animation: pulse 2s infinite ease-in-out;
         }
-        .arrow-right {
-            position: absolute;
-            right: 10px;
-            top: 45%;
-            color: #555866;
-            font-size: 20px;
-            cursor: pointer;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         .hash-rate-badge {
             background: #141518;
@@ -121,7 +119,6 @@
             font-size: 18px;
             font-weight: bold;
             color: #fff;
-            margin-top: -10px;
             border: 1px solid #22242a;
         }
         .hash-rate-badge span {
@@ -130,7 +127,7 @@
             font-weight: normal;
         }
 
-        /* Card Section */
+        /* Güç / Madencilik Kartı */
         .card {
             background-color: #141518;
             border-radius: 16px;
@@ -165,12 +162,14 @@
             margin-top: 10px;
         }
 
-        /* Exchange Row */
+        /* Takas Satırı */
         .exchange-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #1c1d22;
         }
         .btn-exchange {
             background-color: #29a0f5;
@@ -186,7 +185,7 @@
             cursor: pointer;
         }
 
-        /* Task Row */
+        /* Görev Kartı */
         .task-card {
             background-color: #141518;
             border-radius: 14px;
@@ -229,7 +228,7 @@
             font-weight: bold;
         }
 
-        /* Bottom Tab Navigation */
+        /* Alt Menü Tabları */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -261,109 +260,5 @@
 </head>
 <body>
 
-    <!-- Top Navigation Header -->
+    <!-- Üst Menü -->
     <div class="top-bar">
-        <div class="top-left">
-            <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
-            <div style="font-size: 80px; margin: 15px 0; text-shadow: 0 5px 15px rgba(0,0,0,0.5);">🐝</div>
-        </div>
-        <div class="balance-badge">
-            <i class="fa-solid fa-circle-nodes usdt-icon"></i>
-            <span id="usdt-balance">0.001109</span>
-        </div>
-        <button class="plus-btn" onclick="alert('Bakiye yükleme yakında aktif olacak!')">+</button>
-    </div>
-
-    <!-- Mining Timer -->
-    <div class="mining-status-card">
-        <div class="status-title">MINING STARTED</div>
-        <div class="timer" id="timer">10:35:59</div>
-    </div>
-
-    <!-- GPU Showcase -->
-    <div class="gpu-container">
-        <img src="https://i.ibb.co/L8r3q3P/gpu-miner.png" alt="GPU Miner" class="gpu-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2097/2097276.png'">
-        <i class="fa-solid fa-chevron-right arrow-right"></i>
-        <br>
-        <div class="hash-rate-badge"><span id="hash-count">23.51502</span> <span>Hashes</span></div>
-    </div>
-
-    <!-- Güç Card -->
-    <div class="card">
-        <div class="power-label">Güç</div>
-        <div class="power-val">2 000 GPU</div>
-        <button class="btn-buy" onclick="alert('Mağazaya yönlendiriliyorsunuz...')">Mağazadan güç satın al</button>
-        <div class="sub-text">*Parayı çekmek için Karmaları USDT ile takasla</div>
-        
-        <div class="exchange-row">
-            <div>
-                <div class="power-label">Kazılan Hashler</div>
-                <div style="font-size: 16px; font-weight: bold; margin-top: 2px;" id="mined-hashes">23.51502</div>
-            </div>
-            <button class="btn-exchange" onclick="exchangeHashes()">Exchange <i class="fa-solid fa-rotate"></i></button>
-        </div>
-    </div>
-
-    <!-- Task Row -->
-    <div class="task-card" onclick="alert('Davet linki kopyalandı!')">
-        <div class="task-left">
-            <div class="task-icon"><i class="fa-paper-plane" style="color: white;"></i></div>
-            <div>
-                <div class="task-title">1 Arkadaş Davet Et</div>
-                <div class="task-sub">Ödül: 200 GPU</div>
-            </div>
-        </div>
-        <div class="task-badge">0/1</div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="nav-item" onclick="switchTab('Güç')">
-            <i class="fa-solid fa-bars-staggered"></i>
-            <span>Güç</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('Kazan')">
-            <i class="fa-solid fa-user-group"></i>
-            <span>Kazan</span>
-        </div>
-        <div class="nav-item active" onclick="switchTab('Kazıcı')">
-            <i class="fa-solid fa-fan"></i>
-            <span>Kazıcı</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('Çek')">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Çek</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('Görevler')">
-            <i class="fa-solid fa-list-check"></i>
-            <span>Görevler</span>
-        </div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // Dynamic Mining Simulation
-        let hashes = 23.51502;
-        setInterval(() => {
-            hashes += 0.00012;
-            document.getElementById('hash-count').innerText = hashes.toFixed(5);
-            document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
-        }, 1000);
-
-        function exchangeHashes() {
-            if(hashes > 0) {
-                alert(hashes.toFixed(5) + " Hash başarıyla USDT bakiyenize dönüştürüldü!");
-                hashes = 0;
-                document.getElementById('hash-count').innerText = "0.00000";
-                document.getElementById('mined-hashes').innerText = "0.00000";
-            }
-        }
-
-        function switchTab(tabName) {
-            console.log(tabName + " tıklandı");
-        }
-    </script>
-</body>
-</html>

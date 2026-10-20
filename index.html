@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,14 +54,14 @@
         .mining-status-card {
             background-color: #141518;
             border-radius: 14px;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
-            width: 65%;
+            width: 75%;
             margin: 0 auto 10px auto;
             border: 1px solid #22242a;
         }
-        .status-title { font-size: 10px; color: #8a8d9b; letter-spacing: 1px; }
-        .timer { font-size: 20px; font-weight: 300; color: #e2e8f0; }
+        .status-title { font-size: 11px; color: #8a8d9b; letter-spacing: 1px; margin-bottom: 4px; }
+        .timer { font-size: 22px; font-weight: bold; color: #29a0f5; }
         .bee-container { text-align: center; margin: 5px 0; }
         .bee-icon { font-size: 70px; }
         .hash-rate-badge {
@@ -97,6 +97,25 @@
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
+        }
+        .btn-start {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        }
+        .btn-start:disabled {
+            background-color: #34495e;
+            color: #7f8c8d;
+            box-shadow: none;
+            cursor: not-allowed;
         }
         .exchange-row {
             display: flex;
@@ -162,71 +181,68 @@
         <button class="plus-btn" onclick="switchTab('guc')">+</button>
     </div>
 
-    <!-- KAZICI TABI -->
+    <!-- MAYNER TABI -->
     <div id="tab-kazici" class="tab-content active">
         <div class="mining-status-card">
-            <div class="status-title">MINING STARTED</div>
-            <div class="timer" id="timer">00:00:00</div>
+            <div class="status-title" id="status-title">MAYNİNQ AKTİVDİR</div>
+            <div class="timer" id="timer">24:00:00</div>
         </div>
+
+        <button class="btn-start" id="start-btn" onclick="startMining24h()">⚡ MAYNİNQİ BAŞLAT (24 SAAT)</button>
 
         <div class="bee-container">
             <div class="bee-icon">🐝</div>
-            <div class="hash-rate-badge"><span id="hash-count">23.52282</span> <span style="color:#8a8d9b; font-size:13px;">Hashes</span></div>
+            <div class="hash-rate-badge"><span id="hash-count">0.00000</span> <span style="color:#8a8d9b; font-size:13px;">Hashes</span></div>
         </div>
 
         <div class="card">
             <div class="power-row">
                 <div>
-                    <div style="color:#8a8d9b; font-size:12px;">Güç</div>
+                    <div style="color:#8a8d9b; font-size:12px;">Güc</div>
                     <div style="font-size:18px; font-weight:bold;"><span id="gpu-power">2000</span> GPU</div>
                 </div>
             </div>
-            <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güç satın al</button>
-            <div style="font-size: 10px; color: #8a8d9b; text-align: center; margin-top: 6px;">*Parayı çekmek için Karmaları USDT ile takasla</div>
+            <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güc satın al</button>
+            <div style="font-size: 10px; color: #8a8d9b; text-align: center; margin-top: 6px;">*Pulu çıxarmaq üçün Hashləri USDT ilə dəyişin</div>
             
             <div class="exchange-row">
                 <div>
-                    <div style="color:#8a8d9b; font-size:11px;">Kazılan Hashler</div>
-                    <div style="font-size: 15px; font-weight: bold;" id="mined-hashes">23.52282</div>
+                    <div style="color:#8a8d9b; font-size:11px;">Qazılan Hashlər</div>
+                    <div style="font-size: 15px; font-weight: bold;" id="mined-hashes">0.00000</div>
                 </div>
-                <button class="btn-exchange" onclick="exchangeHashes()">Exchange <i class="fa-solid fa-rotate"></i></button>
+                <button class="btn-exchange" onclick="exchangeHashes()">Dəyişdir <i class="fa-solid fa-rotate"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- GÜÇ TABI (VIP SİSTEMİ) -->
+    <!-- GÜÇ TABI -->
     <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güç Paketleri</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güc Paketləri</h3>
         
-        <!-- VIP 1 -->
         <div class="card" style="text-align:center;">
             <h4>🌟 VIP 1: +500 GPU</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
             <button class="btn-buy" onclick="buyPowerTON(0.1, 500)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 2 -->
         <div class="card" style="text-align:center;">
             <h4>🔥 VIP 2: +2,800 GPU</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.5 TON (~2.50 USDT)</p>
             <button class="btn-buy" onclick="buyPowerTON(0.5, 2800)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 3 -->
         <div class="card" style="text-align:center; border: 1px solid #f39c12;">
             <h4>💎 VIP 3: +7,000 GPU</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
             <button class="btn-buy" style="background-color: #f39c12;" onclick="buyPowerTON(1.23, 7000)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 4 -->
         <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
             <h4>🚀 VIP 4: +15,000 GPU</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 2.5 TON (~12.50 USDT)</p>
             <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyPowerTON(2.5, 15000)">Satın Al (TON)</button>
         </div>
 
-        <!-- VIP 5 -->
         <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
             <h4>👑 VIP 5: +35,000 GPU</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 5.0 TON (~25.00 USDT)</p>
@@ -234,16 +250,16 @@
         </div>
     </div>
 
-    <!-- KAZAN TABI -->
+    <!-- QAZAN TABI -->
     <div id="tab-kazan" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Kazan (Dəvət)</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dəvət et)</h3>
         <div class="card" style="text-align:center;">
-            <p style="font-size:13px; margin-bottom:10px;">Dostlarını dəvət et, +200 GPU qazan!</p>
-            <button class="btn-buy" onclick="copyReferralLink()">Link Kopyala</button>
+            <p style="font-size:13px; margin-bottom:10px;">Dostlarınızı dəvət edin, +200 GPU qazanın!</p>
+            <button class="btn-buy" onclick="copyReferralLink()">Linki Kopyala</button>
         </div>
     </div>
 
-    <!-- ÇEK TABI -->
+    <!-- ÇIXARIŞ TABI -->
     <div id="tab-cek" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı</h3>
         <div class="card">
@@ -253,40 +269,40 @@
                 * Minimum çıxarış: <b>5.00 USDT</b><br>
                 * Çıxarış komissiyası: <b>10%</b>
             </div>
-            <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çəkilmə Sorğusu Göndər</button>
+            <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çıxarış Sorğusu Göndər</button>
         </div>
     </div>
 
-    <!-- GÖREVLER TABI -->
+    <!-- TAPŞIRIQLAR TABI -->
     <div id="tab-gorevler" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Görevler</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Tapşırıqlar</h3>
         <div class="card">
-            <p style="font-size:13px;"><b>Kanalımıza abunə ol</b> (+100 GPU)</p>
+            <p style="font-size:13px;"><b>Kanalımıza abunə olun</b> (+100 GPU)</p>
             <button class="btn-buy" style="margin-top:8px;" onclick="alert('Tapşırıq yoxlanılır...')">Yerinə Yetir</button>
         </div>
     </div>
 
-    <!-- Alt Navigasiya Menusu -->
+    <!-- Alt Navigasiya Menyu -->
     <div class="bottom-nav">
         <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
             <i class="fa-solid fa-bars-staggered"></i>
-            <span>Güç</span>
+            <span>Güc</span>
         </div>
         <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
             <i class="fa-solid fa-user-group"></i>
-            <span>Kazan</span>
+            <span>Qazan</span>
         </div>
         <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
             <i class="fa-solid fa-fan"></i>
-            <span>Kazıcı</span>
+            <span>Mayner</span>
         </div>
         <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
             <i class="fa-solid fa-wallet"></i>
-            <span>Çek</span>
+            <span>Çıxarış</span>
         </div>
         <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
             <i class="fa-solid fa-list-check"></i>
-            <span>Görevler</span>
+            <span>Tapşırıqlar</span>
         </div>
     </div>
 
@@ -307,45 +323,70 @@
             }
         };
 
-        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 23.52282;
+        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.00000;
         let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.001109;
         let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 2000;
 
         document.getElementById('gpu-power').innerText = gpuPower;
+        document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
 
-        let startTime = localStorage.getItem('mining_start_time');
-        if (!startTime) {
-            startTime = new Date().getTime();
-            localStorage.setItem('mining_start_time', startTime);
-        } else {
-            startTime = parseInt(startTime);
+        // 24 Saatlıq Taymer Hesablaması
+        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+        let endTime = localStorage.getItem('mining_end_time');
+
+        function updateUI() {
+            let now = new Date().getTime();
+            
+            if (endTime && now < parseInt(endTime)) {
+                // MAYNİNQ AKTİVDİR
+                let remaining = Math.floor((parseInt(endTime) - now) / 1000);
+                let h = String(Math.floor(remaining / 3600)).padStart(2, '0');
+                let m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
+                let s = String(remaining % 60).padStart(2, '0');
+
+                document.getElementById('timer').innerText = `${h}:${m}:${s}`;
+                document.getElementById('status-title').innerText = "MAYNİNQ AKTİVDİR";
+                document.getElementById('status-title').style.color = "#27ae60";
+                
+                const startBtn = document.getElementById('start-btn');
+                startBtn.disabled = true;
+                startBtn.innerText = "⚡ MAYNİNQ DAVAM EDİR";
+
+                // Hash qazanması
+                let speed = (gpuPower / 2000) * 0.00012;
+                hashes += speed;
+                localStorage.setItem('user_hashes', hashes);
+
+                document.getElementById('hash-count').innerText = hashes.toFixed(5);
+                document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
+            } else {
+                // MAYNİNQ DAYANIB (24 SAAT BİTİB)
+                document.getElementById('timer').innerText = "00:00:00";
+                document.getElementById('status-title').innerText = "MAYNİNQ DAYANIB (STARTA BASIN)";
+                document.getElementById('status-title').style.color = "#e74c3c";
+                
+                const startBtn = document.getElementById('start-btn');
+                startBtn.disabled = false;
+                startBtn.innerText = "⚡ MAYNİNQİ BAŞLAT (24 SAAT)";
+
+                document.getElementById('hash-count').innerText = hashes.toFixed(5);
+                document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
+            }
         }
 
-        setInterval(() => {
-            let speed = (gpuPower / 2000) * 0.00012;
-            hashes += speed;
-            localStorage.setItem('user_hashes', hashes);
-
-            const el1 = document.getElementById('hash-count');
-            const el2 = document.getElementById('mined-hashes');
-            if(el1) el1.innerText = hashes.toFixed(5);
-            if(el2) el2.innerText = hashes.toFixed(5);
-
+        function startMining24h() {
             let now = new Date().getTime();
-            let distance = Math.floor((now - startTime) / 1000);
-            let hours = String(Math.floor(distance / 3600) % 24).padStart(2, '0');
-            let minutes = String(Math.floor((distance % 3600) / 60)).padStart(2, '0');
-            let seconds = String(distance % 60).padStart(2, '0');
-            
-            const timerEl = document.getElementById('timer');
-            if(timerEl) {
-                timerEl.innerText = `${hours}:${minutes}:${seconds}`;
-            }
-        }, 1000);
+            endTime = now + TWENTY_FOUR_HOURS;
+            localStorage.setItem('mining_end_time', endTime);
+            alert("Mayninq 24 saatlıq başladıldı!");
+            updateUI();
+        }
+
+        setInterval(updateUI, 1000);
 
         async function buyPowerTON(amountInTon, addedGpu) {
             if (!tonConnectUI.connected) {
-                alert("Ödəniş etmək üçün əvvəlcə 'Çek' tabından Cüzdanınızı qoşun!");
+                alert("Ödəniş etmək üçün əvvəlcə 'Çıxarış' bölməsindən cüzdanınızı qoşun!");
                 switchTab('cek');
                 return;
             }

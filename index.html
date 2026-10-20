@@ -142,32 +142,9 @@
             font-size: 14px;
             margin-bottom: 10px;
         }
-        .task-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #1e2026;
-        }
-        .task-item:last-child { border-bottom: none; }
-        .task-info { display: flex; align-items: center; gap: 10px; }
-        .task-icon { font-size: 24px; }
-        .task-title { font-size: 13px; font-weight: bold; }
-        .task-reward { font-size: 11px; color: #f39c12; font-weight: bold; }
-        .btn-task {
-            background-color: #29a0f5;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-        }
         .wheel-box { text-align: center; padding: 20px 0; }
         .wheel-disc { font-size: 80px; display: inline-block; }
         .leader-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e2026; font-size: 13px; }
-        .promo-input { width: 100%; padding: 10px; background: #0b0b0d; border: 1px solid #2a2b30; border-radius: 8px; color: #fff; text-align: center; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; }
 
         .bottom-nav {
             position: fixed;
@@ -192,8 +169,6 @@
             gap: 2px;
         }
         .nav-item.active { color: #ffffff; font-weight: bold; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
         .payment-box {
             background: #1c1f26;
             border: 1px solid #29a0f5;
@@ -218,7 +193,7 @@
     </div>
 
     <!-- MAYNER TABI -->
-    <div id="tab-kazici" class="tab-content active">
+    <div id="tab-kazici" class="tab-content active" style="display: block;">
         <div class="mining-status-card">
             <div class="status-title" id="status-title">MAYNİNQ DAYANIB</div>
             <div class="timer" id="timer">00:00:00</div>
@@ -252,7 +227,7 @@
     </div>
 
     <!-- BƏXT ÇARXI TABI -->
-    <div id="tab-spin" class="tab-content">
+    <div id="tab-spin" class="tab-content" style="display: none;">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">🎡 Bəxt Çarxı</h3>
         <div class="card wheel-box">
             <div class="wheel-disc">🎰</div>
@@ -263,7 +238,7 @@
     </div>
 
     <!-- GÜÇ (VIP) TABI -->
-    <div id="tab-guc" class="tab-content">
+    <div id="tab-guc" class="tab-content" style="display: none;">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
         
         <div class="card" style="text-align:center;">
@@ -298,7 +273,7 @@
     </div>
 
     <!-- QAZAN TABI -->
-    <div id="tab-kazan" class="tab-content">
+    <div id="tab-kazan" class="tab-content" style="display: none;">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
         <div class="card" style="text-align:center;">
             <div style="font-size:35px; margin-bottom:5px;">🎁</div>
@@ -320,7 +295,7 @@
     </div>
 
     <!-- ÇIXARIŞ VƏ ÖDƏNİŞ TABI -->
-    <div id="tab-cek" class="tab-content">
+    <div id="tab-cek" class="tab-content" style="display: none;">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Cüzdan & Ödəniş Mərkəzi</h3>
         <div class="card" style="text-align: center;">
 
@@ -349,48 +324,22 @@
         </div>
     </div>
 
-    <!-- TAPŞIRIQLAR TABI -->
-    <div id="tab-gorevler" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Tapşırıqlar & Promokod</h3>
-        <div class="card">
-            <h4 style="font-size:14px; margin-bottom:6px;">🔑 Promokod Daxil Et</h4>
-            <input type="text" class="promo-input" id="promo-code" placeholder="KODU BURAYA YAZIN">
-            <button class="btn-buy" onclick="applyPromoCode()">Bonus Al</button>
-        </div>
-        <div class="card" style="margin-top:10px;">
-            <h4 style="font-size:14px; margin-bottom:8px;">📢 Sosial Media Tapşırıqları</h4>
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">✈️</span>
-                    <div>
-                        <div class="task-title">Telegram Kanalına Abunə Ol</div>
-                        <div class="task-reward">+150 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-tg" onclick="completeTask('tg', 'https://t.me/honeyfarmer_bot', 150)">Yerinə Yetir</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alt Navigasiya Menyu -->
+    <!-- Alt Navigasiya Menyu (Mayner ortada) -->
     <div class="bottom-nav">
-        <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
-            <span>⚙️ Mayner</span>
-        </div>
         <div class="nav-item" id="nav-spin" onclick="switchTab('spin')">
             <span>🎡 Çarx</span>
         </div>
         <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
             <span>⚡ Güç</span>
         </div>
+        <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
+            <span>⚙️ Mayner</span>
+        </div>
         <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
             <span>👥 Qazan</span>
         </div>
         <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
             <span>💳 Cüzdan</span>
-        </div>
-        <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
-            <span>📋 Tapşırıqlar</span>
         </div>
     </div>
 
@@ -544,7 +493,6 @@
                 }
             }
 
-            // Çarx taymerini də yenilə
             updateWheelTimer();
         }
 
@@ -601,22 +549,9 @@
             localStorage.setItem('user_gpu', gpuPower);
             document.getElementById('gpu-power').innerText = gpuPower;
 
-            // 24 saatlıq geri sayım müddətini təyin edirik
             wheelEndTime = Date.now() + (24 * 60 * 60 * 1000);
             localStorage.setItem('wheel_end_time', wheelEndTime);
             updateWheelTimer();
-        }
-
-        function applyPromoCode() {
-            let inputElem = document.getElementById('promo-code');
-            if(inputElem && inputElem.value.trim().toUpperCase() === "HONEY2026") {
-                alert('🎉 +300 GPU qazandınız!');
-                gpuPower += 300;
-                localStorage.setItem('user_gpu', gpuPower);
-                document.getElementById('gpu-power').innerText = gpuPower;
-            } else {
-                alert('Keçərsiz promokod!');
-            }
         }
 
         function exchangeHashes() {
@@ -643,22 +578,23 @@
             window.open("https://t.me/share/url?url=https://t.me/honeyfarmer_bot", '_blank');
         }
 
-        function completeTask(taskId, url, rewardGpu) {
-            alert(`+${rewardGpu} GPU güc qazandınız!`);
-            gpuPower += rewardGpu;
-            localStorage.setItem('user_gpu', gpuPower);
-            document.getElementById('gpu-power').innerText = gpuPower;
-        }
-
         function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => {
+                t.style.display = 'none';
+                t.classList.remove('active');
+            });
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
             const targetTab = document.getElementById('tab-' + tabName);
             const targetNav = document.getElementById('nav-' + tabName);
 
-            if(targetTab) targetTab.classList.add('active');
-            if(targetNav) targetNav.classList.add('active');
+            if(targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+            }
+            if(targetNav) {
+                targetNav.classList.add('active');
+            }
             window.scrollTo(0, 0);
         }
     </script>

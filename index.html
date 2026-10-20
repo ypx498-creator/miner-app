@@ -159,7 +159,7 @@
     <div id="tab-kazici" class="tab-content active">
         <div class="mining-status-card">
             <div class="status-title">MINING STARTED</div>
-            <div class="timer" id="timer">10:35:59</div>
+            <div class="timer" id="timer">00:00:00</div>
         </div>
 
         <div class="bee-container">
@@ -255,52 +255,10 @@
 
         let hashes = 23.52102;
         let usdtBalance = 0.001109;
+        let startTime = new Date().getTime();
 
-        // Canlı Hash Artımı
+        // Canlı Hash Artımı və Canlı Sayaç
         setInterval(() => {
             hashes += 0.00012;
             const el1 = document.getElementById('hash-count');
-            const el2 = document.getElementById('mined-hashes');
-            if(el1) el1.innerText = hashes.toFixed(5);
-            if(el2) el2.innerText = hashes.toFixed(5);
-        }, 1000);
-
-        // Exchange Funksiyası
-        function exchangeHashes() {
-            if(hashes > 0.001) {
-                let converted = hashes * 0.0001;
-                usdtBalance += converted;
-                alert(hashes.toFixed(5) + " Hash USDT-yə çevrildi!");
-                hashes = 0;
-                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
-                document.getElementById('hash-count').innerText = "0.00000";
-                document.getElementById('mined-hashes').innerText = "0.00000";
-            } else {
-                alert("Çevriləcək kifayət qədər hash yoxdur!");
-            }
-        }
-
-        // Tab Keçidləri
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            const targetTab = document.getElementById('tab-' + tabName);
-            const targetNav = document.getElementById('nav-' + tabName);
-
-            if(targetTab) targetTab.classList.add('active');
-            if(targetNav) targetNav.classList.add('active');
-        }
-
-        function buyPower(amount, cost) {
-            if(usdtBalance >= cost) {
-                usdtBalance -= cost;
-                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
-                alert(amount + " GPU gücü uğurla alındı!");
-            } else {
-                alert("Balansınızda kifayət qədər USDT yoxdur!");
-            }
-        }
-    </script>
-</body>
-</html>
+            const el2 = document.getElementById('mined

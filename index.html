@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- TON Connect UI SDK -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -117,6 +119,11 @@
             gap: 6px;
             cursor: pointer;
         }
+        #ton-connect-button {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -155,7 +162,7 @@
         <button class="plus-btn" onclick="alert('Depozit paneli açılır...')">+</button>
     </div>
 
-    <!-- KAZICI TABI (Əsas Səhifə) -->
+    <!-- KAZICI TABI -->
     <div id="tab-kazici" class="tab-content active">
         <div class="mining-status-card">
             <div class="status-title">MINING STARTED</div>
@@ -206,13 +213,14 @@
         </div>
     </div>
 
-    <!-- ÇEK TABI -->
+    <!-- ÇEK TABI (TON Cüzdan Bağlantısı Burada Yerləşir) -->
     <div id="tab-cek" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı & Cüzdan</h3>
         <div class="card">
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:5px;">USDT Cüzdanı (TRC20):</p>
-            <input type="text" placeholder="T..." style="width:100%; padding:8px; border-radius:6px; border:1px solid #333; background:#222; color:#fff; margin-bottom:8px;">
-            <button class="btn-buy" onclick="alert('Sorğu göndərildi!')">Çək</button>
+            <p style="color:#8a8d9b; font-size:12px; margin-bottom:8px; text-align:center;">Ödəniş almaq üçün TON Cüzdanınızı qoşun:</p>
+            <!-- TON Connect düyməsi üçün yer -->
+            <div id="ton-connect-button"></div>
+            <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çəkilmə Sorğusu Göndər</button>
         </div>
     </div>
 
@@ -252,6 +260,12 @@
     <script>
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
+
+        // TON Connect UI quraşdırılması
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/docs/main/demo-dapp/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-button'
+        });
 
         let hashes = 23.52282;
         let usdtBalance = 0.001109;
@@ -319,6 +333,16 @@
                 alert(amount + " GPU gücü uğurla alındı!");
             } else {
                 alert("Balansınızda kifayət qədər USDT yoxdur!");
+            }
+        }
+
+        function requestWithdrawal() {
+            // Cüzdanın qoşulub-qoşulmadığını yoxlayırıq
+            if (tonConnectUI.connected) {
+                const userAddress = tonConnectUI.wallet.account.address;
+                alert("Çıxarış sorğunuz qəbul olundu! Cüzdan: " + userAddress.substring(0, 6) + "...");
+            } else {
+                alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");
             }
         }
     </script>

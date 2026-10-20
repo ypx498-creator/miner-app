@@ -18,7 +18,7 @@
             background-color: #0b0b0d;
             color: #ffffff;
             padding: 12px;
-            padding-bottom: 90px;
+            padding-bottom: 100px;
         }
         .top-bar {
             display: flex;
@@ -146,29 +146,42 @@
         .wheel-disc { font-size: 80px; display: inline-block; }
         .leader-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e2026; font-size: 13px; }
 
+        /* BÖYÜDÜLMÜŞ VƏ DAHA AÇIQ ALT MENYU */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 65px;
+            height: 75px;
             background-color: #121316;
             display: flex;
             justify-content: space-around;
             align-items: center;
             border-top: 1px solid #1e2026;
             z-index: 999;
+            padding-bottom: 5px;
         }
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #6c7080;
-            font-size: 11px;
+            justify-content: center;
+            color: #7d8296;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            gap: 2px;
+            gap: 4px;
+            flex: 1;
+            height: 100%;
         }
-        .nav-item.active { color: #ffffff; font-weight: bold; }
+        .nav-item span:first-child {
+            font-size: 20px; /* Emojiləri böyütdük */
+        }
+        .nav-item.active { 
+            color: #29a0f5; 
+            font-weight: bold; 
+        }
+
         .payment-box {
             background: #1c1f26;
             border: 1px solid #29a0f5;
@@ -324,22 +337,27 @@
         </div>
     </div>
 
-    <!-- Alt Navigasiya Menyu (Mayner ortada) -->
+    <!-- Alt Navigasiya Menyu (Böyüdülmüş) -->
     <div class="bottom-nav">
         <div class="nav-item" id="nav-spin" onclick="switchTab('spin')">
-            <span>🎡 Çarx</span>
+            <span>🎡</span>
+            <span>Çarx</span>
         </div>
         <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
-            <span>⚡ Güç</span>
+            <span>⚡</span>
+            <span>Güç</span>
         </div>
         <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
-            <span>⚙️ Mayner</span>
+            <span>⚙️</span>
+            <span>Mayner</span>
         </div>
         <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
-            <span>👥 Qazan</span>
+            <span>👥</span>
+            <span>Qazan</span>
         </div>
         <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
-            <span>💳 Cüzdan</span>
+            <span>💳</span>
+            <span>Cüzdan</span>
         </div>
     </div>
 

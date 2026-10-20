@@ -161,21 +161,39 @@
             cursor: pointer;
         }
         .btn-task:disabled { background-color: #27ae60; cursor: default; }
-        .daily-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .daily-box {
-            background: #101114;
-            border: 1px solid #22242a;
-            border-radius: 8px;
-            padding: 8px;
+
+        /* Bəxt Çarxı Stili */
+        .wheel-box {
             text-align: center;
-            font-size: 11px;
+            padding: 20px 0;
         }
-        .daily-box.active { border-color: #f39c12; background: #1c1913; }
+        .wheel-disc {
+            font-size: 100px;
+            display: inline-block;
+            transition: transform 3s cubic-bezier(0.1, 2.7, 0.58, 1);
+        }
+
+        /* Liderlər Siyahısı Stili */
+        .leader-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e2026;
+            font-size: 13px;
+        }
+
+        .promo-input {
+            width: 100%;
+            padding: 10px;
+            background: #0b0b0d;
+            border: 1px solid #2a2b30;
+            border-radius: 8px;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
 
         .bottom-nav {
             position: fixed;
@@ -248,158 +266,15 @@
         </div>
     </div>
 
+    <!-- BƏXT ÇARXI (SPIN) TABI -->
+    <div id="tab-spin" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">🎡 Bəxt Çarxı</h3>
+        <div class="card wheel-box">
+            <div class="wheel-disc" id="wheel-disc">🎰</div>
+            <p style="font-size:12px; color:#8a8d9b; margin:10px 0;">Hər gün 1 pulsuz fırlatma haqqınız var!</p>
+            <button class="btn-buy" id="btn-spin" onclick="spinWheel()">🎲 Çarxı Fırlat</button>
+        </div>
+    </div>
+
     <!-- GÜÇ TABI -->
-    <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
-        
-        <div class="card" style="text-align:center;">
-            <h4>🌟 VIP 1: +500 GPU (7 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
-            <button class="btn-buy" onclick="buyVipPackage(0.1, 500, 7)">Satın Al (TON)</button>
-        </div>
-
-        <div class="card" style="text-align:center;">
-            <h4>🔥 VIP 2: +1,200 GPU (14 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.3 TON (~1.50 USDT)</p>
-            <button class="btn-buy" onclick="buyVipPackage(0.3, 1200, 14)">Satın Al (TON)</button>
-        </div>
-
-        <div class="card" style="text-align:center; border: 1px solid #f39c12;">
-            <h4>💎 VIP 3: +3,000 GPU (30 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.7 TON (~3.50 USDT)</p>
-            <button class="btn-buy" style="background-color: #f39c12;" onclick="buyVipPackage(0.7, 3000, 30)">Satın Al (TON)</button>
-        </div>
-
-        <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
-            <h4>🚀 VIP 4: +7,000 GPU (45 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
-            <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyVipPackage(1.23, 7000, 45)">Satın Al (TON)</button>
-        </div>
-
-        <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
-            <h4>👑 VIP 5: +20,000 GPU (90 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 3.0 TON (~15.00 USDT)</p>
-            <button class="btn-buy" style="background-color: #e74c3c;" onclick="buyVipPackage(3.0, 20000, 90)">Satın Al (TON)</button>
-        </div>
-    </div>
-
-    <!-- QAZAN TABI -->
-    <div id="tab-kazan" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
-        
-        <div class="card" style="text-align:center;">
-            <div style="font-size:35px; margin-bottom:5px;">🎁</div>
-            <h4 style="margin-bottom:6px;">Dostlarını dəvət et, pulsuz GPU qazan!</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:12px;">Hər gətirdiyiniz aktiv dostunuza görə hesabınıza <b>+200 GPU</b> güc əlavə olunur.</p>
-
-            <div style="font-size:12px; color:#8a8d9b; text-align:left; margin-bottom:4px;">Sizin unikal dəvət linkiniz:</div>
-            <div class="ref-input-box" id="ref-link-display">https://t.me/honeyfarmer_bot?start=ref_user</div>
-
-            <button class="btn-buy" onclick="copyReferralLink()">📋 Linki Kopyala</button>
-            <button class="btn-share" onclick="shareReferralLink()">📲 Telegram-da Paylaş</button>
-        </div>
-
-        <div class="card" style="margin-top:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:13px; color:#8a8d9b;">Dəvət etdiyiniz dostlar:</span>
-                <span style="font-weight:bold; font-size:15px; color:#27ae60;" id="invited-count">0 nəfər</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ÇIXARIŞ TABI -->
-    <div id="tab-cek" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı</h3>
-        <div class="card">
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:8px; text-align:center;">Ödəniş almaq üçün TON Cüzdanınızı qoşun:</p>
-            <div id="ton-connect-button"></div>
-            <div style="font-size:11px; color:#8a8d9b; margin-top:10px;">
-                * Minimum çıxarış: <b>5.00 USDT</b><br>
-                * Çıxarış komissiyası: <b>10%</b>
-            </div>
-            <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çıxarış Sorğusu Göndər</button>
-        </div>
-    </div>
-
-    <!-- TAPŞIRIQLAR TABI -->
-    <div id="tab-gorevler" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Günlük Tapşırıqlar & Bonuslar</h3>
-        
-        <div class="card">
-            <h4 style="font-size:14px; margin-bottom:4px;">📅 Günlük Giriş Bonusu</h4>
-            <p style="color:#8a8d9b; font-size:11px;">Hər gün daxil olun, pulsuz GPU güc qazanın!</p>
-            <div class="daily-grid">
-                <div class="daily-box active">1-ci Gün<br><b>+50 GPU</b></div>
-                <div class="daily-box">2-ci Gün<br><b>+100 GPU</b></div>
-                <div class="daily-box">3-cü Gün<br><b>+150 GPU</b></div>
-                <div class="daily-box">7-ci Gün<br><b>+500 GPU</b></div>
-            </div>
-            <button class="btn-buy" style="margin-top:10px;" id="btn-daily-claim" onclick="claimDailyReward()">🎁 Bugünkü Bonusu Götür (+50 GPU)</button>
-        </div>
-
-        <div class="card">
-            <h4 style="font-size:14px; margin-bottom:8px;">📢 Sosial Media Tapşırıqları</h4>
-
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">✈️</span>
-                    <div>
-                        <div class="task-title">Telegram Kanalına Abunə Ol</div>
-                        <div class="task-reward">+150 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-tg" onclick="completeTask('tg', 'https://t.me/honeyfarmer_bot', 150)">Yerinə Yetir</button>
-            </div>
-
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">💬</span>
-                    <div>
-                        <div class="task-title">Telegram Qrupumuza Qoşul</div>
-                        <div class="task-reward">+100 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-group" onclick="completeTask('group', 'https://t.me/honeyfarmer_bot', 100)">Yerinə Yetir</button>
-            </div>
-
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">▶️</span>
-                    <div>
-                        <div class="task-title">YouTube Kanalımızı İzlə</div>
-                        <div class="task-reward">+200 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-yt" onclick="completeTask('yt', 'https://youtube.com', 200)">Yerinə Yetir</button>
-            </div>
-
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">💎</span>
-                    <div>
-                        <div class="task-title">TON Cüzdanını Qoş</div>
-                        <div class="task-reward">+250 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-wallet" onclick="completeWalletTask()">Qoş</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alt Navigasiya Menyu -->
-    <div class="bottom-nav">
-        <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
-            <span>⚡ Güç</span>
-        </div>
-        <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
-            <span>👥 Qazan</span>
-        </div>
-        <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
-            <span>⚙️ Mayner</span>
-        </div>
-        <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
-            <span>💳 Çıxarış</span>
-        </div>
-        <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
-            <span>📋 Tapşırıqlar</span>
-        </div>
+    <div id="tab

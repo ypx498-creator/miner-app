@@ -282,116 +282,8 @@
 
         <div class="card" style="text-align:center; border: 1px solid #f39c12;">
             <h4>💎 VIP 3: +3,000 GPU (30 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.7 TON (~3.50 USDT)</p>
-            <button class="btn-buy" style="background-color: #f39c12;" onclick="redirectToWalletForVip('VIP 3 (+3000 GPU)', 0.7, 3000)">Satın Al</button>
-        </div>
-
-        <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
-            <h4>🚀 VIP 4: +7,000 GPU (45 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
-            <button class="btn-buy" style="background-color: #9b59b6;" onclick="redirectToWalletForVip('VIP 4 (+7000 GPU)', 1.23, 7000)">Satın Al</button>
-        </div>
-
-        <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
-            <h4>👑 VIP 5: +20,000 GPU (90 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 3.0 TON (~15.00 USDT)</p>
-            <button class="btn-buy" style="background-color: #e74c3c;" onclick="redirectToWalletForVip('VIP 5 (+20000 GPU)', 3.0, 20000)">Satın Al</button>
-        </div>
-    </div>
-
-    <!-- QAZAN TABI -->
-    <div id="tab-kazan" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
-        <div class="card" style="text-align:center;">
-            <div style="font-size:35px; margin-bottom:5px;">🎁</div>
-            <h4 style="margin-bottom:6px;">Dostlarını dəvət et, pulsuz GPU qazan!</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:12px;">Hər gətirdiyiniz aktiv dostunuza görə hesabınıza <b>+200 GPU</b> güc əlavə olunur.</p>
-
-            <div style="font-size:12px; color:#8a8d9b; text-align:left; margin-bottom:4px;">Sizin unikal dəvət linkiniz:</div>
-            <div class="ref-input-box" id="ref-link-display">https://t.me/honeyfarmer_bot</div>
-
-            <button class="btn-buy" onclick="copyReferralLink()">📋 Linki Kopyala</button>
-            <button class="btn-share" onclick="shareReferralLink()">📲 Telegram-da Paylaş</button>
-        </div>
-        <div class="card" style="margin-top:12px;">
-            <h4 style="font-size:14px; margin-bottom:8px;">🏆 Ən Çox Dəvət Edənlər (Top 3)</h4>
-            <div class="leader-row"><span>🥇 1. Alex_Miner</span><span style="color:#27ae60; font-weight:bold;">142 Dost</span></div>
-            <div class="leader-row"><span>🥈 2. Ferman_S</span><span style="color:#27ae60; font-weight:bold;">89 Dost</span></div>
-            <div class="leader-row"><span>🥉 3. HoneyKing</span><span style="color:#27ae60; font-weight:bold;">64 Dost</span></div>
-        </div>
-    </div>
-
-    <!-- ÇIXARIŞ VƏ ÖDƏNİŞ TABI -->
-    <div id="tab-cek" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Cüzdan & Ödəniş Mərkəzi</h3>
-        <div class="card" style="text-align: center;">
-
-            <div id="vip-payment-info" class="payment-box">
-                <div style="color: #f39c12; font-weight: bold; font-size: 14px;" id="vip-title-text">Seçilmiş VIP Paket</div>
-                <div style="color: #ffffff; font-size: 13px; margin-top: 4px;" id="vip-price-text">Ödəniləcək: 0.0 TON</div>
-            </div>
-
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:10px;" id="wallet-status-text">Əməliyyatlar üçün TON cüzdanınızı bağlayın:</p>
-            
-            <div id="ton-connect-btn-wrapper"></div>
-
-            <input type="text" class="withdraw-input" id="wallet-address" placeholder="TON Cüzdan ünvanınız" readonly>
-            <input type="number" class="withdraw-input" id="withdraw-amount" placeholder="Çıxarılacaq USDT miqdarı">
-
-            <div style="font-size:11px; color:#8a8d9b; margin-top:10px; text-align: left;" id="withdrawal-notes">
-                * Minimum çıxarış: <b>10.00 USDT</b><br>
-                * Çıxarış komissiyası: <b>10%</b>
-            </div>
-
-            <button class="btn-buy" style="margin-top:15px;" id="main-action-btn" onclick="handleMainAction()">Çıxarış Sorğusu Göndər</button>
-        </div>
-    </div>
-
-    <!-- TAPŞIRIQLAR TABI -->
-    <div id="tab-gorevler" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Tapşırıqlar & Promokod</h3>
-        <div class="card">
-            <h4 style="font-size:14px; margin-bottom:6px;">🔑 Promokod Daxil Et</h4>
-            <input type="text" class="promo-input" id="promo-code" placeholder="KODU BURAYA YAZIN">
-            <button class="btn-buy" onclick="applyPromoCode()">Bonus Al</button>
-        </div>
-        <div class="card" style="margin-top:10px;">
-            <h4 style="font-size:14px; margin-bottom:8px;">📢 Sosial Media Tapşırıqları</h4>
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">✈️</span>
-                    <div>
-                        <div class="task-title">Telegram Kanalına Abunə Ol</div>
-                        <div class="task-reward">+150 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-tg" onclick="completeTask('tg', 'https://t.me/honeyfarmer_bot', 150)">Yerinə Yetir</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alt Navigasiya Menyu -->
-    <div class="bottom-nav">
-        <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
-            <span>⚙️ Mayner</span>
-        </div>
-        <div class="nav-item" id="nav-spin" onclick="switchTab('spin')">
-            <span>🎡 Çarx</span>
-        </div>
-        <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
-            <span>⚡ Güç</span>
-        </div>
-        <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
-            <span>👥 Qazan</span>
-        </div>
-        <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
-            <span>💳 Cüzdan</span>
-        </div>
-        <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
-            <span>📋 Tapşırıqlar</span>
-        </div>
-    </div>    <script>
-        // Sənin TON cüzdan ünvanın tam hazır şəkildə daxil edildi:
+            <p style="color
+    <script>
         const SEVIN_TON_CUZDAN_UNVANI = "UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D"; 
 
         try {
@@ -401,8 +293,16 @@
             }
         } catch(e) {}
 
+        // Manifest Error xətasını aradan qaldıran inline Data URL Manifest
+        const manifestData = {
+            url: window.location.origin + window.location.pathname,
+            name: "Honey Cloud Miner",
+            iconUrl: "https://ton.org/download/ton_symbol.png"
+        };
+        const manifestUrl = "data:application/json;base64," + btoa(JSON.stringify(manifestData));
+
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test-manifest.json',
+            manifestUrl: manifestUrl,
             buttonRootId: 'ton-connect-btn-wrapper'
         });
 
@@ -509,7 +409,6 @@
             }
 
             if (activeVipOrder) {
-                // HƏQİQİ TON TRANZAKSİYASI SORGUSU
                 const transaction = {
                     validUntil: Math.floor(Date.now() / 1000) + 600,
                     messages: [
@@ -521,7 +420,6 @@
                 };
 
                 try {
-                    // İstifadəçinin TON cüzdanını açır və tranzaksiya təsdiqi istəyir
                     await tonConnectUI.sendTransaction(transaction);
                     
                     gpuPower += activeVipOrder.gpu;
@@ -623,4 +521,3 @@
     </script>
 </body>
 </html>
-

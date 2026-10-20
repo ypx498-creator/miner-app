@@ -31,7 +31,7 @@
         .balance-badge {
             background-color: #18191c;
             border: 1px solid #2a2b30;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -39,7 +39,7 @@
             font-weight: bold;
             font-size: 15px;
         }
-        .usdt-icon { color: #26a17b; font-size: 16px; }
+        .usdt-icon { color: #26a17b; font-size: 17px; }
         .plus-btn {
             background-color: #0098ea;
             color: #fff;
@@ -171,12 +171,12 @@
 </head>
 <body>
 
-    <!-- Yuxarı Menü -->
+    <!-- Yuxarı Menü (Yaşıl Dollar Şəkilli USDT Balansı) -->
     <div class="top-bar">
         <div style="font-size: 18px; cursor: pointer;" onclick="alert('Honey Cloud Miner v1.0')">☰</div>
         <div class="balance-badge">
-            <i class="fa-solid fa-circle-nodes usdt-icon"></i>
-            <span id="usdt-balance">0.001109</span>
+            <i class="fa-solid fa-circle-dollar-to-slot usdt-icon"></i>
+            <span id="usdt-balance">0.001109</span> <span style="font-size:11px; color:#26a17b;">USDT</span>
         </div>
         <button class="plus-btn" onclick="switchTab('guc')">+</button>
     </div>
@@ -198,11 +198,11 @@
         <div class="card">
             <div class="power-row">
                 <div>
-                    <div style="color:#8a8d9b; font-size:12px;">Güc</div>
+                    <div style="color:#8a8d9b; font-size:12px;">Güç</div>
                     <div style="font-size:18px; font-weight:bold;"><span id="gpu-power">2000</span> GPU</div>
                 </div>
             </div>
-            <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güc satın al</button>
+            <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güç satın al</button>
             <div style="font-size: 10px; color: #8a8d9b; text-align: center; margin-top: 6px;">*Pulu çıxarmaq üçün Hashləri USDT ilə dəyişin</div>
             
             <div class="exchange-row">
@@ -217,7 +217,7 @@
 
     <!-- GÜÇ TABI -->
     <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güc Paketləri</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güç Paketləri</h3>
         
         <div class="card" style="text-align:center;">
             <h4>🌟 VIP 1: +500 GPU</h4>
@@ -330,7 +330,6 @@
         document.getElementById('gpu-power').innerText = gpuPower;
         document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
 
-        // 24 Saatlıq Taymer Hesablaması
         const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
         let endTime = localStorage.getItem('mining_end_time');
 
@@ -338,7 +337,6 @@
             let now = new Date().getTime();
             
             if (endTime && now < parseInt(endTime)) {
-                // MAYNİNQ AKTİVDİR
                 let remaining = Math.floor((parseInt(endTime) - now) / 1000);
                 let h = String(Math.floor(remaining / 3600)).padStart(2, '0');
                 let m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
@@ -352,7 +350,6 @@
                 startBtn.disabled = true;
                 startBtn.innerText = "⚡ MAYNİNQ DAVAM EDİR";
 
-                // Hash qazanması
                 let speed = (gpuPower / 2000) * 0.00012;
                 hashes += speed;
                 localStorage.setItem('user_hashes', hashes);
@@ -360,100 +357,6 @@
                 document.getElementById('hash-count').innerText = hashes.toFixed(5);
                 document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
             } else {
-                // MAYNİNQ DAYANIB (24 SAAT BİTİB)
                 document.getElementById('timer').innerText = "00:00:00";
                 document.getElementById('status-title').innerText = "MAYNİNQ DAYANIB (STARTA BASIN)";
-                document.getElementById('status-title').style.color = "#e74c3c";
-                
-                const startBtn = document.getElementById('start-btn');
-                startBtn.disabled = false;
-                startBtn.innerText = "⚡ MAYNİNQİ BAŞLAT (24 SAAT)";
-
-                document.getElementById('hash-count').innerText = hashes.toFixed(5);
-                document.getElementById('mined-hashes').innerText = hashes.toFixed(5);
-            }
-        }
-
-        function startMining24h() {
-            let now = new Date().getTime();
-            endTime = now + TWENTY_FOUR_HOURS;
-            localStorage.setItem('mining_end_time', endTime);
-            alert("Mayninq 24 saatlıq başladıldı!");
-            updateUI();
-        }
-
-        setInterval(updateUI, 1000);
-
-        async function buyPowerTON(amountInTon, addedGpu) {
-            if (!tonConnectUI.connected) {
-                alert("Ödəniş etmək üçün əvvəlcə 'Çıxarış' bölməsindən cüzdanınızı qoşun!");
-                switchTab('cek');
-                return;
-            }
-
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600,
-                messages: [
-                    {
-                        address: ADMIN_WALLET,
-                        amount: (amountInTon * 1000000000).toString()
-                    }
-                ]
-            };
-
-            try {
-                await tonConnectUI.sendTransaction(transaction);
-                alert("Ödəniş uğurla tamamlandı! +" + addedGpu + " GPU hesabınıza əlavə olundu.");
-                gpuPower += addedGpu;
-                localStorage.setItem('user_gpu', gpuPower);
-                document.getElementById('gpu-power').innerText = gpuPower;
-            } catch (e) {
-                alert("Ödəniş ləğv edildi və ya xəta baş verdi.");
-            }
-        }
-
-        function exchangeHashes() {
-            if(hashes > 0.001) {
-                let converted = hashes * 0.0001;
-                usdtBalance += converted;
-                localStorage.setItem('user_usdt', usdtBalance);
-                alert(hashes.toFixed(5) + " Hash USDT-yə çevrildi!");
-                hashes = 0;
-                localStorage.setItem('user_hashes', 0);
-                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
-                document.getElementById('hash-count').innerText = "0.00000";
-                document.getElementById('mined-hashes').innerText = "0.00000";
-            } else {
-                alert("Çevriləcək kifayət qədər hash yoxdur!");
-            }
-        }
-
-        function requestWithdrawal() {
-            if (!tonConnectUI.connected) {
-                alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");
-                return;
-            }
-            if (usdtBalance < 5.00) {
-                alert("Minimum çıxarış məbləği 5.00 USDT-dir! Balansınız yetərsizdir.");
-                return;
-            }
-            alert("Çıxarış sorğunuz qəbul edildi. Təsdiqləndikdən sonra 10% komissiya çıxılmaqla cüzdanınıza köçürüləcək.");
-        }
-
-        function copyReferralLink() {
-            alert('Dəvət linki kopyalandı! Dostlarınızı dəvət edərək +200 GPU qazanın.');
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            const targetTab = document.getElementById('tab-' + tabName);
-            const targetNav = document.getElementById('nav-' + tabName);
-
-            if(targetTab) targetTab.classList.add('active');
-            if(targetNav) targetNav.classList.add('active');
-        }
-    </script>
-</body>
-</html>
+                document.getElementById('status-title').style.color = "#

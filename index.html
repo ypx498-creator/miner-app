@@ -156,7 +156,7 @@
         .btn-task:disabled { background-color: #27ae60; cursor: default; }
 
         .wheel-box { text-align: center; padding: 20px 0; }
-        .wheel-disc { font-size: 80px; display: inline-block; transition: transform 2s ease-out; }
+        .wheel-disc { font-size: 80px; display: inline-block; }
         .leader-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e2026; font-size: 13px; }
         .promo-input { width: 100%; padding: 10px; background: #0b0b0d; border: 1px solid #2a2b30; border-radius: 8px; color: #fff; text-align: center; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; }
 
@@ -233,108 +233,4 @@
 
     <!-- BƏXT ÇARXI TABI -->
     <div id="tab-spin" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">🎡 Bəxt Çarxı</h3>
-        <div class="card wheel-box">
-            <div class="wheel-disc" id="wheel-disc">🎰</div>
-            <p style="font-size:12px; color:#8a8d9b; margin:10px 0;">Hər gün 1 pulsuz fırlatma haqqınız var!</p>
-            <button class="btn-buy" id="btn-spin" onclick="spinWheel()">🎲 Çarxı Fırlat</button>
-        </div>
-    </div>
-
-    <!-- GÜÇ TABI -->
-    <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
-        <div class="card" style="text-align:center;">
-            <h4>🌟 VIP 1: +500 GPU (7 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
-            <button class="btn-buy" onclick="alert('Tezliklə aktiv olacaq!')">Satın Al (TON)</button>
-        </div>
-        <div class="card" style="text-align:center;">
-            <h4>🔥 VIP 2: +1,200 GPU (14 Günlük)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.3 TON (~1.50 USDT)</p>
-            <button class="btn-buy" onclick="alert('Tezliklə aktiv olacaq!')">Satın Al (TON)</button>
-        </div>
-    </div>
-
-    <!-- QAZAN TABI -->
-    <div id="tab-kazan" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
-        <div class="card" style="text-align:center;">
-            <div style="font-size:35px; margin-bottom:5px;">🎁</div>
-            <h4 style="margin-bottom:6px;">Dostlarını dəvət et, pulsuz GPU qazan!</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin-bottom:12px;">Hər gətirdiyiniz aktiv dostunuza görə hesabınıza <b>+200 GPU</b> güc əlavə olunur.</p>
-
-            <div style="font-size:12px; color:#8a8d9b; text-align:left; margin-bottom:4px;">Sizin unikal dəvət linkiniz:</div>
-            <div class="ref-input-box" id="ref-link-display">https://t.me/honeyfarmer_bot?start=ref_user</div>
-
-            <button class="btn-buy" onclick="copyReferralLink()">📋 Linki Kopyala</button>
-            <button class="btn-share" onclick="shareReferralLink()">📲 Telegram-da Paylaş</button>
-        </div>
-        <div class="card" style="margin-top:12px;">
-            <h4 style="font-size:14px; margin-bottom:8px;">🏆 Ən Çox Dəvət Edənlər (Top 3)</h4>
-            <div class="leader-row"><span>🥇 1. Alex_Miner</span><span style="color:#27ae60; font-weight:bold;">142 Dost</span></div>
-            <div class="leader-row"><span>🥈 2. Ferman_S</span><span style="color:#27ae60; font-weight:bold;">89 Dost</span></div>
-            <div class="leader-row"><span>🥉 3. HoneyKing</span><span style="color:#27ae60; font-weight:bold;">64 Dost</span></div>
-        </div>
-    </div>
-
-    <!-- TAPŞIRIQLAR TABI -->
-    <div id="tab-gorevler" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Tapşırıqlar & Promokod</h3>
-        <div class="card">
-            <h4 style="font-size:14px; margin-bottom:6px;">🔑 Promokod Daxil Et</h4>
-            <input type="text" class="promo-input" id="promo-code" placeholder="KODU BURAYA YAZIN">
-            <button class="btn-buy" onclick="applyPromoCode()">Bonus Al</button>
-        </div>
-        <div class="card" style="margin-top:10px;">
-            <h4 style="font-size:14px; margin-bottom:8px;">📢 Sosial Media Tapşırıqları</h4>
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-icon">✈️</span>
-                    <div>
-                        <div class="task-title">Telegram Kanalına Abunə Ol</div>
-                        <div class="task-reward">+150 GPU Güc</div>
-                    </div>
-                </div>
-                <button class="btn-task" id="task-tg" onclick="completeTask('tg', 'https://t.me/honeyfarmer_bot', 150)">Yerinə Yetir</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alt Navigasiya Menyu -->
-    <div class="bottom-nav">
-        <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
-            <span>⚙️ Mayner</span>
-        </div>
-        <div class="nav-item" id="nav-spin" onclick="switchTab('spin')">
-            <span>🎡 Çarx</span>
-        </div>
-        <div class="nav-item" id="nav-guc" onclick="switchTab('guc')">
-            <span>⚡ Güç</span>
-        </div>
-        <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
-            <span>👥 Qazan</span>
-        </div>
-        <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
-            <span>📋 Tapşırıqlar</span>
-        </div>
-    </div>
-
-    <script>
-        let tg = window.Telegram?.WebApp;
-        if(tg) {
-            try { tg.ready(); tg.expand(); } catch(e){}
-        }
-
-        const REAL_BOT_USERNAME = "honeyfarmer_bot";
-        const userId = tg?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 899999) + 100000;
-        const refLink = `https://t.me/${REAL_BOT_USERNAME}?start=ref_${userId}`;
-        document.getElementById('ref-link-display').innerText = refLink;
-
-        let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.0;
-        let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.0;
-        let lastMiningCalc = parseInt(localStorage.getItem('last_mining_calc')) || Date.now();
-        let bonusTasksGpu = parseInt(localStorage.getItem('tasks_gpu')) || 0;
-        let invitedCount = parseInt(localStorage.getItem('invited_count')) || 0;
-
-        let gpuPower = 2000 + (invitedCount
+        <h3 style="margin-bottom:12px; font

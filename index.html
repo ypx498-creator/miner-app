@@ -194,18 +194,43 @@
         </div>
     </div>
 
-    <!-- GÜÇ TABI (HƏQİQİ DEPOZİT SİSTEMİ) -->
+    <!-- GÜÇ TABI (VIP SİSTEMİ) -->
     <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">⚡ Mağaza & Güç Satın Al</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güç Paketleri</h3>
+        
+        <!-- VIP 1 -->
         <div class="card" style="text-align:center;">
-            <h4>+1000 GPU Gücü</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.2 TON (~1.00 USDT)</p>
-            <button class="btn-buy" onclick="buyPowerTON(0.2, 1000)">Cüzdanla Satın Al (TON)</button>
+            <h4>🌟 VIP 1: +500 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
+            <button class="btn-buy" onclick="buyPowerTON(0.1, 500)">Satın Al (TON)</button>
         </div>
+
+        <!-- VIP 2 -->
         <div class="card" style="text-align:center;">
-            <h4>+5000 GPU Gücü (VIP)</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.9 TON (~4.50 USDT)</p>
-            <button class="btn-buy" onclick="buyPowerTON(0.9, 5000)">Cüzdanla Satın Al (TON)</button>
+            <h4>🔥 VIP 2: +2,800 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.5 TON (~2.50 USDT)</p>
+            <button class="btn-buy" onclick="buyPowerTON(0.5, 2800)">Satın Al (TON)</button>
+        </div>
+
+        <!-- VIP 3 -->
+        <div class="card" style="text-align:center; border: 1px solid #f39c12;">
+            <h4>💎 VIP 3: +7,000 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
+            <button class="btn-buy" style="background-color: #f39c12;" onclick="buyPowerTON(1.23, 7000)">Satın Al (TON)</button>
+        </div>
+
+        <!-- VIP 4 -->
+        <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
+            <h4>🚀 VIP 4: +15,000 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 2.5 TON (~12.50 USDT)</p>
+            <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyPowerTON(2.5, 15000)">Satın Al (TON)</button>
+        </div>
+
+        <!-- VIP 5 -->
+        <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
+            <h4>👑 VIP 5: +35,000 GPU</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 5.0 TON (~25.00 USDT)</p>
+            <button class="btn-buy" style="background-color: #e74c3c;" onclick="buyPowerTON(5.0, 35000)">Satın Al (TON)</button>
         </div>
     </div>
 
@@ -269,10 +294,8 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // SİZİN ŞƏXSİ TON CÜZDAN ÜNVANINIZ
         const ADMIN_WALLET = 'UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D';
 
-        // TON Connect UI quraşdırılması
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://ypx498-creator.github.io/miner-app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
@@ -298,7 +321,6 @@
             startTime = parseInt(startTime);
         }
 
-        // Canlı Mining Hesablaması
         setInterval(() => {
             let speed = (gpuPower / 2000) * 0.00012;
             hashes += speed;
@@ -321,7 +343,6 @@
             }
         }, 1000);
 
-        // HƏQİQİ DEPOZİT ƏMƏLİYYATI (Sizin cüzdanınıza TON göndərilir)
         async function buyPowerTON(amountInTon, addedGpu) {
             if (!tonConnectUI.connected) {
                 alert("Ödəniş etmək üçün əvvəlcə 'Çek' tabından Cüzdanınızı qoşun!");
@@ -330,18 +351,18 @@
             }
 
             const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600, // 10 dəqiqə etibarlıdır
+                validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [
                     {
-                        address: ADMIN_WALLET, // Bütün ödənişlər SİZİN CÜZDANA gedir
-                        amount: (amountInTon * 1000000000).toString() // Nanoton çevrilməsi
+                        address: ADMIN_WALLET,
+                        amount: (amountInTon * 1000000000).toString()
                     }
                 ]
             };
 
             try {
                 await tonConnectUI.sendTransaction(transaction);
-                alert("Ödəniş uğurla tamamlandı! " + addedGpu + " GPU hesabınıza əlavə olundu.");
+                alert("Ödəniş uğurla tamamlandı! +" + addedGpu + " GPU hesabınıza əlavə olundu.");
                 gpuPower += addedGpu;
                 localStorage.setItem('user_gpu', gpuPower);
                 document.getElementById('gpu-power').innerText = gpuPower;
@@ -350,7 +371,6 @@
             }
         }
 
-        // Exchange Funksiyası
         function exchangeHashes() {
             if(hashes > 0.001) {
                 let converted = hashes * 0.0001;
@@ -367,7 +387,6 @@
             }
         }
 
-        // Çıxarış Sorğusu
         function requestWithdrawal() {
             if (!tonConnectUI.connected) {
                 alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");

@@ -23,7 +23,7 @@
         }
         body {
             padding: 12px;
-            padding-bottom: 110px; /* Alt menyunun məzmunu örtməməsi üçün */
+            padding-bottom: 110px;
         }
         .top-bar {
             display: flex;
@@ -81,7 +81,7 @@
             background-color: #141518;
             border-radius: 14px;
             padding: 14px;
-            margin-top: 10px;
+            margin-top: 12px;
             border: 1px solid #22242a;
         }
         .power-row {
@@ -187,8 +187,7 @@
             gap: 2px;
         }
         .nav-item.active { color: #ffffff; font-weight: bold; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .section-title { font-size: 16px; margin: 20px 0 10px 0; text-align: center; border-bottom: 1px solid #22242a; padding-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -199,11 +198,11 @@
             <span class="usdt-icon">💲</span>
             <span id="usdt-balance">0.000000</span> <span style="font-size:11px; color:#26a17b;">USDT</span>
         </div>
-        <button class="plus-btn" onclick="switchTab('guc')">+</button>
+        <button class="plus-btn" onclick="scrollToSection('tab-guc')">+</button>
     </div>
 
-    <!-- MAYNER TABI -->
-    <div id="tab-kazici" class="tab-content active">
+    <!-- MAYNER BÖLMƏSİ -->
+    <div id="tab-kazici">
         <div class="mining-status-card">
             <div class="status-title" id="status-title">MAYNİNQ DAYANIB</div>
             <div class="timer" id="timer">24:00:00</div>
@@ -223,7 +222,7 @@
                     <div style="font-size:18px; font-weight:bold;"><span id="gpu-power">2000</span> GPU</div>
                 </div>
             </div>
-            <button class="btn-buy" onclick="switchTab('guc')">Mağazadan güç satın al</button>
+            <button class="btn-buy" onclick="scrollToSection('tab-guc')">Mağazadan güç satın al</button>
             <div style="font-size: 10px; color: #8a8d9b; text-align: center; margin-top: 6px;">*Pulu çıxarmaq üçün Hashləri USDT ilə dəyişin</div>
             
             <div class="exchange-row">
@@ -236,9 +235,9 @@
         </div>
     </div>
 
-    <!-- BƏXT ÇARXI TABI -->
-    <div id="tab-spin" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">🎡 Bəxt Çarxı</h3>
+    <!-- BƏXT ÇARXI BÖLMƏSİ -->
+    <div id="tab-spin">
+        <div class="section-title">🎡 Bəxt Çarxı</div>
         <div class="card wheel-box">
             <div class="wheel-disc" id="wheel-disc">🎰</div>
             <p style="font-size:12px; color:#8a8d9b; margin:10px 0;">Hər gün 1 pulsuz fırlatma haqqınız var!</p>
@@ -246,9 +245,9 @@
         </div>
     </div>
 
-    <!-- GÜÇ (VIP) TABI -->
-    <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
+    <!-- GÜÇ (VIP) BÖLMƏSİ -->
+    <div id="tab-guc">
+        <div class="section-title">👑 VIP Vaxtlı Güc Paketləri</div>
         
         <div class="card" style="text-align:center;">
             <h4>🌟 VIP 1: +500 GPU (7 Günlük)</h4>
@@ -281,12 +280,30 @@
         </div>
     </div>
 
-    <!-- QAZAN TABI -->
-    <div id="tab-kazan" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
+    <!-- QAZAN BÖLMƏSİ -->
+    <div id="tab-kazan">
+        <div class="section-title">👥 Qazan (Dostunu Dəvət Et)</div>
         <div class="card" style="text-align:center;">
             <div style="font-size:35px; margin-bottom:5px;">🎁</div>
             <h4 style="margin-bottom:6px;">Dostlarını dəvət et, pulsuz GPU qazan!</h4>
             <p style="color:#8a8d9b; font-size:12px; margin-bottom:12px;">Hər gətirdiyiniz aktiv dostunuza görə hesabınıza <b>+200 GPU</b> güc əlavə olunur.</p>
 
-            <div style="font
+            <div style="font-size:12px; color:#8a8d9b; text-align:left; margin-bottom:4px;">Sizin unikal dəvət linkiniz:</div>
+            <div class="ref-input-box" id="ref-link-display">https://t.me/honeyfarmer_bot?start=ref_user</div>
+
+            <button class="btn-buy" onclick="copyReferralLink()">📋 Linki Kopyala</button>
+            <button class="btn-share" onclick="shareReferralLink()">📲 Telegram-da Paylaş</button>
+        </div>
+        <div class="card" style="margin-top:12px;">
+            <h4 style="font-size:14px; margin-bottom:8px;">🏆 Ən Çox Dəvət Edənlər (Top 3)</h4>
+            <div class="leader-row"><span>🥇 1. Alex_Miner</span><span style="color:#27ae60; font-weight:bold;">142 Dost</span></div>
+            <div class="leader-row"><span>🥈 2. Ferman_S</span><span style="color:#27ae60; font-weight:bold;">89 Dost</span></div>
+            <div class="leader-row"><span>🥉 3. HoneyKing</span><span style="color:#27ae60; font-weight:bold;">64 Dost</span></div>
+        </div>
+    </div>
+
+    <!-- ÇIXARIŞ BÖLMƏSİ -->
+    <div id="tab-cek">
+        <div class="section-title">💳 Balans Çıxarışı</div>
+        <div class="card" style="text-align: center;">
+            <p style="color:#8a8d9b; font-size:12px; margin-bottom:1

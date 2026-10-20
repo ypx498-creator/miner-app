@@ -97,6 +97,7 @@
             touch-action: manipulation;
         }
         .btn-buy { background-color: #29a0f5; }
+        .btn-buy:disabled { background-color: #34495e; color: #7f8c8d; cursor: not-allowed; }
         .btn-share { background-color: #27ae60; margin-top: 8px; }
         .btn-start { background-color: #27ae60; font-size: 15px; margin-bottom: 10px; }
         .btn-start:disabled { background-color: #34495e; color: #7f8c8d; cursor: not-allowed; }
@@ -255,8 +256,9 @@
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">🎡 Bəxt Çarxı</h3>
         <div class="card wheel-box">
             <div class="wheel-disc">🎰</div>
-            <p style="font-size:12px; color:#8a8d9b; margin:10px 0;">Hər gün 1 pulsuz fırlatma haqqınız var!</p>
-            <button class="btn-buy" onclick="spinWheel()">🎲 Çarxı Fırlat</button>
+            <p style="font-size:12px; color:#8a8d9b; margin:10px 0;" id="wheel-status-msg">Hər gün 1 pulsuz fırlatma haqqınız var!</p>
+            <div class="timer" id="wheel-timer" style="font-size: 18px; margin-bottom: 10px; display: none;">00:00:00</div>
+            <button class="btn-buy" id="spin-btn" onclick="spinWheel()">🎲 Çarxı Fırlat</button>
         </div>
     </div>
 
@@ -404,6 +406,7 @@
         let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.0036;
         let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 9100;
         let endTime = parseInt(localStorage.getItem('mining_end_time')) || 0;
+        let wheelEndTime = parseInt(localStorage.getItem('wheel_end_time')) || 0;
         let isWalletConnected = localStorage.getItem('wallet_connected') === 'true';
 
         document.getElementById('gpu-power').innerText = gpuPower;
@@ -411,6 +414,7 @@
         document.getElementById('hash-count').innerText = hashes.toFixed(4);
         document.getElementById('mined-hashes').innerText = hashes.toFixed(4);
         updateWalletUI();
+        updateWheelTimer();
 
         function updateWalletUI() {
             let statusText = document.getElementById('wallet-status-text');
@@ -517,7 +521,6 @@
                     startBtn.innerText = "⚡ MAYNİNQ DAVAM EDİR";
                 }
                 
-                // Mayninq sürəti gücə uyğun olaraq qat-qat artırıldı
                 hashes += (gpuPower / 500) * 0.001;
                 
                 let hashElem = document.getElementById('hash-count');
@@ -540,6 +543,40 @@
                     startBtn.innerText = "⚡ MAYNİNQİ BAŞLAT (24 SAAT)";
                 }
             }
+
+            // Çarx taymerini də yenilə
+            updateWheelTimer();
+        }
+
+        function updateWheelTimer() {
+            let now = Date.now();
+            let wheelTimerElem = document.getElementById('wheel-timer');
+            let wheelStatusMsg = document.getElementById('wheel-status-msg');
+            let spinBtn = document.getElementById('spin-btn');
+
+            if (wheelEndTime && now < wheelEndTime) {
+                let remaining = Math.floor((wheelEndTime - now) / 1000);
+                let h = String(Math.floor(remaining / 3600)).padStart(2, '0');
+                let m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
+                let s = String(remaining % 60).padStart(2, '0');
+
+                if(wheelTimerElem) {
+                    wheelTimerElem.style.display = 'block';
+                    wheelTimerElem.innerText = `Növbəti fırlatma: ${h}:${m}:${s}`;
+                }
+                if(wheelStatusMsg) wheelStatusMsg.innerText = "Bugünkü fırlatma haqqınız istifadə olunub:";
+                if(spinBtn) {
+                    spinBtn.disabled = true;
+                    spinBtn.innerText = "⏳ Gözləyin";
+                }
+            } else {
+                if(wheelTimerElem) wheelTimerElem.style.display = 'none';
+                if(wheelStatusMsg) wheelStatusMsg.innerText = "Hər gün 1 pulsuz fırlatma haqqınız var!";
+                if(spinBtn) {
+                    spinBtn.disabled = false;
+                    spinBtn.innerText = "🎲 Çarxı Fırlat";
+                }
+            }
         }
 
         setInterval(updateMiningTimer, 1000);
@@ -553,10 +590,21 @@
         }
 
         function spinWheel() {
+            let now = Date.now();
+            if (wheelEndTime && now < wheelEndTime) {
+                alert("⏳ Çarxı yalnız 24 saatda bir dəfə fırlada bilərsiniz!");
+                return;
+            }
+
             alert("🎯 Təbriklər! +100 GPU qazandınız!");
             gpuPower += 100;
             localStorage.setItem('user_gpu', gpuPower);
             document.getElementById('gpu-power').innerText = gpuPower;
+
+            // 24 saatlıq geri sayım müddətini təyin edirik
+            wheelEndTime = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem('wheel_end_time', wheelEndTime);
+            updateWheelTimer();
         }
 
         function applyPromoCode() {
@@ -573,7 +621,6 @@
 
         function exchangeHashes() {
             if(hashes > 0.0001) {
-                // Hər yığılan hash birbaşa USDT balansına dəyər qatacaq şəkildə artırıldı
                 let addedUsdt = hashes * 0.01;
                 usdtBalance += addedUsdt;
                 hashes = 0;

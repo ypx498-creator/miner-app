@@ -147,7 +147,7 @@
 
     <!-- Yuxarı Menü -->
     <div class="top-bar">
-        <div style="font-size: 18px; cursor: pointer;" onclick="alert('Menü yakında açılacak!')">☰</div>
+        <div style="font-size: 18px; cursor: pointer;" onclick="alert('Menü açılır...')">☰</div>
         <div class="balance-badge">
             <i class="fa-solid fa-circle-nodes usdt-icon"></i>
             <span id="usdt-balance">0.001109</span>
@@ -164,7 +164,7 @@
 
         <div class="bee-container">
             <div class="bee-icon">🐝</div>
-            <div class="hash-rate-badge"><span id="hash-count">23.52102</span> <span style="color:#8a8d9b; font-size:13px;">Hashes</span></div>
+            <div class="hash-rate-badge"><span id="hash-count">23.52282</span> <span style="color:#8a8d9b; font-size:13px;">Hashes</span></div>
         </div>
 
         <div class="card">
@@ -180,7 +180,7 @@
             <div class="exchange-row">
                 <div>
                     <div style="color:#8a8d9b; font-size:11px;">Kazılan Hashler</div>
-                    <div style="font-size: 15px; font-weight: bold;" id="mined-hashes">23.52102</div>
+                    <div style="font-size: 15px; font-weight: bold;" id="mined-hashes">23.52282</div>
                 </div>
                 <button class="btn-exchange" onclick="exchangeHashes()">Exchange <i class="fa-solid fa-rotate"></i></button>
             </div>
@@ -253,12 +253,74 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        let hashes = 23.52102;
+        let hashes = 23.52282;
         let usdtBalance = 0.001109;
-        let startTime = new Date().getTime();
 
-        // Canlı Hash Artımı və Canlı Sayaç
+        // Sayaçın donmaması üçün yaddaş mexanizmi
+        let startTime = localStorage.getItem('mining_start_time');
+        if (!startTime) {
+            startTime = new Date().getTime();
+            localStorage.setItem('mining_start_time', startTime);
+        } else {
+            startTime = parseInt(startTime);
+        }
+
+        // Canlı Hash Artımı və Dayanmayan Real Vaxt Sayaçı
         setInterval(() => {
             hashes += 0.00012;
             const el1 = document.getElementById('hash-count');
-            const el2 = document.getElementById('mined
+            const el2 = document.getElementById('mined-hashes');
+            if(el1) el1.innerText = hashes.toFixed(5);
+            if(el2) el2.innerText = hashes.toFixed(5);
+
+            let now = new Date().getTime();
+            let distance = Math.floor((now - startTime) / 1000);
+            let hours = String(Math.floor(distance / 3600) % 24).padStart(2, '0');
+            let minutes = String(Math.floor((distance % 3600) / 60)).padStart(2, '0');
+            let seconds = String(distance % 60).padStart(2, '0');
+            
+            const timerEl = document.getElementById('timer');
+            if(timerEl) {
+                timerEl.innerText = `${hours}:${minutes}:${seconds}`;
+            }
+        }, 1000);
+
+        // Exchange Funksiyası
+        function exchangeHashes() {
+            if(hashes > 0.001) {
+                let converted = hashes * 0.0001;
+                usdtBalance += converted;
+                alert(hashes.toFixed(5) + " Hash USDT-yə çevrildi!");
+                hashes = 0;
+                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
+                document.getElementById('hash-count').innerText = "0.00000";
+                document.getElementById('mined-hashes').innerText = "0.00000";
+            } else {
+                alert("Çevriləcək kifayət qədər hash yoxdur!");
+            }
+        }
+
+        // Tab Keçidləri
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            const targetTab = document.getElementById('tab-' + tabName);
+            const targetNav = document.getElementById('nav-' + tabName);
+
+            if(targetTab) targetTab.classList.add('active');
+            if(targetNav) targetNav.classList.add('active');
+        }
+
+        function buyPower(amount, cost) {
+            if(usdtBalance >= cost) {
+                usdtBalance -= cost;
+                document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
+                alert(amount + " GPU gücü uğurla alındı!");
+            } else {
+                alert("Balansınızda kifayət qədər USDT yoxdur!");
+            }
+        }
+    </script>
+</body>
+</html>

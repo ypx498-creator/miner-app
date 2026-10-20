@@ -190,7 +190,7 @@
         <div class="card">
             <div class="power-row">
                 <div>
-                    <div style="color:#8a8d9b; font-size:12px;">Güç</div>
+                    <div style="color:#8a8d9b; font-size:12px;">Ümumi Güç</div>
                     <div style="font-size:18px; font-weight:bold;"><span id="gpu-power">2000</span> GPU</div>
                 </div>
             </div>
@@ -207,38 +207,43 @@
         </div>
     </div>
 
-    <!-- GÜÇ TABI -->
+    <!-- GÜÇ TABI (MÜDDƏTLİ VIP PAKETLƏR) -->
     <div id="tab-guc" class="tab-content">
-        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Güç Paketləri</h3>
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
         
+        <!-- VIP 1 (7 Günlük) -->
         <div class="card" style="text-align:center;">
-            <h4>🌟 VIP 1: +500 GPU</h4>
+            <h4>🌟 VIP 1: +500 GPU (7 Günlük)</h4>
             <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
-            <button class="btn-buy" onclick="buyPowerTON(0.1, 500)">Satın Al (TON)</button>
+            <button class="btn-buy" onclick="buyVipPackage(0.1, 500, 7)">Satın Al (TON)</button>
         </div>
 
+        <!-- VIP 2 (14 Günlük) -->
         <div class="card" style="text-align:center;">
-            <h4>🔥 VIP 2: +2,800 GPU</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.5 TON (~2.50 USDT)</p>
-            <button class="btn-buy" onclick="buyPowerTON(0.5, 2800)">Satın Al (TON)</button>
+            <h4>🔥 VIP 2: +1,200 GPU (14 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.3 TON (~1.50 USDT)</p>
+            <button class="btn-buy" onclick="buyVipPackage(0.3, 1200, 14)">Satın Al (TON)</button>
         </div>
 
+        <!-- VIP 3 (30 Günlük) -->
         <div class="card" style="text-align:center; border: 1px solid #f39c12;">
-            <h4>💎 VIP 3: +7,000 GPU</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
-            <button class="btn-buy" style="background-color: #f39c12;" onclick="buyPowerTON(1.23, 7000)">Satın Al (TON)</button>
+            <h4>💎 VIP 3: +3,000 GPU (30 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.7 TON (~3.50 USDT)</p>
+            <button class="btn-buy" style="background-color: #f39c12;" onclick="buyVipPackage(0.7, 3000, 30)">Satın Al (TON)</button>
         </div>
 
+        <!-- VIP 4 (45 Günlük) -->
         <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
-            <h4>🚀 VIP 4: +15,000 GPU</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 2.5 TON (~12.50 USDT)</p>
-            <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyPowerTON(2.5, 15000)">Satın Al (TON)</button>
+            <h4>🚀 VIP 4: +7,000 GPU (45 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
+            <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyVipPackage(1.23, 7000, 45)">Satın Al (TON)</button>
         </div>
 
+        <!-- VIP 5 (90 Günlük) -->
         <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
-            <h4>👑 VIP 5: +35,000 GPU</h4>
-            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 5.0 TON (~25.00 USDT)</p>
-            <button class="btn-buy" style="background-color: #e74c3c;" onclick="buyPowerTON(5.0, 35000)">Satın Al (TON)</button>
+            <h4>👑 VIP 5: +20,000 GPU (90 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 3.0 TON (~15.00 USDT)</p>
+            <button class="btn-buy" style="background-color: #e74c3c;" onclick="buyVipPackage(3.0, 20000, 90)">Satın Al (TON)</button>
         </div>
     </div>
 
@@ -309,7 +314,19 @@
 
         let hashes = parseFloat(localStorage.getItem('user_hashes')) || 0.00000;
         let usdtBalance = parseFloat(localStorage.getItem('user_usdt')) || 0.000000;
-        let gpuPower = parseInt(localStorage.getItem('user_gpu')) || 2000;
+        
+        // Aktiv VIP paketlərin müddət yoxlanışı və güc hesablanması
+        let activePackages = JSON.parse(localStorage.getItem('active_packages')) || [];
+        let nowTime = Date.now();
+        
+        // Vaxtı bitən paketləri təmizlə
+        activePackages = activePackages.filter(pkg => pkg.expireTime > nowTime);
+        localStorage.setItem('active_packages', JSON.stringify(activePackages));
+
+        // Əsas baza güc 2000 + aktiv VIP paketlərin gücü
+        let baseGpu = 2000;
+        let bonusGpu = activePackages.reduce((sum, pkg) => sum + pkg.gpu, 0);
+        let gpuPower = baseGpu + bonusGpu;
 
         document.getElementById('gpu-power').innerText = gpuPower;
         document.getElementById('usdt-balance').innerText = usdtBalance.toFixed(6);
@@ -363,7 +380,7 @@
 
         setInterval(updateUI, 1000);
 
-        async function buyPowerTON(amountInTon, addedGpu) {
+        async function buyVipPackage(amountInTon, addedGpu, days) {
             if (!tonConnectUI || !tonConnectUI.connected) {
                 alert("Ödəniş etmək üçün əvvəlcə 'Çıxarış' bölməsindən cüzdanınızı qoşun!");
                 switchTab('cek');
@@ -382,10 +399,17 @@
 
             try {
                 await tonConnectUI.sendTransaction(transaction);
-                alert("Ödəniş uğurla tamamlandı! +" + addedGpu + " GPU hesabınıza əlavə olundu.");
+                
+                // Paketi aktivləşdir və vaxt təyin et (Gün * 24 saat * 60 dəq * 60 san * 1000 millisec)
+                let expireTime = Date.now() + (days * 24 * 60 * 60 * 1000);
+                activePackages.push({ gpu: addedGpu, expireTime: expireTime });
+                localStorage.setItem('active_packages', JSON.stringify(activePackages));
+
                 gpuPower += addedGpu;
-                localStorage.setItem('user_gpu', gpuPower);
                 document.getElementById('gpu-power').innerText = gpuPower;
+
+                alert(`Ödəniş uğurla tamamlandı! +${addedGpu} GPU gücünüz ${days} günlük aktivləşdirildi.`);
+                switchTab('kazici');
             } catch (e) {
                 alert("Ödəniş ləğv edildi və ya xəta baş verdi.");
             }

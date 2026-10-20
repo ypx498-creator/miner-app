@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -120,12 +119,6 @@
             font-weight: bold;
             cursor: pointer;
         }
-        #ton-connect-button {
-            display: flex;
-            justify-content: center;
-            margin: 15px 0;
-            min-height: 45px;
-        }
         .ref-input-box {
             background: #0b0b0d;
             border: 1px solid #2a2b30;
@@ -230,4 +223,60 @@
             
             <div class="exchange-row">
                 <div>
-                    <div style="color:#8a8d9b; font-size:11px;">Qazılan Hashlər
+                    <div style="color:#8a8d9b; font-size:11px;">Qazılan Hashlər</div>
+                    <div style="font-size: 15px; font-weight: bold;" id="mined-hashes">0.00000</div>
+                </div>
+                <button class="btn-exchange" onclick="exchangeHashes()">Dəyişdir 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BƏXT ÇARXI TABI -->
+    <div id="tab-spin" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">🎡 Bəxt Çarxı</h3>
+        <div class="card wheel-box">
+            <div class="wheel-disc" id="wheel-disc">🎰</div>
+            <p style="font-size:12px; color:#8a8d9b; margin:10px 0;">Hər gün 1 pulsuz fırlatma haqqınız var!</p>
+            <button class="btn-buy" id="btn-spin" onclick="spinWheel()">🎲 Çarxı Fırlat</button>
+        </div>
+    </div>
+
+    <!-- GÜÇ (VIP) TABI -->
+    <div id="tab-guc" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
+        
+        <div class="card" style="text-align:center;">
+            <h4>🌟 VIP 1: +500 GPU (7 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.1 TON (~0.50 USDT)</p>
+            <button class="btn-buy" onclick="buyVipPackage(500, 7)">Satın Al</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+            <h4>🔥 VIP 2: +1,200 GPU (14 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.3 TON (~1.50 USDT)</p>
+            <button class="btn-buy" onclick="buyVipPackage(1200, 14)">Satın Al</button>
+        </div>
+
+        <div class="card" style="text-align:center; border: 1px solid #f39c12;">
+            <h4>💎 VIP 3: +3,000 GPU (30 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 0.7 TON (~3.50 USDT)</p>
+            <button class="btn-buy" style="background-color: #f39c12;" onclick="buyVipPackage(3000, 30)">Satın Al</button>
+        </div>
+
+        <div class="card" style="text-align:center; border: 1px solid #9b59b6;">
+            <h4>🚀 VIP 4: +7,000 GPU (45 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 1.23 TON (~6.15 USDT)</p>
+            <button class="btn-buy" style="background-color: #9b59b6;" onclick="buyVipPackage(7000, 45)">Satın Al</button>
+        </div>
+
+        <div class="card" style="text-align:center; border: 1px solid #e74c3c;">
+            <h4>👑 VIP 5: +20,000 GPU (90 Günlük)</h4>
+            <p style="color:#8a8d9b; font-size:12px; margin: 6px 0;">Qiymət: 3.0 TON (~15.00 USDT)</p>
+            <button class="btn-buy" style="background-color: #e74c3c;" onclick="buyVipPackage(20000, 90)">Satın Al</button>
+        </div>
+    </div>
+
+    <!-- QAZAN TABI -->
+    <div id="tab-kazan" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👥 Qazan (Dostunu Dəvət Et)</h3>
+        <div class="card" style="text-

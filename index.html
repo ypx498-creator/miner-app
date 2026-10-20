@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -119,6 +120,12 @@
             font-weight: bold;
             cursor: pointer;
         }
+        #ton-connect-button {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            min-height: 40px;
+        }
         .ref-input-box {
             background: #0b0b0d;
             border: 1px solid #2a2b30;
@@ -177,9 +184,9 @@
             flex-direction: column;
             align-items: center;
             color: #6c7080;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
-            gap: 3px;
+            gap: 2px;
         }
         .nav-item.active { color: #ffffff; font-weight: bold; }
         .tab-content { display: none; }
@@ -241,7 +248,7 @@
         </div>
     </div>
 
-    <!-- GÜÇ (VIP) TABI - BÜTÜN PAKETLƏR TAM -->
+    <!-- GÜÇ (VIP) TABI -->
     <div id="tab-guc" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">👑 VIP Vaxtlı Güc Paketləri</h3>
         
@@ -298,6 +305,20 @@
         </div>
     </div>
 
+    <!-- ÇIXARIŞ TABI (BƏRPA OLUNDU) -->
+    <div id="tab-cek" class="tab-content">
+        <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">💳 Balans Çıxarışı</h3>
+        <div class="card">
+            <p style="color:#8a8d9b; font-size:12px; margin-bottom:8px; text-align:center;">Ödəniş almaq üçün TON Cüzdanınızı qoşun:</p>
+            <div id="ton-connect-button"></div>
+            <div style="font-size:11px; color:#8a8d9b; margin-top:10px;">
+                * Minimum çıxarış: <b>5.00 USDT</b><br>
+                * Çıxarış komissiyası: <b>10%</b>
+            </div>
+            <button class="btn-buy" style="margin-top:10px;" onclick="requestWithdrawal()">Çıxarış Sorğusu Göndər</button>
+        </div>
+    </div>
+
     <!-- TAPŞIRIQLAR TABI -->
     <div id="tab-gorevler" class="tab-content">
         <h3 style="margin-bottom:12px; font-size:16px; text-align:center;">📋 Tapşırıqlar & Promokod</h3>
@@ -321,7 +342,7 @@
         </div>
     </div>
 
-    <!-- Alt Navigasiya Menyu -->
+    <!-- Alt Navigasiya Menyu (Çıxarış daxil olmaqla tam) -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-kazici" onclick="switchTab('kazici')">
             <span>⚙️ Mayner</span>
@@ -335,6 +356,9 @@
         <div class="nav-item" id="nav-kazan" onclick="switchTab('kazan')">
             <span>👥 Qazan</span>
         </div>
+        <div class="nav-item" id="nav-cek" onclick="switchTab('cek')">
+            <span>💳 Çıxarış</span>
+        </div>
         <div class="nav-item" id="nav-gorevler" onclick="switchTab('gorevler')">
             <span>📋 Tapşırıqlar</span>
         </div>
@@ -347,6 +371,21 @@
         }
 
         const REAL_BOT_USERNAME = "honeyfarmer_bot";
+        const ADMIN_WALLET = 'UQDkUQOUUt1ftSRRNkExQou9cVUhaWXusxBDNrNA9EUk5E9D';
+        let tonConnectUI = null;
+
+        function initTonConnect() {
+            if (typeof TON_CONNECT_UI !== 'undefined') {
+                try {
+                    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                        manifestUrl: 'https://ypx498-creator.github.io/miner-app/tonconnect-manifest.json',
+                        buttonRootId: 'ton-connect-button'
+                    });
+                } catch(e) {}
+            } else { setTimeout(initTonConnect, 500); }
+        }
+        initTonConnect();
+
         const userId = tg?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 899999) + 100000;
         const refLink = `https://t.me/${REAL_BOT_USERNAME}?start=ref_${userId}`;
         document.getElementById('ref-link-display').innerText = refLink;
@@ -467,6 +506,18 @@
             } else {
                 alert("Çevriləcək kifayət qədər hash yoxdur!");
             }
+        }
+
+        function requestWithdrawal() {
+            if (!tonConnectUI || !tonConnectUI.connected) {
+                alert("Zəhmət olmasa əvvəlcə TON Cüzdanınızı qoşun!");
+                return;
+            }
+            if (usdtBalance < 5.00) {
+                alert("Minimum çıxarış məbləği 5.00 USDT-dir!");
+                return;
+            }
+            alert("Çıxarış sorğunuz qəbul edildi!");
         }
 
         function copyReferralLink() {

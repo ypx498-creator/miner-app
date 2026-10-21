@@ -671,11 +671,26 @@ const supabaseClient = window.supabase.createClient(
 </button>
 
 <script>
-function watchAd() {
-  if (typeof show_12090514 === "function") {
-    show_12090514();
-  } else {
-    alert("Reklam hələ yüklənməyib. Bir az gözlə və yenidən yoxla.");
+async function watchAd() {
+  if (typeof show_12090514 !== "function") {
+    alert("Reklam yüklənməyib. Bir az sonra yoxla.");
+    return;
+  }
+
+  try {
+    const result = await show_12090514({
+      type: "end",
+      ymid: "ad_" + Date.now(),
+      requestVar: "bonus_button"
+    });
+
+    if (result?.reward_event_type === "valued") {
+      alert("Reklam təsdiqləndi! Balans serverdə yenilənməlidir.");
+    } else {
+      alert("Ödənişli reklam təsdiqlənmədi. Mükafat verilmədi.");
+    }
+  } catch (error) {
+    alert("Reklam təsdiqlənmədi. Yenidən yoxla.");
   }
 }
 </script>

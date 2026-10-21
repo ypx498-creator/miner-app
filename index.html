@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -616,5 +622,16 @@
             window.scrollTo(0, 0);
         }
     </script>
+   
+<script>
+const SUPABASE_URL = "https://cpbwvuunjriknwibkric.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
+ 
 </body>
 </html>

@@ -672,7 +672,11 @@ const supabaseClient = window.supabase.createClient(
 
 <script>
 function watchAd() {
-  alert("Reklam sistemi hələ qoşulmayıb. Əvvəl reklam provayderini birləşdirməliyik.");
+  if (typeof show_12090514 === "function") {
+    show_12090514();
+  } else {
+    alert("Reklam hələ yüklənməyib. Bir az gözlə və yenidən yoxla.");
+  }
 }
 </script>
     <script src="https://libtl.com/sdk.js"

@@ -664,38 +664,6 @@ const supabaseClient = window.supabase.createClient(
     document.getElementById("usdt-balance").innerText =
       Number(result.balance).toFixed(4);
   }
-})();
-</script>
-    <button id="watch-ad" onclick="watchAd()">
-  📺 Reklama bax və mükafat qazan
-</button>
-
-<script>
-async function watchAd() {
-  if (typeof show_12090514 !== "function") {
-    alert("Reklam yüklənməyib. Bir az sonra yoxla.");
-    return;
-  }
-
-  try {
-    const result = await show_12090514({
-      type: "end",
-      ymid: "ad_" + Date.now(),
-      requestVar: "bonus_button"
-    });
-
-    if (result?.reward_event_type === "valued") {
-      alert("Reklam təsdiqləndi! Balans serverdə yenilənməlidir.");
-    } else {
-      alert("Ödənişli reklam təsdiqlənmədi. Mükafat verilmədi.");
-    }
-  } catch (error) {
-    alert("Reklam təsdiqlənmədi. Yenidən yoxla.");
-  }
 }
-</script>
-    <script src="https://libtl.com/sdk.js"
-        data-zone="12090514"
-        data-sdk="show_12090514"></script>
  </body>
 </html>

@@ -96,4 +96,170 @@ input { width:100%; padding:13px; margin:8px 0; background:#0c1425; color:white;
   <div class="stat"><div class="muted">⚡ GPU</div><strong id="gpu">9,100</strong></div>
   <div class="stat"><div class="muted">⛏️ Status</div><strong id="smallStatus">Dayanıb</strong></div>
   <div class="stat"><div class="muted">👤 Hesab</div><strong id="userId">Qonaq</strong></div>
-</div
+</div>
+
+<section class="tab active" id="miner">
+  <div class="panel">
+    <h3>⛏️ Mayninq mərkəzi</h3>
+    <div class="bee">🐝</div>
+    <div class="timer" id="timer">24:00:00</div>
+    <div class="status" id="status">Mayninqə başlamağa hazırsan</div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="row"><span class="muted">HSH</span><strong id="hashes">0.0000</strong></div>
+    <div class="row"><span class="muted">GPU gücü</span><strong id="gpu2">9,100</strong></div>
+    <br>
+    <button class="btn" id="mineBtn" onclick="toggleMining()">MAYNİNQİ BAŞLAT (24 SAAT)</button>
+    <div class="notice">Bu sınaq versiyasıdır. Balans bu cihazda saxlanılır. Real balans və ödəniş üçün server sistemi lazımdır.</div>
+  </div>
+
+  <div class="panel">
+    <h3>💱 HSH-ni USDT-yə çevir</h3>
+    <div class="row"><span class="muted">Çevirmə qaydası</span><strong>100 HSH = 1 USDT</strong></div>
+    <button class="btn secondary" onclick="exchange()">HSH-Nİ ÇEVİR</button>
+  </div>
+</section>
+
+<section class="tab" id="wheel">
+  <div class="panel">
+    <h3>🎡 Gündəlik bonus</h3>
+    <div class="bee">🎡</div>
+    <div class="row"><span>Bonus</span><strong>+100 GPU</strong></div>
+    <button class="btn" id="wheelBtn" onclick="wheel()">BONUSU GÖTÜR</button>
+  </div>
+</section>
+
+<section class="tab" id="power">
+  <div class="panel">
+    <h3>⚡ GPU gücü / VIP</h3>
+    <div class="package"><strong>VIP 1 — 0.1 TON</strong><p>+500 GPU · 7 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 2 — 0.3 TON</strong><p>+1,200 GPU · 14 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 3 — 0.7 TON</strong><p>+3,000 GPU · 30 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 4 — 1.23 TON</strong><p>+7,000 GPU · 45 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 5 — 3 TON</strong><p>+20,000 GPU · 90 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
+    <div class="notice">VIP düymələri hələ real ödəniş qəbul etmir.</div>
+  </div>
+</section>
+
+<section class="tab" id="ref">
+  <div class="panel">
+    <h3>👥 Referal sistemi</h3>
+    <div class="bee">🤝</div>
+    <p>Hər aktiv dost üçün +200 GPU (demo).</p>
+    <input id="refLink" value="https://t.me/honeyfarmer_bot" readonly>
+    <button class="btn" onclick="copyLink()">DƏVƏT LİNKİNİ KOPYALA</button>
+  </div>
+</section>
+
+<section class="tab" id="wallet">
+  <div class="panel">
+    <h3>💳 Cüzdan</h3>
+    <div class="row"><span class="muted">Balans</span><strong><span id="walletUsdt">0.0036</span> USDT</strong></div>
+    <div class="row"><span class="muted">Minimum çıxarış</span><strong>10 USDT</strong></div>
+    <label class="muted">TON cüzdan ünvanı</label>
+    <input id="wallet" placeholder="UQ...">
+    <button class="btn secondary" onclick="saveWallet()">CÜZDANI SAXLA</button>
+    <br><br>
+    <button class="btn" onclick="withdraw()">PUL ÇIXARMAQ</button>
+    <div class="notice">Real TON köçürməsi hələ qoşulmayıb. Bu düymə pul göndərmir.</div>
+  </div>
+</section>
+</div>
+
+<nav class="nav">
+  <button class="active" onclick="tab('miner',this)"><span>⛏️</span>Mayner</button>
+  <button onclick="tab('wheel',this)"><span>🎡</span>Çarx</button>
+  <button onclick="tab('power',this)"><span>⚡</span>Güc/VIP</button>
+  <button onclick="tab('ref',this)"><span>👥</span>Referal</button>
+  <button onclick="tab('wallet',this)"><span>💳</span>Cüzdan</button>
+</nav>
+
+<script>
+const DAY = 24 * 60 * 60 * 1000;
+let data;
+try { data = JSON.parse(localStorage.getItem('hcm_data') || 'null'); } catch(e) { data = null; }
+if (!data) data = {
+  hashes:0, usdt:0.0036, gpu:9100, end:0, last:0, wheel:0, wallet:''
+};
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+
+function save(){ localStorage.setItem('hcm_data',JSON.stringify(data)); }
+function fmt(n){ return Number(n).toFixed(4); }
+function rate(){ return data.gpu / 500 * 0.001; }
+
+function creditElapsed(){
+  const now = Date.now();
+  if (data.end && data.last) {
+    const end = Math.min(now,data.end);
+    if (end > data.last) data.hashes += (end-data.last)/1000*rate();
+    data.last = now;
+    if (now >= data.end) { data.end=0; data.last=0; }
+  }
+}
+function render(){
+  const now=Date.now(), active=data.end>now;
+  document.getElementById('usdt').textContent=fmt(data.usdt);
+  document.getElementById('walletUsdt').textContent=fmt(data.usdt);
+  document.getElementById('hashes').textContent=fmt(data.hashes);
+  document.getElementById('hashesTop').textContent=fmt(data.hashes);
+  document.getElementById('gpu').textContent=Math.floor(data.gpu).toLocaleString('en-US');
+  document.getElementById('gpu2').textContent=Math.floor(data.gpu).toLocaleString('en-US');
+  document.getElementById('smallStatus').textContent=active?'İşləyir':'Dayanıb';
+  document.getElementById('status').textContent=active?'Mayninq aktivdir':'Mayninqə başlamağa hazırsan';
+  document.getElementById('mineBtn').textContent=active?'MAYNİNQİ DAYANDIR':'MAYNİNQİ BAŞLAT (24 SAAT)';
+  const rem=active?Math.max(0,data.end-now):DAY;
+  const h=Math.floor(rem/3600000),m=Math.floor(rem%3600000/60000),s=Math.floor(rem%60000/1000);
+  document.getElementById('timer').textContent=[h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
+  document.getElementById('bar').style.width=(active?100*(DAY-rem)/DAY:0)+'%';
+  document.getElementById('wheelBtn').disabled=now-(data.wheel||0)<DAY;
+  document.getElementById('userId').textContent=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user?String(tg.initDataUnsafe.user.id):'Qonaq';
+  document.getElementById('wallet').value=data.wallet||'';
+}
+function toggleMining(){
+  if(data.end>Date.now()){creditElapsed();data.end=0;data.last=0;alert('Mayninq dayandırıldı.');}
+  else{data.end=Date.now()+DAY;data.last=Date.now();alert('Mayninq 24 saatlıq başladı!');}
+  save();render();
+}
+function exchange(){
+  if(data.hashes<=0){alert('Çevirmək üçün HSH yoxdur.');return;}
+  const earned=data.hashes*0.01;
+  data.usdt+=earned;data.hashes=0;save();render();
+  alert('Demo çevirmə: +'+fmt(earned)+' USDT');
+}
+function wheel(){
+  if(Date.now()-(data.wheel||0)<DAY){alert('Bonus artıq götürülüb.');return;}
+  data.gpu+=100;data.wheel=Date.now();save();render();alert('+100 GPU demo bonusu!');
+}
+function vip(){alert('VIP ödəniş sistemi hələ qoşulmayıb.');}
+function saveWallet(){data.wallet=document.getElementById('wallet').value.trim();save();alert('Cüzdan ünvanı bu cihazda saxlanıldı.');}
+function withdraw(){
+  if(!data.wallet){alert('Əvvəlcə cüzdan ünvanını daxil et.');return;}
+  if(data.usdt<10){alert('Minimum çıxarış 10 USDT-dir.');return;}
+  alert('Real pul çıxarma sistemi hələ qoşulmayıb. Balans dəyişdirilmədi.');
+}
+function copyLink(){
+  const el=document.getElementById('refLink');el.select();
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(el.value).then(()=>alert('Link kopyalandı!')).catch(()=>alert('Linki seçib kopyala.'));}
+  else alert('Linki seçib kopyala.');
+}
+function tab(name,btn){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+}
+if(data.end>Date.now()&&data.last){
+  const end=Math.min(Date.now(),data.end);
+  if(end>data.last)data.hashes+=(end-data.last)/1000*rate();
+  data.last=Date.now();
+  if(Date.now()>=data.end){data.end=0;data.last=0;}
+}else if(data.end&&data.end<=Date.now()){
+  const end=data.end,start=data.last||end-DAY;
+  if(end>start)data.hashes+=(end-start)/1000*rate();
+  data.end=0;data.last=0;
+}
+save();render();
+setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
+</script>
+</body>
+</html>

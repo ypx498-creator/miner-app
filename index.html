@@ -248,16 +248,6 @@ function tab(name,btn){
   document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
 }
-if(data.end>Date.now()&&data.last){
-  const end=Math.min(Date.now(),data.end);
-  if(end>data.last)data.hashes+=(end-data.last)/1000*rate();
-  data.last=Date.now();
-  if(Date.now()>=data.end){data.end=0;data.last=0;}
-}else if(data.end&&data.end<=Date.now()){
-  const end=data.end,start=data.last||end-DAY;
-  if(end>start)data.hashes+=(end-start)/1000*rate();
-  data.end=0;data.last=0;
-}
 save();render();
 setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

@@ -182,7 +182,8 @@ if (!data) data = {
 };
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
-
+  
+if (tg) syncMiner();
 function save(){ localStorage.setItem('hcm_data',JSON.stringify(data)); }
 function fmt(n){ return Number(n).toFixed(4); }
 function rate(){ return data.gpu / 500 * 0.001; }

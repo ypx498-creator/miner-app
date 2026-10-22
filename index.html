@@ -182,7 +182,7 @@ if (!data) data = {
 };
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
-  
+
 function save(){ localStorage.setItem('hcm_data',JSON.stringify(data)); }
 function fmt(n){ return Number(n).toFixed(4); }
 function rate(){ return data.gpu / 500 * 0.001; }
@@ -248,18 +248,18 @@ function tab(name,btn){
   document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
 }
+if(data.end>Date.now()&&data.last){
+  const end=Math.min(Date.now(),data.end);
+  if(end>data.last)data.hashes+=(end-data.last)/1000*rate();
+  data.last=Date.now();
+  if(Date.now()>=data.end){data.end=0;data.last=0;}
+}else if(data.end&&data.end<=Date.now()){
+  const end=data.end,start=data.last||end-DAY;
+  if(end>start)data.hashes+=(end-start)/1000*rate();
+  data.end=0;data.last=0;
+}
 save();render();
 setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://cpbwvuunjriknwibkric.supabase.co";
-const SUPABASE_KEY = "sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl";
-const supabaseClient = window.supabase.createClient(
-
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-</script>
 </script>
 </body>
 </html>

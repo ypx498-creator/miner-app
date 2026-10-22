@@ -265,23 +265,7 @@ setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
 const SUPABASE_URL = "https://cpbwvuunjriknwibkric.supabase.co";
 const SUPABASE_KEY = "sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl";
 const supabaseClient = window.supabase.createClient(
-  async function syncMiner() {
-  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) return;
 
-  const telegram_id = tg.initDataUnsafe.user.id;
-
-  const { data: result, error } = await supabaseClient.functions.invoke(
-    'miner-sync',
-    { body: { telegram_id } }
-  );
-
-  if (error) {
-    console.log('Server xətası:', error.message);
-    return;
-  }
-
-  console.log('Server cavabı:', result);
-}
   SUPABASE_URL,
   SUPABASE_KEY
 );

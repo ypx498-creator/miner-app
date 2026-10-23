@@ -194,6 +194,24 @@ const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : 
 if (tg) { tg.ready(); tg.expand(); }
   const telegramId = tg?.initDataUnsafe?.user?.id;
   const telegramInitData = tg?.initData || "";
+  async function syncMining() {
+  if (!telegramInitData) {
+    alert("Mayneri Telegram botundan aç!");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.functions.invoke(
+    "Mining-reward",
+    { body: { initData: telegramInitData } }
+  );
+
+  if (error) {
+    alert("Server xətası: " + error.message);
+    return;
+  }
+
+  alert("Server cavabı: " + JSON.stringify(data));
+}
 
 function save(){ localStorage.setItem('hcm_data',JSON.stringify(data)); }
 function fmt(n){ return Number(n).toFixed(4); }

@@ -244,6 +244,7 @@ function render(){
   document.getElementById('wheelBtn').disabled=now-(data.wheel||0)<DAY;
   document.getElementById('userId').textContent=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user?String(tg.initDataUnsafe.user.id):'Qonaq';
   document.getElementById('wallet').value=data.wallet||'';
+  }
 function toggleMining(){
   if(data.end>Date.now()){
     creditElapsed();

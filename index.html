@@ -288,6 +288,26 @@ setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
     alert('Xəta: ' + e.message);
   }
 }
+  async function testMiningServer() {
+  if (!telegramInitData) {
+    alert("Botu Telegram daxilindən aç!");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.functions.invoke(
+    "Mining-reward",
+    {
+      body: { initData: telegramInitData }
+    }
+  );
+
+  if (error) {
+    alert("Xəta: " + error.message);
+    return;
+  }
+
+  alert(JSON.stringify(data));
+}
 </script>
 </body>
 </html>

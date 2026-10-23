@@ -193,6 +193,7 @@ if (!data) data = {
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if (tg) { tg.ready(); tg.expand(); }
   const telegramId = tg?.initDataUnsafe?.user?.id;
+  const telegramInitData = tg?.initData || "";
 
 function save(){ localStorage.setItem('hcm_data',JSON.stringify(data)); }
 function fmt(n){ return Number(n).toFixed(4); }

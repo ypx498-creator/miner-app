@@ -260,6 +260,22 @@ if(data.end>Date.now()&&data.last){
 }
 save();render();
 setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
+  async function testSupabase() {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('telegram_id')
+      .limit(1);
+
+    if (error) {
+      alert('Supabase xətası: ' + error.message);
+    } else {
+      alert('Supabase bağlantısı işləyir!');
+    }
+  } catch (e) {
+    alert('Xəta: ' + e.message);
+  }
+}
 </script>
 </body>
 </html>

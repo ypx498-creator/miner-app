@@ -177,6 +177,13 @@ Supabase yoxla
 </button>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = "https://cpbwvuunjriknwibkric.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 const DAY = 24 * 60 * 60 * 1000;
 let data;
 try { data = JSON.parse(localStorage.getItem('hcm_data') || 'null'); } catch(e) { data = null; }
@@ -265,7 +272,7 @@ save();render();
 setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
   async function testSupabase() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('profiles')
       .select('telegram_id')
       .limit(1);

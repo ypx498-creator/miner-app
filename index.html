@@ -220,7 +220,7 @@ async function callMinerServer(action) {
     throw new Error("Mayneri Telegram botunun içindən aç!");
   }
 
-  const {data: result, error} = await supabaseClient.functions.invoke("miner-sync", {
+  const {data: result, error} = await supabaseClient.functions.invoke("Miner-sync", {
     body: {initData: telegramInitData, action}
   });
 

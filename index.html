@@ -323,7 +323,7 @@ setInterval(()=>{if(data.end>Date.now())creditElapsed();save();render();},1000);
   }
 
   const { data, error } = await supabaseClient.functions.invoke(
-    "Mining-reward",
+    "Miner-sync",
     {
       body: { initData: telegramInitData }
     }

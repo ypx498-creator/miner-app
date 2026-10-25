@@ -258,6 +258,7 @@ function toggleMining(){
   }
   save();
   render();
+  syncBalance();
 }
 function exchange(){
   if(data.hashes<=0){alert('Çevirmək üçün HSH yoxdur.');return;}

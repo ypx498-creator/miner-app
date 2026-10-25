@@ -201,7 +201,7 @@ if (tg) { tg.ready(); tg.expand(); }
   }
 
   const { data, error } = await supabaseClient.functions.invoke(
-    "Mining-reward",
+    "Miner-sync",
     { body: { initData: telegramInitData } }
   );
 

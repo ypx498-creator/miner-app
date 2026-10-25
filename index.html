@@ -244,22 +244,46 @@ function render(){
   document.getElementById('wheelBtn').disabled=now-(data.wheel||0)<DAY;
   document.getElementById('userId').textContent=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user?String(tg.initDataUnsafe.user.id):'Qonaq';
   document.getElementById('wallet').value=data.wallet||'';
+  
+async function toggleMining() {
+  const btn = document.getElementById("mineBtn");
+  btn.disabled = true;
+
+  try {
+    const { data: result, error } =
+      await supabaseClient.functions.invoke("Miner-sync", {
+        body: {
+          initData: telegramInitData,
+          action: "toggle"
+        }
+      });
+
+    if (error) throw error;
+    if (!result || !result.ok) {
+      throw new Error(result?.error || "Server xətası");
+    }
+
+    const p = result.profile;
+
+    data.hashes = Number(p.hashes || 0);
+    data.gpu = Number(p.gpu_power || 9100);
+    data.end = Number(p.mining_end || 0);
+    data.last = Number(p.last_mined_at || 0);
+    data.usdt = Number(p.balance || 0);
+
+    save();
+    render();
+
+    alert(data.end > Date.now()
+      ? "Mayninq 24 saatlıq başladı!"
+      : "Mayninq dayandırıldı.");
+  } catch (e) {
+    alert("Xəta: " + e.message);
+  } finally {
+    btn.disabled = false;
   }
-function toggleMining(){
-  if(data.end>Date.now()){
-    creditElapsed();
-    data.end=0;
-    data.last=0;
-    alert('Mayninq dayandırıldı.');
-  } else {
-    data.end=Date.now()+DAY;
-    data.last=Date.now();
-    alert('Mayninq 24 saatlıq başladı!');
-  }
-  save();
-  render();
-  syncMining();
 }
+
 function exchange(){
   if(data.hashes<=0){alert('Çevirmək üçün HSH yoxdur.');return;}
   const earned=data.hashes*0.01;

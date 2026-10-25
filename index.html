@@ -257,7 +257,7 @@ async function loadServerProfile(showError=false) {
 
 async function toggleMining() {
   const btn = document.getElementById("mineBtn");
-  if (requestBusy) return;
+  if (requestBusy) return;} 
 
   if (!telegramInitData) {
     alert("Mayneri Telegram botunun içindən aç!");
@@ -278,14 +278,28 @@ async function toggleMining() {
     requestBusy = false;
     btn.disabled = false;
     render();
+  async function exchange() {
+  if (requestBusy) return;
+
+  if (!telegramInitData) {
+    alert("Mayneri Telegram botunun içindən aç!");
+    return;
+  }
+
+  requestBusy = true;
+
+  try {
+    await callMinerServer("exchange");
+    alert("HSH çevirmə əməliyyatı tamamlandı!");
+  } catch (e) {
+    alert("Çevirmə xətası: " + e.message);
+  } finally {
+    requestBusy = false;
+    render();
   }
 }
 
-function exchange() {
-  alert("HSH çevirməsi hələ serverə qoşulmayıb. Balans dəyişdirilmədi.");
-}
-
-function wheel() {
+  function wheel() {
   alert("Gündəlik bonus hələ serverə qoşulmayıb. GPU artırılmadı.");
 }
 

@@ -114,15 +114,27 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
 
 <section class="tab" id="wallet">
   <div class="panel">
-    <h3>💳 Cüzdan</h3>
+    <h3>💳 Cüzdan və Depozit</h3>
     <div class="row"><span class="muted">Balans</span><strong><span id="walletUsdt">0.0000</span> USDT</strong></div>
-    <div class="row"><span class="muted">Minimum çıxarış</span><strong>10 USDT</strong></div>
-    <label class="muted" for="wallet">TON cüzdan ünvanı</label>
-    <input id="wallet" placeholder="UQ...">
-    <button class="btn secondary" onclick="saveWallet()">CÜZDANI SAXLA</button>
-    <br><br>
-    <button class="btn" onclick="withdraw()">PUL ÇIXARMAQ</button>
-    <div class="notice">Real TON köçürməsi hələ qoşulmayıb.</div>
+    
+    <!-- Depozit Hissəsi (TRC20 Cüzdanın Əlavə Olundu) -->
+    <div class="package" style="margin-top: 15px;">
+      <strong>📥 Depozit (TRON TRC20)</strong>
+      <p class="muted" style="margin: 5px 0;">Balansı artırmaq üçün aşağıdakı ünvana USDT (TRC20) göndərin:</p>
+      <input id="depositAddress" value="THL125wrFMk5qFBZUkkb23QQ434TyR4Ffp" readonly style="font-size: 11px; text-align: center; font-weight: bold;">
+      <button class="btn secondary" onclick="copyDepositWallet()" style="margin-top: 5px; padding: 10px;">CÜZDANI KOPYALA</button>
+      <div class="notice">Depozitlər admin tərəfindən əl ilə yoxlanılıb təsdiqlənir.</div>
+    </div>
+
+    <!-- Çıxarış Hissəsi -->
+    <div style="margin-top: 20px;">
+      <h3>📤 Pul Çıxarışı</h3>
+      <div class="row"><span class="muted">Minimum çıxarış</span><strong>50 HSH</strong></div>
+      <label class="muted" for="trc20Wallet">TRON TRC20 cüzdan ünvanı</label>
+      <input id="trc20Wallet" placeholder="TRON cüzdan ünvanınızı daxil edin...">
+      <button class="btn" onclick="requestWithdraw()" style="margin-top: 10px;">ÇIXARIŞ TƏLƏBİ GÖNDƏR</button>
+    </div>
+    <div class="notice">Çıxarışlar TRON TRC20 şəbəkəsi ilə həyata keçirilir.</div>
   </div>
 </section>
 </div>
@@ -195,7 +207,6 @@ function render() {
 
   document.getElementById("userId").textContent = telegramId ? String(telegramId) : "Qonaq";
   document.getElementById("wheelBtn").disabled = Date.now() - data.wheel < DAY;
-  document.getElementById("wallet").value = data.wallet || "";
 }
 
 function applyProfile(p) {
@@ -309,23 +320,29 @@ function vip() {
   alert("VIP ödəniş sistemi hələ qoşulub.");
 }
 
-function saveWallet() {
-  const wallet = document.getElementById("wallet").value.trim();
-  if (!wallet) {
-    alert("TON cüzdan ünvanını daxil et.");
-    return;
-  }
-  data.wallet = wallet;
-  try {
-    localStorage.setItem("hcm_wallet", wallet);
-    alert("Cüzdan ünvanı bu cihazda saxlanıldı.");
-  } catch(e) {
-    alert("Cüzdanı saxlamaq mümkün olmadı.");
+function copyDepositWallet() {
+  const el = document.getElementById("depositAddress");
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(el.value)
+      .then(() => alert("Depozit cüzdan ünvanı kopyalandı!"))
+      .catch(() => { el.select(); alert("Linki seçib kopyalayın."); });
+  } else {
+    el.select();
+    alert("Linki seçib kopyalayın.");
   }
 }
 
-function withdraw() {
-  alert("Real pul çıxarışı qoşulmayıb. Pul göndərilmədi.");
+function requestWithdraw() {
+  const wallet = document.getElementById("trc20Wallet").value.trim();
+  if (!wallet) {
+    alert("Zəhmət olmasa TRON TRC20 cüzdan ünvanınızı daxil edin.");
+    return;
+  }
+  if (data.hashes < 50) {
+    alert("Çıxarış üçün balansınızda ən azı 50 HSH olmalıdır.");
+    return;
+  }
+  alert("Çıxarış sorğunuz qəbul olundu! Admin tərəfindən yoxlanılacaq.");
 }
 
 function copyLink() {
@@ -349,10 +366,6 @@ function tab(name, btn) {
   document.querySelectorAll(".nav button").forEach(x => x.classList.remove("active"));
   btn.classList.add("active");
 }
-
-try {
-  data.wallet = localStorage.getItem("hcm_wallet") || "";
-} catch(e) {}
 
 render();
 loadServerProfile(true);

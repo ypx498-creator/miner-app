@@ -39,7 +39,7 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
 .nav button span{display:block;font-size:20px;margin-bottom:4px}
 .nav button.active{color:var(--gold)}
 .notice{font-size:12px;color:#c3cede;line-height:1.5;margin-top:12px}
-.withdraw-info {background: #1b2740; border-left: 3px solid var(--gold); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--muted); margin: 10px 0; }
+.withdraw-info {background: #1b2740; border-left: 3px solid var(--gold); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--muted); margin: 10px 0; line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -129,11 +129,11 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
     <div style="margin-top: 20px;">
       <h3>📤 Pul Çıxarışı</h3>
       <div class="withdraw-info">
-        💡 <b>Məlumat:</b> İstənilən məbləği daxil edə bilərsiniz (<b>Minimum: 10 USDT</b>).
+        💡 <b>Məlumat:</b> Minimum çıxarış <b>10 USDT</b>-dir. 10 USDT və ya ondan yuxarı <b>istənilən məbləği</b> sərbəst şəkildə daxil edib çıxara bilərsiniz.
       </div>
       
       <label class="muted" for="withdrawAmount" style="margin-top: 8px; display: block;">Çıxarılacaq məbləğ (USDT)</label>
-      <input id="withdrawAmount" type="number" placeholder="10" value="10">
+      <input id="withdrawAmount" type="number" placeholder="10" value="10" min="10" step="any">
 
       <label class="muted" for="trc20Wallet" style="margin-top: 8px; display: block;">TRON TRC20 cüzdan ünvanı</label>
       <input id="trc20Wallet" placeholder="TRON cüzdan ünvanınızı daxil edin...">

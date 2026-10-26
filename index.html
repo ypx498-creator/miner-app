@@ -39,6 +39,7 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
 .nav button span{display:block;font-size:20px;margin-bottom:4px}
 .nav button.active{color:var(--gold)}
 .notice{font-size:12px;color:#c3cede;line-height:1.5;margin-top:12px}
+.withdraw-info {background: #1b2740; border-left: 3px solid var(--gold); padding: 10px; border-radius: 8px; font-size: 12px; color: var(--muted); margin: 10px 0; }
 </style>
 </head>
 <body>
@@ -127,7 +128,9 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
     <!-- Çıxarış Hissəsi -->
     <div style="margin-top: 20px;">
       <h3>📤 Pul Çıxarışı</h3>
-      <div class="row"><span class="muted">Minimum çıxarış</span><strong>10 USDT</strong></div>
+      <div class="withdraw-info">
+        💡 <b>Məlumat:</b> İstənilən məbləği daxil edə bilərsiniz (<b>Minimum: 10 USDT</b>).
+      </div>
       
       <label class="muted" for="withdrawAmount" style="margin-top: 8px; display: block;">Çıxarılacaq məbləğ (USDT)</label>
       <input id="withdrawAmount" type="number" placeholder="10" value="10">
@@ -135,7 +138,7 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
       <label class="muted" for="trc20Wallet" style="margin-top: 8px; display: block;">TRON TRC20 cüzdan ünvanı</label>
       <input id="trc20Wallet" placeholder="TRON cüzdan ünvanınızı daxil edin...">
       
-      <button class="btn" onclick="requestWithdraw()" style="margin-top: 10px;">ÇIXARIŞ TƏLƏBİ GÖNDƏR</button>
+      <button class="btn" id="withdrawBtn" onclick="requestWithdraw()" style="margin-top: 10px;">ÇIXARIŞ TƏLƏBİ GÖNDƏR</button>
     </div>
     <div class="notice">Çıxarışlar TRON TRC20 şəbəkəsi ilə həyata keçirilir.</div>
   </div>
@@ -365,6 +368,9 @@ function copyDepositWallet() {
 }
 
 async function requestWithdraw() {
+  const btn = document.getElementById("withdrawBtn");
+  if (requestBusy) return;
+
   const wallet = document.getElementById("trc20Wallet").value.trim();
   const amount = Number(document.getElementById("withdrawAmount").value);
 
@@ -381,8 +387,11 @@ async function requestWithdraw() {
     return;
   }
 
-  if (requestBusy) return;
   requestBusy = true;
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "GÖNDƏRİLİR...";
+  }
 
   try {
     const {data: result, error} = await supabaseClient.functions.invoke("Miner-sync", {
@@ -402,11 +411,15 @@ async function requestWithdraw() {
     alert("Çıxarış sorğunuz qəbul olundu! Məbləğ balansınızdan çıxıldı və admin yoxlamasına göndərildi.");
     document.getElementById("trc20Wallet").value = "";
     document.getElementById("withdrawAmount").value = "10";
-    loadServerProfile(false);
+    await loadServerProfile(false);
   } catch (e) {
     alert("Xəta baş verdi: " + e.message);
   } finally {
     requestBusy = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "ÇIXARIŞ TƏLƏBİ GÖNDƏR";
+    }
   }
 }
 

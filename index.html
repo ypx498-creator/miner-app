@@ -92,11 +92,11 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
 <section class="tab" id="power">
   <div class="panel">
     <h3>⚡ GPU gücü / VIP</h3>
-    <div class="package"><strong>VIP 1 — 0.1 TON</strong><p>+500 GPU · 7 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
-    <div class="package"><strong>VIP 2 — 0.3 TON</strong><p>+1,200 GPU · 14 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
-    <div class="package"><strong>VIP 3 — 0.7 TON</strong><p>+3,000 GPU · 30 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
-    <div class="package"><strong>VIP 4 — 1.23 TON</strong><p>+7,000 GPU · 45 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
-    <div class="package"><strong>VIP 5 — 3 TON</strong><p>+20,000 GPU · 90 gün</p><button class="btn secondary" onclick="vip()">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 1 — 10 USDT</strong><p>+40 GPU · 7 gün</p><button class="btn secondary" onclick="buyVip(1)">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 2 — 25 USDT</strong><p>+100 GPU · 14 gün</p><button class="btn secondary" onclick="buyVip(2)">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 3 — 40 USDT</strong><p>+160 GPU · 30 gün</p><button class="btn secondary" onclick="buyVip(3)">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 4 — 70 USDT</strong><p>+220 GPU · 45 gün</p><button class="btn secondary" onclick="buyVip(4)">PAKETİ SEÇ</button></div>
+    <div class="package"><strong>VIP 5 — 130 USDT</strong><p>+300 GPU · 90 gün</p><button class="btn secondary" onclick="buyVip(5)">PAKETİ SEÇ</button></div>
   </div>
 </section>
 
@@ -319,8 +319,37 @@ function wheel() {
   alert("Gündəlik bonus hələ aktiv deyil.");
 }
 
-function vip() {
-  alert("VIP ödəniş sistemi hələ aktiv deyil.");
+async function buyVip(tier) {
+  if (requestBusy) return;
+
+  if (!telegramInitData) {
+    alert("Mayneri Telegram botunun içindən aç!");
+    return;
+  }
+
+  requestBusy = true;
+
+  try {
+    const {data: result, error} = await supabaseClient.functions.invoke("Miner-sync", {
+      body: { 
+        initData: telegramInitData, 
+        action: "vip", 
+        tier: tier
+      }
+    });
+
+    if (error) throw error;
+    if (!result || result.ok !== true) {
+      throw new Error(result?.error || "VIP paket alınmadı.");
+    }
+
+    alert(`Təbriklər! VIP ${tier} paketi uğurla aktivləşdi, məbləğ USDT balansınızdan çıxıldı!`);
+    applyProfile(result.profile);
+  } catch (e) {
+    alert("Xəta baş verdi: " + e.message);
+  } finally {
+    requestBusy = false;
+  }
 }
 
 function copyDepositWallet() {

@@ -18,8 +18,8 @@ h1{font-size:19px}
 .amount{font-size:18px;font-weight:bold;margin:2px 0}
 .muted{color:var(--muted);font-size:12px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:var(--panel);padding:12px 8px;border-radius:13px;overflow-wrap:anywhere}
-.stat strong{display:block;margin-top:8px;font-size:14px}
+.stat{background:var(--panel);padding:12px 8px;border-radius:13px;overflow-wrap:anywhere;text-align:center}
+.stat strong{display:block;margin-top:8px;font-size:13px}
 .bee{font-size:70px;text-align:center;margin:15px}
 .timer{font-size:25px;text-align:center;font-weight:bold}
 .status{text-align:center;color:var(--muted);margin:10px}
@@ -186,59 +186,83 @@ function render() {
   const now = Date.now();
   const active = Number(data.end) > now;
 
-  document.getElementById("usdt").textContent = fmt(data.usdt);
-  document.getElementById("walletUsdt").textContent = fmt(data.usdt);
-  document.getElementById("hashes").textContent = fmt(data.hashes);
-  document.getElementById("hashesTop").textContent = fmt(data.hashes);
-  document.getElementById("gpu").textContent = Math.floor(data.gpu).toLocaleString("en-US");
-  document.getElementById("gpu2").textContent = Math.floor(data.gpu).toLocaleString("en-US");
-  document.getElementById("liveOnline").textContent = "🟢 Onlayn: " + Math.floor(data.online).toLocaleString("en-US");
+  const elUsdt = document.getElementById("usdt");
+  if (elUsdt) elUsdt.textContent = fmt(data.usdt);
   
-  // VIP Statusunu göstər
+  const elWalletUsdt = document.getElementById("walletUsdt");
+  if (elWalletUsdt) elWalletUsdt.textContent = fmt(data.usdt);
+  
+  const elHashes = document.getElementById("hashes");
+  if (elHashes) elHashes.textContent = fmt(data.hashes);
+  
+  const elHashesTop = document.getElementById("hashesTop");
+  if (elHashesTop) elHashesTop.textContent = fmt(data.hashes);
+  
+  const elGpu = document.getElementById("gpu");
+  if (elGpu) elGpu.textContent = Math.floor(data.gpu).toLocaleString("en-US");
+  
+  const elGpu2 = document.getElementById("gpu2");
+  if (elGpu2) elGpu2.textContent = Math.floor(data.gpu).toLocaleString("en-US");
+  
+  const elLiveOnline = document.getElementById("liveOnline");
+  if (elLiveOnline) elLiveOnline.textContent = "🟢 Onlayn: " + Math.floor(data.online).toLocaleString("en-US");
+  
+  // VIP Status və Taymer
+  const elVipStatus = document.getElementById("vipStatus");
+  const elVipTimer = document.getElementById("vipTimer");
+  
   if (data.vipTier > 0 && data.vipEnd > now) {
-    document.getElementById("vipStatus").textContent = `VIP ${data.vipTier}`;
+    if (elVipStatus) elVipStatus.textContent = `VIP ${data.vipTier}`;
     
     const vipRem = data.vipEnd - now;
     const days = Math.floor(vipRem / (24 * 3600 * 1000));
     const hours = Math.floor((vipRem % (24 * 3600 * 1000)) / 3600000);
     const mins = Math.floor((vipRem % 3600000) / 60000);
-    document.getElementById("vipTimer").textContent = `${days}g ${hours}s ${mins}d`;
+    if (elVipTimer) elVipTimer.textContent = `${days}g ${hours}s ${mins}d`;
   } else {
-    document.getElementById("vipStatus").textContent = "Yoxdur";
-    document.getElementById("vipTimer").textContent = "00g 00s 00d";
+    if (elVipStatus) elVipStatus.textContent = "Yoxdur";
+    if (elVipTimer) elVipTimer.textContent = "00g 00s 00d";
   }
 
-  document.getElementById("smallStatus").textContent =
-    serverReady ? (active ? "İşləyir" : "Dayanıb") : "Server xətası";
-  document.getElementById("status").textContent =
-    !serverReady ? "Server bağlantısı yoxdur" :
-    active ? "Mayninq aktivdir" : "Mayninqə başlamağa hazırsan";
+  const elStatus = document.getElementById("status");
+  if (elStatus) {
+    elStatus.textContent = !serverReady ? "Server bağlantısı yoxdur" :
+      active ? "Mayninq aktivdir" : "Mayninqə başlamağa hazırsan";
+  }
 
-  document.getElementById("mineBtn").textContent =
-    active ? "MAYNİNQİ DAYANDIR" : "MAYNİNQİ BAŞLAT (24 SAAT)";
+  const elMineBtn = document.getElementById("mineBtn");
+  if (elMineBtn) {
+    elMineBtn.textContent = active ? "MAYNİNQİ DAYANDIR" : "MAYNİNQİ BAŞLAT (24 SAAT)";
+  }
 
   const rem = active ? Math.max(0, data.end - now) : DAY;
   const h = Math.floor(rem / 3600000);
   const m = Math.floor(rem % 3600000 / 60000);
   const s = Math.floor(rem % 60000 / 1000);
 
-  document.getElementById("timer").textContent =
-    [h,m,s].map(x => String(x).padStart(2,"0")).join(":");
+  const elTimer = document.getElementById("timer");
+  if (elTimer) {
+    elTimer.textContent = [h,m,s].map(x => String(x).padStart(2,"0")).join(":");
+  }
 
-  document.getElementById("bar").style.width =
-    (active ? Math.min(100, 100 * (DAY - rem) / DAY) : 0) + "%";
+  const elBar = document.getElementById("bar");
+  if (elBar) {
+    elBar.style.width = (active ? Math.min(100, 100 * (DAY - rem) / DAY) : 0) + "%";
+  }
 
   const wheelRem = Math.max(0, DAY - (now - data.wheel));
   const wheelBtn = document.getElementById("wheelBtn");
-  if (wheelRem > 0) {
-    const wh = Math.floor(wheelRem / 3600000);
-    const wm = Math.floor(wheelRem % 3600000 / 60000);
-    const ws = Math.floor(wheelRem % 60000 / 1000);
-    wheelBtn.textContent = `NÖVBƏTİ BONUS: ${String(wh).padStart(2,"0")}:${String(wm).padStart(2,"0")}:${String(ws).padStart(2,"0")}`;
-    wheelBtn.disabled = true;
-  } else {
-    wheelBtn.textContent = "BONUSU GÖTÜR (+100 GPU)";
-    wheelBtn.disabled = false;
+  if (wheelBtn) {
+    if (wheelRem > 0) {
+      const wh = Math.floor(wheelRem / 3600000);
+      const wm = Math.floor(wheelRem % 3600000 / 60000);
+      const ws = Math.floor(wheelRem % 60000 / 1000);
+      wheelBtn.textContent = `NÖVBƏTİ BONUS: ${String(wh).padStart(2,"0")}:${String(wm).padStart(2,"0")}:${String(ws).padStart(2,"0")}`;
+      wheelBtn.disabled = true;
+    } else {
+      wheelBtn.textContent = "BONUSU GÖTÜR (+100 GPU)";
+      wheelBtn.disabled = false;
+    }
   }
 }
 
@@ -282,8 +306,8 @@ async function callMinerServer(action) {
 async function loadServerProfile(showError=false) {
   if (!telegramInitData || requestBusy) {
     if (!telegramInitData) {
-      document.getElementById("status").textContent = "Telegram botundan aç!";
-      document.getElementById("smallStatus").textContent = "Qonaq";
+      const elStatus = document.getElementById("status");
+      if (elStatus) elStatus.textContent = "Telegram botundan aç!";
     }
     return;
   }
@@ -310,7 +334,7 @@ async function toggleMining() {
   }
 
   requestBusy = true;
-  btn.disabled = true;
+  if (btn) btn.disabled = true;
 
   try {
     await callMinerServer("toggle");
@@ -321,7 +345,7 @@ async function toggleMining() {
     alert("Mayninq xətası: " + e.message);
   } finally {
     requestBusy = false;
-    btn.disabled = false;
+    if (btn) btn.disabled = false;
     render();
   }
 }
@@ -426,13 +450,15 @@ async function buyVip(tier) {
 
 function copyDepositWallet() {
   const el = document.getElementById("depositAddress");
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(el.value)
-      .then(() => alert("Depozit cüzdan ünvanı kopyalandı!"))
-      .catch(() => { el.select(); alert("Linki seçib kopyalayın."); });
-  } else {
-    el.select();
-    alert("Linki seçib kopyalayın.");
+  if (el) {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(el.value)
+        .then(() => alert("Depozit cüzdan ünvanı kopyalandı!"))
+        .catch(() => { el.select(); alert("Linki seçib kopyalayın."); });
+    } else {
+      el.select();
+      alert("Linki seçib kopyalayın.");
+    }
   }
 }
 
@@ -440,8 +466,11 @@ async function requestWithdraw() {
   const btn = document.getElementById("withdrawBtn");
   if (requestBusy) return;
 
-  const wallet = document.getElementById("trc20Wallet").value.trim();
-  const amount = Number(document.getElementById("withdrawAmount").value);
+  const walletInput = document.getElementById("trc20Wallet");
+  const amountInput = document.getElementById("withdrawAmount");
+  
+  const wallet = walletInput ? walletInput.value.trim() : "";
+  const amount = amountInput ? Number(amountInput.value) : 0;
 
   if (!wallet) {
     alert("Zəhmət olmasa TRON TRC20 cüzdan ünvanınızı daxil edin.");
@@ -478,8 +507,8 @@ async function requestWithdraw() {
     }
 
     alert("Çıxarış sorğunuz qəbul olundu!");
-    document.getElementById("trc20Wallet").value = "";
-    document.getElementById("withdrawAmount").value = "10";
+    if (walletInput) walletInput.value = "";
+    if (amountInput) amountInput.value = "10";
     await loadServerProfile(false);
   } catch (e) {
     alert("Xəta baş verdi: " + e.message);
@@ -494,32 +523,36 @@ async function requestWithdraw() {
 
 function copyLink() {
   const el = document.getElementById("refLink");
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(el.value)
-      .then(() => alert("Link kopyalandı!"))
-      .catch(() => {
-        el.select();
-        alert("Linki seçib kopyala.");
-      });
-  } else {
-    el.select();
-    alert("Linki seçib kopyala.");
+  if (el) {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(el.value)
+        .then(() => alert("Link kopyalandı!"))
+        .catch(() => {
+          el.select();
+          alert("Linki seçib kopyala.");
+        });
+    } else {
+      el.select();
+      alert("Linki seçib kopyala.");
+    }
   }
 }
 
 function tab(name, btn) {
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-  document.getElementById(name).classList.add("active");
+  const targetTab = document.getElementById(name);
+  if (targetTab) targetTab.classList.add("active");
+  
   document.querySelectorAll(".nav button").forEach(x => x.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
 }
 
 render();
 loadServerProfile(true);
 
+// DÜZƏLİŞ: Hər 1 saniyədə yalnız yerli taymeri və ekranı yeniləyirik, serveri yormuruq.
 setInterval(() => {
   render();
-  loadServerProfile(false);
 }, 1000);
 </script>
 </body>

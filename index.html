@@ -85,8 +85,8 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
   <div class="panel">
     <h3>🎡 Gündəlik bonus</h3>
     <div class="bee">🎡</div>
-    <div class="row"><span>Bonus</span><strong>+100 GPU</strong></div>
-    <button class="btn" id="wheelBtn" onclick="wheel()">BONUSU GÖTÜR</button>
+    <div class="row"><span>Hər 24 saatdan bir</span><strong>+100 GPU</strong></div>
+    <button class="btn" id="wheelBtn" onclick="wheel()" style="margin-top: 15px;">BONUSU GÖTÜR</button>
   </div>
 </section>
 
@@ -212,7 +212,20 @@ function render() {
     (active ? Math.min(100, 100 * (DAY - rem) / DAY) : 0) + "%";
 
   document.getElementById("userId").textContent = telegramId ? String(telegramId) : "Qonaq";
-  document.getElementById("wheelBtn").disabled = Date.now() - data.wheel < DAY;
+
+  // Gündəlik bonus taymeri və düymə idarəsi
+  const wheelRem = Math.max(0, DAY - (now - data.wheel));
+  const wheelBtn = document.getElementById("wheelBtn");
+  if (wheelRem > 0) {
+    const wh = Math.floor(wheelRem / 3600000);
+    const wm = Math.floor(wheelRem % 3600000 / 60000);
+    const ws = Math.floor(wheelRem % 60000 / 1000);
+    wheelBtn.textContent = `NÖVBƏTİ BONUS: ${String(wh).padStart(2,"0")}:${String(wm).padStart(2,"0")}:${String(ws).padStart(2,"0")}`;
+    wheelBtn.disabled = true;
+  } else {
+    wheelBtn.textContent = "BONUSU GÖTÜR (+100 GPU)";
+    wheelBtn.disabled = false;
+  }
 }
 
 function applyProfile(p) {
@@ -223,8 +236,9 @@ function applyProfile(p) {
   data.gpu = Number(p.gpu_power ?? 9100);
   data.end = Number(p.mining_end ?? 0);
   data.last = Number(p.last_mined_at ?? 0);
+  data.wheel = Number(p.wheel_claimed_at ?? 0);
 
-  if (![data.hashes,data.usdt,data.gpu,data.end,data.last].every(Number.isFinite)) {
+  if (![data.hashes,data.usdt,data.gpu,data.end,data.last,data.wheel].every(Number.isFinite)) {
     throw new Error("Server məlumatları düzgün deyil.");
   }
 
@@ -305,11 +319,25 @@ async function exchange() {
     return;
   }
 
+  if (data.hashes < 1000) {
+    alert("Çevirmək üçün minimum 1000 HSH lazımdır!");
+    return;
+  }
+
   requestBusy = true;
 
   try {
-    await callMinerServer("exchange");
+    const {data: result, error} = await supabaseClient.functions.invoke("Miner-sync", {
+      body: {initData: telegramInitData, action: "exchange"}
+    });
+
+    if (error) throw error;
+    if (!result || result.ok !== true) {
+      throw new Error(result?.error || "Çevirmə xətası baş verdi.");
+    }
+
     alert("HSH çevirmə əməliyyatı tamamlandı!");
+    applyProfile(result.profile);
   } catch (e) {
     alert("Çevirmə xətası: " + e.message);
   } finally {
@@ -318,8 +346,34 @@ async function exchange() {
   }
 }
 
-function wheel() {
-  alert("Gündəlik bonus hələ aktiv deyil.");
+async function wheel() {
+  if (requestBusy) return;
+
+  if (!telegramInitData) {
+    alert("Mayneri Telegram botunun içindən aç!");
+    return;
+  }
+
+  requestBusy = true;
+
+  try {
+    const {data: result, error} = await supabaseClient.functions.invoke("Miner-sync", {
+      body: {initData: telegramInitData, action: "wheel"}
+    });
+
+    if (error) throw error;
+    if (!result || result.ok !== true) {
+      throw new Error(result?.error || "Bonus alınmadı.");
+    }
+
+    alert("Təbriklər! Gündəlik +100 GPU gücü qazandın!");
+    applyProfile(result.profile);
+  } catch (e) {
+    alert("Bonus xətası: " + e.message);
+  } finally {
+    requestBusy = false;
+    render();
+  }
 }
 
 async function buyVip(tier) {

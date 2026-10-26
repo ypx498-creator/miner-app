@@ -56,7 +56,7 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="muted">⚡ GPU</div><strong id="gpu">9,100</strong></div>
+  <div class="stat"><div class="muted">⚡ GPU</div><strong id="gpu">100</strong></div>
   <div class="stat"><div class="muted">⛏️ Status</div><strong id="smallStatus">Yoxlanır</strong></div>
   <div class="stat"><div class="muted">👤 Hesab</div><strong id="userId">Qonaq</strong></div>
 </div>
@@ -69,7 +69,7 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
     <div class="status" id="status">Server yoxlanılır...</div>
     <div class="progress"><div class="bar" id="bar"></div></div>
     <div class="row"><span class="muted">HSH</span><strong id="hashes">0.0000</strong></div>
-    <div class="row"><span class="muted">GPU gücü</span><strong id="gpu2">9,100</strong></div>
+    <div class="row"><span class="muted">GPU gücü</span><strong id="gpu2">100</strong></div>
     <br>
     <button class="btn" id="mineBtn" onclick="toggleMining()">MAYNİNQİ BAŞLAT (24 SAAT)</button>
     <div class="notice">Mayninq server tərəfindən idarə edilir.</div>
@@ -172,7 +172,7 @@ if (tg) {
 const telegramInitData = tg?.initData || "";
 const telegramId = tg?.initDataUnsafe?.user?.id || null;
 
-let data = {hashes:0,usdt:0,gpu:9100,end:0,last:0,wheel:0,wallet:""};
+let data = {hashes:0,usdt:0,gpu:100,end:0,last:0,wheel:0,wallet:""};
 let serverReady = false;
 let requestBusy = false;
 
@@ -213,7 +213,6 @@ function render() {
 
   document.getElementById("userId").textContent = telegramId ? String(telegramId) : "Qonaq";
 
-  // Gündəlik bonus taymeri və düymə idarəsi
   const wheelRem = Math.max(0, DAY - (now - data.wheel));
   const wheelBtn = document.getElementById("wheelBtn");
   if (wheelRem > 0) {
@@ -233,7 +232,7 @@ function applyProfile(p) {
 
   data.hashes = Number(p.hashes ?? 0);
   data.usdt = Number(p.balance ?? 0);
-  data.gpu = Number(p.gpu_power ?? 9100);
+  data.gpu = Number(p.gpu_power ?? 100);
   data.end = Number(p.mining_end ?? 0);
   data.last = Number(p.last_mined_at ?? 0);
   data.wheel = Number(p.wheel_claimed_at ?? 0);
@@ -462,7 +461,7 @@ async function requestWithdraw() {
       throw new Error(result?.error || "Çıxarış sorğusu qəbul olunmadı.");
     }
 
-    alert("Çıxarış sorğunuz qəbul olundu! Məbləğ balansınızdan çıxıldı və admin yoxlamasına göndərildi.");
+    alert("Çıxarış sorğunuz qəbul olundu! Məbləğ balansınızda çıxıldı və admin yoxlamasına göndərildi.");
     document.getElementById("trc20Wallet").value = "";
     document.getElementById("withdrawAmount").value = "10";
     await loadServerProfile(false);

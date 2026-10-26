@@ -573,3 +573,49 @@ async function requestWithdraw() {
     if (walletInput) walletInput.value = "";
     if (amountInput) amountInput.value = "10";
     await loadServerProfile(false);
+  } catch (e) {
+    alert("Xəta baş verdi: " + e.message);
+  } finally {
+    requestBusy = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "ÇIXARIŞ TƏLƏBİ GÖNDƏR";
+    }
+  }
+}
+
+function copyLink() {
+  const el = document.getElementById("refLink");
+  if (el) {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(el.value)
+        .then(() => alert("Link kopyalandı!"))
+        .catch(() => {
+          el.select();
+          alert("Linki seçib kopyala.");
+        });
+    } else {
+      el.select();
+      alert("Linki seçib kopyala.");
+    }
+  }
+}
+
+function tab(name, btn) {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  const targetTab = document.getElementById(name);
+  if (targetTab) targetTab.classList.add("active");
+  
+  document.querySelectorAll(".nav button").forEach(x => x.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+}
+
+render();
+loadServerProfile(true);
+
+setInterval(() => {
+  render();
+}, 1000);
+</script>
+</body>
+</html>

@@ -119,12 +119,26 @@ input{width:100%;padding:13px;margin:8px 0;background:#0c1425;color:white;border
     <h3>💳 Cüzdan və Depozit</h3>
     <div class="row"><span class="muted">Balans</span><strong><span id="walletUsdt">0.0000</span> USDT</strong></div>
     
+    <!-- ⚡ AVTOMATİK DEPOZİT KARTI (CRYPTOBOT) -->
+    <div class="package" style="background:#1e293b; border:1px solid #f59e0b; margin-top: 15px;">
+      <strong style="color:#f59e0b;">⚡ Avtomatik Depozit (CryptoBot)</strong>
+      <p class="muted" style="margin: 5px 0;">Məbləği daxil edin və CryptoBot vasitəsilə dərhal balansınızı artırın.</p>
+      
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <input type="number" id="depositAmountInput" placeholder="Məbləğ (USDT)" value="10" min="1" 
+               style="flex:1; margin:0; padding:10px; border-radius:8px; background:#0f172a; color:#fff; font-size:14px;" />
+        <button class="btn" onclick="createDepositInvoice()" id="depositBtn" style="width:auto; padding:10px 18px; background:#f59e0b; color:#000;">
+          Ödə
+        </button>
+      </div>
+    </div>
+
     <div class="package" style="margin-top: 15px;">
-      <strong>📥 Depozit (TRON TRC20)</strong>
+      <strong>📥 Əl ilə Depozit (TRON TRC20)</strong>
       <p class="muted" style="margin: 5px 0;">Balansı artırmaq üçün aşağıdakı ünvana USDT (TRC20) göndərin:</p>
       <input id="depositAddress" value="THL125wrFMk5qFBZUkkb23QQ434TyR4Ffp" readonly style="font-size: 11px; text-align: center; font-weight: bold;">
       <button class="btn secondary" onclick="copyDepositWallet()" style="margin-top: 5px; padding: 10px;">CÜZDANI KOPYALA</button>
-      <div class="notice">Depozitlər admin tərəfindən əl ilə yoxlanılıb təsdiqlənir.</div>
+      <div class="notice">Əl ilə depozitlər admin tərəfindən yoxlanılıb təsdiqlənir.</div>
     </div>
 
     <div style="margin-top: 20px;">
@@ -207,7 +221,6 @@ function render() {
   const elLiveOnline = document.getElementById("liveOnline");
   if (elLiveOnline) elLiveOnline.textContent = "🟢 Onlayn: " + Math.floor(data.online).toLocaleString("en-US");
   
-  // VIP Status və Taymer
   const elVipStatus = document.getElementById("vipStatus");
   const elVipTimer = document.getElementById("vipTimer");
   
@@ -448,6 +461,56 @@ async function buyVip(tier) {
   }
 }
 
+// ⚡ CRYPTOBOT AVTOMATİK DEPOZİT FUNKSİYASI
+async function createDepositInvoice() {
+  const amountInput = document.getElementById("depositAmountInput");
+  const btn = document.getElementById("depositBtn");
+  const amount = parseFloat(amountInput.value);
+
+  if (!amount || amount < 1) {
+    alert("Zəhmət olmasa minimum 1 USDT daxil edin.");
+    return;
+  }
+
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const currentTelegramId = tgUser ? tgUser.id : (telegramId || "123456789");
+
+  try {
+    btn.disabled = true;
+    btn.innerText = "Yaradılır...";
+
+    const SUPABASE_FUNCTION_URL = "https://cpbwvuunjriknwibkric.supabase.co/functions/v1/Miner-sync";
+
+    const res = await fetch(SUPABASE_FUNCTION_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        initData: telegramInitData || "",
+        action: "create_deposit_invoice",
+        amount: amount,
+        telegramId: currentTelegramId
+      })
+    });
+
+    const dataRes = await res.json();
+    if (dataRes.ok && dataRes.pay_url) {
+      if (window.Telegram?.WebApp?.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(dataRes.pay_url);
+      } else {
+        window.location.href = dataRes.pay_url;
+      }
+    } else {
+      alert(dataRes.error || "Ödəniş linki yaradılarkən xəta baş verdi.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Xəta baş verdi, yenidən cəhd edin.");
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Ödə";
+  }
+}
+
 function copyDepositWallet() {
   const el = document.getElementById("depositAddress");
   if (el) {
@@ -510,50 +573,3 @@ async function requestWithdraw() {
     if (walletInput) walletInput.value = "";
     if (amountInput) amountInput.value = "10";
     await loadServerProfile(false);
-  } catch (e) {
-    alert("Xəta baş verdi: " + e.message);
-  } finally {
-    requestBusy = false;
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = "ÇIXARIŞ TƏLƏBİ GÖNDƏR";
-    }
-  }
-}
-
-function copyLink() {
-  const el = document.getElementById("refLink");
-  if (el) {
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(el.value)
-        .then(() => alert("Link kopyalandı!"))
-        .catch(() => {
-          el.select();
-          alert("Linki seçib kopyala.");
-        });
-    } else {
-      el.select();
-      alert("Linki seçib kopyala.");
-    }
-  }
-}
-
-function tab(name, btn) {
-  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-  const targetTab = document.getElementById(name);
-  if (targetTab) targetTab.classList.add("active");
-  
-  document.querySelectorAll(".nav button").forEach(x => x.classList.remove("active"));
-  if (btn) btn.classList.add("active");
-}
-
-render();
-loadServerProfile(true);
-
-// DÜZƏLİŞ: Hər 1 saniyədə yalnız yerli taymeri və ekranı yeniləyirik, serveri yormuruq.
-setInterval(() => {
-  render();
-}, 1000);
-</script>
-</body>
-</html>

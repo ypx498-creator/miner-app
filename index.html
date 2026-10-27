@@ -2,7 +2,7 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -13,34 +13,40 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        body {
+        html, body {
             background-color: #0b0f19;
             color: #ffffff;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .app-wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            justify-content: space-between;
+            height: 100vh;
+            width: 100vw;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 12px 15px;
             background: #151c2c;
             border-bottom: 1px solid #222d42;
+            flex-shrink: 0;
         }
 
         .header-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
+            gap: 8px;
+            font-size: 1rem;
             font-weight: bold;
         }
 
         .online-badge {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #4cd964;
             display: flex;
             align-items: center;
@@ -48,18 +54,18 @@
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background-color: #4cd964;
             border-radius: 50%;
             display: inline-block;
         }
 
         .main-container {
-            padding: 15px;
-            flex-grow: 1;
+            flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px;
+            padding: 12px;
+            padding-bottom: 75px;
         }
 
         .tab-content {
@@ -72,64 +78,63 @@
 
         .balance-card {
             background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 15px;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
             border: 1px solid #334155;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .balance-title {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .balance-value {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
             color: #f59e0b;
-            margin: 4px 0;
+            margin: 3px 0;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .stat-box {
             background: #151c2c;
-            padding: 12px 8px;
-            border-radius: 12px;
+            padding: 10px 6px;
+            border-radius: 10px;
             text-align: center;
             border: 1px solid #222d42;
         }
 
         .stat-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #94a3b8;
         }
 
         .stat-val {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .miner-box {
             background: #151c2c;
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 15px;
             text-align: center;
             border: 1px solid #222d42;
         }
 
         .bee-icon {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 8px;
             animation: pulse 2s infinite;
         }
 
@@ -140,18 +145,18 @@
         }
 
         .timer {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-family: monospace;
         }
 
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 5px;
             background: #334155;
             border-radius: 3px;
-            margin: 15px 0;
+            margin: 10px 0;
             overflow: hidden;
         }
 
@@ -166,28 +171,28 @@
             background: linear-gradient(90deg, #f59e0b, #d97706);
             color: #fff;
             border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .content-card {
             background: #151c2c;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 12px;
             border: 1px solid #222d42;
         }
 
         .leaderboard-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .leader-item {
@@ -195,15 +200,15 @@
             justify-content: space-between;
             align-items: center;
             background: #151c2c;
-            padding: 12px 16px;
-            border-radius: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
             border: 1px solid #222d42;
         }
 
         .rank {
             font-weight: bold;
-            font-size: 1.1rem;
-            width: 30px;
+            font-size: 1rem;
+            width: 25px;
             color: #f59e0b;
         }
 
@@ -214,36 +219,40 @@
 
         .user-id {
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .user-stats {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #94a3b8;
         }
 
+        /* Fixed Navigation Bar */
         .nav-bar {
-            display: flex;
-            justify-content: space-around;
-            background: #151c2c;
-            padding: 10px 0;
-            border-top: 1px solid #222d42;
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            z-index: 100;
+            height: 65px;
+            background: #151c2c;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #222d42;
+            z-index: 999;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             color: #94a3b8;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             cursor: pointer;
-            text-decoration: none;
+            background: none;
+            border: none;
+            outline: none;
         }
 
         .nav-item.active {
@@ -251,50 +260,91 @@
         }
 
         .nav-icon {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="header-title">🐝 Honey Cloud Miner</div>
-        <div class="online-badge"><span class="dot"></span> Onlayn: <span id="online-users-count">1</span></div>
-    </div>
+    <div class="app-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">🐝 Honey Cloud Miner</div>
+            <div class="online-badge"><span class="dot"></span> Onlayn: <span id="online-users-count">1</span></div>
+        </div>
 
-    <div class="main-container">
-        <!-- Tab 1: Mayner -->
-        <div id="tab-miner" class="tab-content active">
-            <div class="balance-card">
-                <div class="balance-title">MÖVCUD BALANS</div>
-                <div class="balance-value"><span id="user-balance">0.0000</span> USDT</div>
-                <div style="font-size: 0.8rem; color: #94a3b8;">HSH balansı: <span id="user-hashes">0.0000</span></div>
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Tab 1: Mayner -->
+            <div id="tab-miner" class="tab-content active">
+                <div class="balance-card">
+                    <div class="balance-title">MÖVCUD BALANS</div>
+                    <div class="balance-value"><span id="user-balance">0.0000</span> USDT</div>
+                    <div style="font-size: 0.75rem; color: #94a3b8;">HSH balansı: <span id="user-hashes">0.0000</span></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">⚡ GPU</div>
+                        <div class="stat-val" id="user-gpu">100</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">👑 VIP Status</div>
+                        <div class="stat-val" id="user-vip">VIP 0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">⏳ VIP Vaxtı</div>
+                        <div class="stat-val" id="user-vip-time">0g</div>
+                    </div>
+                </div>
+
+                <div class="miner-box">
+                    <div style="text-align: left; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem;">⛏️ Mayninq mərkəzi</div>
+                    <div class="bee-icon">🐝</div>
+                    <div class="timer" id="mining-timer">24:00:00</div>
+                    <div style="color: #4cd964; font-size: 0.8rem; margin-bottom: 4px;" id="mining-status-text">Mayninq gözləyir</div>
+                    <div class="progress-bar"><div class="progress-fill"></div></div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 0.8rem; color: #94a3b8;">
+                        <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">0.0000</span></div>
+                        <div>GPU gücü: <span id="user-gpu-sub" style="color:#fff; font-weight:bold;">100</span></div>
+                    </div>
+                    <button class="btn" onclick="toggleMining()" id="mining-btn">MAYNİNQİ BAŞLAT (24 SAAT)</button>
+                </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-label">⚡ GPU</div>
-                    <div class="stat-val" id="user-gpu">100</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">👑 VIP Status</div>
-                    <div class="stat-val" id="user-vip">VIP 0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">⏳ VIP Vaxtı</div>
-                    <div class="stat-val" id="user-vip-time">0g</div>
+            <!-- Tab 2: Çarx -->
+            <div id="tab-carx" class="tab-content">
+                <div class="content-card">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">🎡 Çarx</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Tezliklə aktivləşəcək...</p>
                 </div>
             </div>
 
-            <div class="miner-box">
-                <div style="text-align: left; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem;">⛏️ Mayninq mərkəzi</div>
-                <div class="bee-icon">🐝</div>
-                <div class="timer" id="mining-timer">24:00:00</div>
-                <div style="color: #4cd964; font-size: 0.85rem; margin-bottom: 5px;" id="mining-status-text">Mayninq gözləyir</div>
-                <div class="progress-bar"><div class="progress-fill"></div></div>
-                
-                <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.85rem; color: #94a3b8;">
-                    <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">0.0000</span></div>
-                    <div>GPU gücü: <span id="user-gpu-sub" style="color:#fff; font-weight:bold;">100</span></div>
+            <!-- Tab 3: Güc/VIP -->
+            <div id="tab-guc" class="tab-content">
+                <div class="content-card">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">⚡ Güc/VIP</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">VIP paketlər bölməsi.</p>
                 </div>
-                <button class="btn" onclick="toggleMining()" id
+            </div>
+
+            <!-- Tab 4: Referal -->
+            <div id="tab-referal" class="tab-content">
+                <div class="content-card">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">👥 Referal</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Dostlarını dəvət et.</p>
+                </div>
+            </div>
+
+            <!-- Tab 5: Cüzdan -->
+            <div id="tab-cuzdan" class="tab-content">
+                <div class="content-card">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">💳 Cüzdan</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Depozit və balans bölməsi.</p>
+                </div>
+            </div>
+
+            <!-- Tab 6: Liderlər -->
+            <div id="tab-liderler" class="tab-content">
+                <h2 style="font

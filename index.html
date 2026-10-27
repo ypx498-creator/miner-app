@@ -171,13 +171,18 @@
             background: linear-gradient(90deg, #f59e0b, #d97706);
             color: #fff;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 10px;
             font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             margin-top: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .content-card {
@@ -367,7 +372,7 @@
     </div>
 
     <script>
-        const SUPABASE_FUNCTION_URL = 'https://cpbwvuunjrlknwlbkrlc.supabase.co/functions/v1/Telegram-login';
+        const SUPABASE_FUNCTION_URL = 'https://cpbwvuunjrlknwlbkrlc.supabase.co/functions/v1/Miner-sync';
         
         let tg = {};
         try {
@@ -394,14 +399,20 @@
 
         async function fetchStatus() {
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'status',
                         initData: tg.initData || ''
-                    })
+                    }),
+                    signal: controller.signal
                 });
+
+                clearTimeout(timeoutId);
 
                 if (response.ok) {
                     const data = await response.json();
@@ -410,7 +421,7 @@
                     }
                 }
             } catch (err) {
-                console.log("Şəbəkə xətası, amma interfeys işləyir.");
+                console.log("Şəbəkə xətası:", err);
             }
         }
 
@@ -460,21 +471,41 @@
         }
 
         async function toggleMining() {
+            const btn = document.getElementById('mining-btn');
+            btn.innerText = "YÜKLƏNİR...";
+            btn.disabled = true;
+
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'toggle',
                         initData: tg.initData || ''
-                    })
+                    }),
+                    signal: controller.signal
                 });
-                const data = await response.json();
-                if (data.ok && data.profile) {
-                    updateUI(data.profile, data.online_users);
+
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.ok && data.profile) {
+                        updateUI(data.profile, data.online_users);
+                    } else {
+                        alert("Xəta: " + (data.error || "Naməlum xəta"));
+                    }
+                } else {
+                    alert("Server xətası: " + response.status);
                 }
             } catch (err) {
                 console.error("Toggle xətası:", err);
+                alert("Şəbəkə xətası və ya vaxt aşımı baş verdi!");
+            } finally {
+                btn.disabled = false;
             }
         }
 
@@ -519,7 +550,7 @@
         }
 
         fetchStatus();
-        setInterval(fetchStatus, 10000);
+        setInterval(fetchStatus, 15000);
     </script>
 </body>
 </html>

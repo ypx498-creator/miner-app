@@ -94,11 +94,13 @@
                 </div>
             </div>
 
+            <!-- Çarx Bölməsi (24 saatlıq taymer ilə) -->
             <div id="tab-carx" class="tab-content">
                 <div class="content-card" style="text-align: center;">
                     <div class="card-title">🎡 Bəxt Çarxı</div>
-                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər gün 1 dəfə pulsuz fırlat və hədiyyələr qazan! (0.10 - 0.60 USDT)</p>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər 24 saatdan bir fırlat və (0.10 - 0.60 USDT) qazan!</p>
                     <div style="font-size: 4rem; margin: 20px 0; transition: transform 0.5s;" id="wheel-icon">🎯</div>
+                    <div id="wheel-timer" style="font-size: 1.2rem; font-weight: bold; color: #f59e0b; margin-bottom: 10px; font-family: monospace;">00:00:00</div>
                     <button class="btn" onclick="spinWheel()" id="spin-btn">ÇARXI FIRLAT</button>
                 </div>
             </div>
@@ -198,6 +200,8 @@
         }
 
         let miningInterval = null;
+        let wheelInterval = null;
+        let globalLastSpin = 0;
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -259,6 +263,9 @@
                 document.getElementById('mining-timer').innerText = '24:00:00';
                 clearInterval(miningInterval);
             }
+
+            globalLastSpin = Number(profile.last_spin || 0);
+            startWheelTimer();
         }
 
         function startTimer(endTime) {
@@ -279,6 +286,34 @@
 
                 document.getElementById('mining-timer').innerText = 
                     `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function startWheelTimer() {
+            clearInterval(wheelInterval);
+            const cooldown = 24 * 60 * 60 * 1000;
+
+            wheelInterval = setInterval(() => {
+                const now = Date.now();
+                const diff = (globalLastSpin + cooldown) - now;
+                const btn = document.getElementById('spin-btn');
+                const timerEl = document.getElementById('wheel-timer');
+
+                if (diff <= 0) {
+                    timerEl.innerText = "Çarx fırlatmağa hazırdır!";
+                    timerEl.style.color = "#4cd964";
+                    btn.disabled = false;
+                    btn.innerText = "ÇARXI FIRLAT";
+                    clearInterval(wheelInterval);
+                } else {
+                    btn.disabled = true;
+                    timerEl.style.color = "#f59e0b";
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    timerEl.innerText = `Növbəti cəhd: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    btn.innerText = "GÖZLƏYİN";
+                }
             }, 1000);
         }
 
@@ -335,13 +370,13 @@
                 const data = await response.json();
                 setTimeout(() => {
                     wheelIcon.style.transform = 'rotate(0deg)';
-                    btn.disabled = false;
-                    btn.innerText = "ÇARXI FIRLAT";
                     if (data.ok) {
                         alert(data.message);
                         updateUI(data.profile, data.online_users);
                     } else {
-                        alert("Xəta: " + (data.error || "Naməlum xəta"));
+                        alert(data.error || "Xəta baş verdi!");
+                        btn.disabled = false;
+                        btn.innerText = "ÇARXI FIRLAT";
                     }
                 }, 500);
             } catch (err) {

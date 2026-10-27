@@ -35,7 +35,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
         }
 
@@ -56,8 +56,10 @@
         }
 
         .main-container {
-            padding: 20px;
+            padding: 15px;
             flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 70px;
         }
 
         .tab-content {
@@ -72,48 +74,48 @@
         .balance-card {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 16px;
+            margin-bottom: 15px;
             border: 1px solid #334155;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .balance-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .balance-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #f59e0b;
-            margin: 5px 0;
+            margin: 4px 0;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .stat-box {
-            background: #1e293b;
-            padding: 12px;
+            background: #151c2c;
+            padding: 12px 8px;
             border-radius: 12px;
             text-align: center;
-            border: 1px solid #334155;
+            border: 1px solid #222d42;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #94a3b8;
         }
 
         .stat-val {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             margin-top: 4px;
         }
@@ -122,14 +124,14 @@
         .miner-box {
             background: #151c2c;
             border-radius: 16px;
-            padding: 25px;
+            padding: 20px;
             text-align: center;
             border: 1px solid #222d42;
         }
 
         .bee-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
             animation: pulse 2s infinite;
         }
 
@@ -140,28 +142,39 @@
         }
 
         .timer {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-family: monospace;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 30%;
+            height: 100%;
+            background: #f59e0b;
+            border-radius: 3px;
         }
 
         .btn {
             background: linear-gradient(90deg, #f59e0b, #d97706);
             color: #fff;
             border: none;
-            padding: 14px 28px;
+            padding: 12px 20px;
             border-radius: 12px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 15px;
-            transition: opacity 0.2s;
-        }
-
-        .btn:active {
-            opacity: 0.8;
+            margin-top: 10px;
         }
 
         /* Leaderboard Style */
@@ -176,10 +189,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1e293b;
+            background: #151c2c;
             padding: 12px 16px;
             border-radius: 12px;
-            border: 1px solid #334155;
+            border: 1px solid #222d42;
         }
 
         .rank {
@@ -196,11 +209,11 @@
 
         .user-id {
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .user-stats {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #94a3b8;
         }
 
@@ -209,17 +222,21 @@
             display: flex;
             justify-content: space-around;
             background: #151c2c;
-            padding: 12px 0;
+            padding: 10px 0;
             border-top: 1px solid #222d42;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             color: #94a3b8;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
             text-decoration: none;
         }
@@ -229,7 +246,7 @@
         }
 
         .nav-icon {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -241,47 +258,77 @@
             🐝 Honey Cloud Miner
         </div>
         <div class="online-badge">
-            <span class="dot"></span> Onlayn: <span id="online-users-count">1</span>
+            <span class="dot"></span> Onlayn: <span id="online-users-count">5</span>
         </div>
     </div>
 
     <!-- Main Content Container -->
     <div class="main-container">
 
-        <!-- Tab 1: Mining Center -->
+        <!-- Tab 1: Mayner -->
         <div id="tab-miner" class="tab-content active">
             <div class="balance-card">
-                <div class="balance-title">Mövcud Balans</div>
-                <div class="balance-value"><span id="user-balance">0.0000</span> USDT</div>
-                <div style="font-size: 0.85rem; color: #94a3b8;">HSH balansı: <span id="user-hashes">0.0000</span></div>
+                <div class="balance-title">MÖVCUD BALANS</div>
+                <div class="balance-value"><span id="user-balance">62.0000</span> USDT</div>
+                <div style="font-size: 0.8rem; color: #94a3b8;">HSH balansı: <span id="user-hashes">775.3062</span></div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-label">⚡ GPU</div>
-                    <div class="stat-val" id="user-gpu">100</div>
+                    <div class="stat-val" id="user-gpu">1,440</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">👑 VIP Status</div>
-                    <div class="stat-val" id="user-vip">VIP 0</div>
+                    <div class="stat-val" id="user-vip">VIP 2</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label">⏳ VIP Vaxtı</div>
-                    <div class="stat-val" id="user-vip-time">0g</div>
+                    <div class="stat-val" id="user-vip-time">88g 22s</div>
                 </div>
             </div>
 
             <div class="miner-box">
+                <div style="text-align: left; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem;">⛏️ Mayninq mərkəzi</div>
                 <div class="bee-icon">🐝</div>
-                <div class="timer" id="mining-timer">24:00:00</div>
-                <div style="color: #94a3b8; font-size: 0.9rem;" id="mining-status-text">Mayninq gözləyir</div>
-                <button class="btn" onclick="toggleMining()" id="mining-btn">MAYNİNQİ BAŞLAT (24 SAAT)</button>
+                <div class="timer" id="mining-timer">20:50:07</div>
+                <div style="color: #4cd964; font-size: 0.85rem; margin-bottom: 5px;" id="mining-status-text">Mayninq aktivdir</div>
+                <div class="progress-bar"><div class="progress-fill"></div></div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.85rem; color: #94a3b8;">
+                    <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">775.3062</span></div>
+                    <div>GPU gücü: <span id="user-gpu-sub" style="color:#fff; font-weight:bold;">1,440</span></div>
+                </div>
             </div>
         </div>
 
-        <!-- Tab 2: Leaderboard -->
-        <div id="tab-leaderboard" class="tab-content">
-            <h2 style="margin-bottom: 15px; font-size: 1.3rem;">🏆 Liderlər Lövhəsi</h2>
+        <!-- Tab 2: Çarx (Placeholder) -->
+        <div id="tab-carx" class="tab-content">
+            <h2 style="font-size: 1.2rem; margin-bottom: 10px;">🎡 Çarx (Bəxt təkəri)</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Tezliklə aktivləşəcək...</p>
+        </div>
+
+        <!-- Tab 3: Güc/VIP (Placeholder) -->
+        <div id="tab-guc" class="tab-content">
+            <h2 style="font-size: 1.2rem; margin-bottom: 10px;">⚡ Güc və VIP Paketlər</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">VIP paketlər və GPU gücləndirmə bölməsi.</p>
+        </div>
+
+        <!-- Tab 4: Referal (Placeholder) -->
+        <div id="tab-referal" class="tab-content">
+            <h2 style="font-size: 1.2rem; margin-bottom: 10px;">👥 Referal Sistemi</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Dostlarını dəvət et, HSH qazan.</p>
+        </div>
+
+        <!-- Tab 5: Cüzdan (Placeholder) -->
+        <div id="tab-cuzdan" class="tab-content">
+            <h2 style="font-size: 1.2rem; margin-bottom: 10px;">💳 Cüzdan və Depozit</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">CryptoBot avtomatik depozit bölməsi.</p>
+        </div>
+
+        <!-- Tab 6: Liderlər (Əlavə etdiyimiz yeni bölmə) -->
+        <div id="tab-liderler" class="tab-content">
+            <h2 style="font-size: 1.2rem; margin-bottom: 15px;">🏆 Liderlər Lövhəsi</h2>
             <div class="leaderboard-list" id="leaderboard-container">
                 <div style="text-align: center; color: #94a3b8;">Yüklənir...</div>
             </div>
@@ -289,26 +336,41 @@
 
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- Navigation Bar (Orijinal 5 düymə + Liderlər) -->
     <div class="nav-bar">
         <div class="nav-item active" onclick="switchTab('miner', this)">
             <span class="nav-icon">⛏️</span>
             <span>Mayner</span>
         </div>
-        <div class="nav-item" onclick="switchTab('leaderboard', this)">
+        <div class="nav-item" onclick="switchTab('carx', this)">
+            <span class="nav-icon">🎡</span>
+            <span>Çarx</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('guc', this)">
+            <span class="nav-icon">⚡</span>
+            <span>Güc/VIP</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('referal', this)">
+            <span class="nav-icon">👥</span>
+            <span>Referal</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('cuzdan', this)">
+            <span class="nav-icon">💳</span>
+            <span>Cüzdan</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('liderler', this)">
             <span class="nav-icon">🏆</span>
             <span>Liderlər</span>
         </div>
     </div>
 
     <script>
-        const SUPABASE_FUNCTION_URL = 'https://SƏNİN_SUPABASE_PROJECT_URL.supabase.co/functions/v1/Miner-sync'; // Buraya öz Supabase Function URL-ini yazın
+        const SUPABASE_FUNCTION_URL = 'https://SƏNİN_SUPABASE_PROJECT_URL.supabase.co/functions/v1/Miner-sync'; // Öz URL-ni yaz
         const tg = window.Telegram.WebApp;
         tg.expand();
 
         let miningInterval = null;
 
-        // Tab Değiştirme
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -316,12 +378,11 @@
             document.getElementById('tab-' + tabName).classList.add('active');
             element.classList.add('active');
 
-            if (tabName === 'leaderboard') {
+            if (tabName === 'liderler') {
                 loadLeaderboard();
             }
         }
 
-        // 1. Status Yükleme ve 10 Saniyelik Otomatik Güncelleme
         async function fetchStatus() {
             try {
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
@@ -338,35 +399,32 @@
                     updateUI(data.profile, data.online_users);
                 }
             } catch (err) {
-                console.error("Status yeniləmə xətası:", err);
+                console.error("Status xətası:", err);
             }
         }
 
-        // Arayüzü Güncelleme
         function updateUI(profile, onlineUsers) {
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('user-hashes').innerText = Number(profile.hashes || 0).toFixed(4);
+            document.getElementById('user-hsh-sub').innerText = Number(profile.hashes || 0).toFixed(4);
             document.getElementById('user-gpu').innerText = profile.gpu_power || 100;
+            document.getElementById('user-gpu-sub').innerText = profile.gpu_power || 100;
             document.getElementById('user-vip').innerText = 'VIP ' + (profile.vip_tier || 0);
-            document.getElementById('online-users-count').innerText = onlineUsers || 1;
+            document.getElementById('online-users-count').innerText = onlineUsers || 5;
 
-            // Mining Durumu ve Timer
             const now = Date.now();
             const miningEnd = Number(profile.mining_end || 0);
 
             if (miningEnd > now) {
                 document.getElementById('mining-status-text').innerText = 'Mayninq aktivdir';
-                document.getElementById('mining-btn').innerText = 'MAYNİNQİ DAYANDIR';
                 startTimer(miningEnd);
             } else {
                 document.getElementById('mining-status-text').innerText = 'Mayninq dayanıb';
-                document.getElementById('mining-btn').innerText = 'MAYNİNQİ BAŞLAT (24 SAAT)';
-                document.getElementById('mining-timer').innerText = '24:00:00';
+                document.getElementById('mining-timer').innerText = '00:00:00';
                 clearInterval(miningInterval);
             }
         }
 
-        // Mining Timer
         function startTimer(endTime) {
             clearInterval(miningInterval);
             miningInterval = setInterval(() => {
@@ -388,27 +446,6 @@
             }, 1000);
         }
 
-        // Mining Toggle
-        async function toggleMining() {
-            try {
-                const response = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'toggle',
-                        initData: tg.initData
-                    })
-                });
-                const data = await response.json();
-                if (data.ok && data.profile) {
-                    updateUI(data.profile, data.online_users);
-                }
-            } catch (err) {
-                console.error("Toggle xətası:", err);
-            }
-        }
-
-        // 2. Liderler Tablosunu Çekme
         async function loadLeaderboard() {
             const container = document.getElementById('leaderboard-container');
             container.innerHTML = '<div style="text-align: center; color: #94a3b8;">Yüklənir...</div>';
@@ -424,7 +461,7 @@
                 if (data.ok && data.leaders) {
                     container.innerHTML = '';
                     if (data.leaders.length === 0) {
-                        container.innerHTML = '<div style="text-align: center; color: #94a3b8;">Hələ heç kim yokdur.</div>';
+                        container.innerHTML = '<div style="text-align: center; color: #94a3b8;">Hələ istifadəçi yoxdur.</div>';
                         return;
                     }
 
@@ -443,16 +480,12 @@
                     });
                 }
             } catch (err) {
-                container.innerHTML = '<div style="text-align: center; color: #ef4444;">Yükləmə xətası!</div>';
+                container.innerHTML = '<div style="text-align: center; color: #ef4444;">Xəta baş verdi!</div>';
             }
         }
 
-        // Başlangıçta verileri al
         fetchStatus();
-
-        // Her 10 saniyede bir otomatik verileri (online ve HSH) güncelle
         setInterval(fetchStatus, 10000);
-
     </script>
 </body>
 </html>

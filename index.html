@@ -400,22 +400,35 @@
                 </div>
             </div>
 
-            <!-- Tab 5: Cüzdan -->
+            <!-- Tab 5: Cüzdan (Orijinal Dizayn) -->
             <div id="tab-cuzdan" class="tab-content">
+                <div class="balance-card">
+                    <div class="balance-title">MÖVCUD BALANS</div>
+                    <div class="balance-value"><span id="wallet-balance">716.0000</span> USDT</div>
+                </div>
+
                 <div class="content-card">
-                    <div class="card-title">💳 Depozit və Çıxarış</div>
+                    <div class="card-title" style="font-size: 0.95rem;">📥 Depozit (TRON TRC20)</div>
+                    <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px;">Balansı artırmaq üçün aşağıdakı ünvana USDT (TRC20) göndərin:</p>
                     <div class="input-group">
-                        <label>Əməliyyat növü:</label>
-                        <select class="input-field" id="wallet-action-type">
-                            <option value="deposit">Depozit (Balans artırma)</option>
-                            <option value="withdraw">Çıxarış (Balansı çıxarma)</option>
-                        </select>
+                        <input type="text" class="input-field" id="deposit-address" value="THL125wrFMk5qFBZUkkb23QQ434TyR4Ffp" readonly style="font-size: 0.8rem; text-align: center;">
+                    </div>
+                    <button class="btn" onclick="navigator.clipboard.writeText('THL125wrFMk5qFBZUkkb23QQ434TyR4Ffp'); alert('Cüzdan ünvanı kopyalandı!');">CÜZDANI KOPYALA</button>
+                    <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px; text-align: center;">Depozitlər admin tərəfindən əl ilə yoxlanılıb təsdiqlənir.</div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-title" style="font-size: 0.95rem;">📤 Pul Çıxarışı</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px; color: #94a3b8;">
+                        <span>Minimum çıxarış</span>
+                        <span style="color: #fff; font-weight: bold;">10 USDT</span>
                     </div>
                     <div class="input-group">
-                        <label>Məbləğ (USDT):</label>
-                        <input type="number" class="input-field" id="wallet-amount" placeholder="0.00">
+                        <label>TRON TRC20 cüzdan ünvanı</label>
+                        <input type="text" class="input-field" id="withdraw-address" placeholder="TRON cüzdan ünvanınızı daxil edin...">
                     </div>
-                    <button class="btn" onclick="processWalletAction()">TƏSDİQ ET</button>
+                    <button class="btn" onclick="processWithdrawal()">ÇIXARIŞ TƏLƏBİ GÖNDƏR</button>
+                    <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px; text-align: center;">Çıxarışlar TRON TRC20 şəbəkəsi ilə həyata keçirilir.</div>
                 </div>
             </div>
 
@@ -489,6 +502,7 @@
 
         function updateUI(profile, onlineUsers) {
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
+            document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('user-hashes').innerText = Number(profile.hashes || 0).toFixed(4);
             document.getElementById('user-hsh-sub').innerText = Number(profile.hashes || 0).toFixed(4);
             document.getElementById('user-gpu').innerText = profile.gpu_power || 100;
@@ -565,19 +579,14 @@
             }
         }
 
-        function processWalletAction() {
-            const type = document.getElementById('wallet-action-type').value;
-            const amount = document.getElementById('wallet-amount').value;
-            if(!amount || amount <= 0) {
-                alert("Zəhmət olmasa düzgün məbləğ daxil edin!");
+        function processWithdrawal() {
+            const address = document.getElementById('withdraw-address').value;
+            if(!address || address.length < 10) {
+                alert("Zəhmət olmasa düzgün TRON cüzdan ünvanı daxil edin!");
                 return;
             }
-            if(type === 'deposit') {
-                alert(amount + " USDT depozit sorğusu yaradıldı!");
-            } else {
-                alert(amount + " USDT çıxarış sorğusu qəbul edildi!");
-            }
-            document.getElementById('wallet-amount').value = '';
+            alert("Çıxarış tələbiniz qəbul edildi və administratora göndərildi!");
+            document.getElementById('withdraw-address').value = '';
         }
 
         async function loadLeaderboard() {

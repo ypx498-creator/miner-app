@@ -222,14 +222,11 @@
         }
 
         .vip-card {
-            background: #1a233a;
-            border: 1px solid #334155;
+            background: #151c2c;
+            border: 1px solid #222d42;
             border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px;
+            margin-bottom: 12px;
         }
 
         .leaderboard-list {
@@ -315,7 +312,7 @@
         <!-- Header -->
         <div class="header">
             <div class="header-title">🐝 Honey Cloud Miner <span style="font-size: 0.65rem; color: #94a3b8; font-weight: normal;">v1.1</span></div>
-            <div class="online-badge"><span class="dot"></span> Onlayn: <span id="online-users-count">1</span></div>
+            <div class="online-badge"><span class="dot"></span> Onlayn: <span id="online-users-count">25</span></div>
         </div>
 
         <!-- Main Container -->
@@ -334,12 +331,12 @@
                         <div class="stat-val" id="user-gpu">100</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">👑 VIP Status</div>
-                        <div class="stat-val" id="user-vip">VIP 0</div>
+                        <div class="stat-label">👑 Status</div>
+                        <div class="stat-val" id="user-mining-status" style="color: #4cd964;">İşləyir</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">⏳ VIP Vaxtı</div>
-                        <div class="stat-val" id="user-vip-time">0g</div>
+                        <div class="stat-label">👤 Hesab</div>
+                        <div class="stat-val" id="user-telegram-id" style="font-size: 0.8rem;">7842540003</div>
                     </div>
                 </div>
 
@@ -368,22 +365,26 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Güc/VIP -->
+            <!-- Tab 3: Güc/VIP (Orijinal Şəkildəki Dizayn) -->
             <div id="tab-guc" class="tab-content">
-                <div class="card-title">⚡ VIP Paketlər & Güc</div>
+                <div class="card-title" style="margin-bottom: 12px;">⚡ GPU gücü / VIP</div>
+                
                 <div class="vip-card">
-                    <div>
-                        <div style="font-weight: bold; font-size: 0.95rem;">👑 VIP 1 - Bronza</div>
-                        <div style="font-size: 0.75rem; color: #94a3b8;">+50% HSH sürəti (30 gün)</div>
-                    </div>
-                    <button class="btn" style="width: auto; padding: 8px 14px; margin: 0;" onclick="alert('VIP 1 aktivləşdirmək üçün cüzdanda balans olmalıdır.')">10 USDT</button>
+                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 1 — 10 USDT</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+40 GPU · 7 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="alert('VIP 1 paketini seçdiniz.')">PAKETİ SEÇ</button>
                 </div>
+
                 <div class="vip-card">
-                    <div>
-                        <div style="font-weight: bold; font-size: 0.95rem;">💎 VIP 2 - Gümüş</div>
-                        <div style="font-size: 0.75rem; color: #94a3b8;">+120% HSH sürəti (30 gün)</div>
-                    </div>
-                    <button class="btn" style="width: auto; padding: 8px 14px; margin: 0;" onclick="alert('VIP 2 aktivləşdirmək üçün cüzdanda balans olmalıdır.')">25 USDT</button>
+                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 2 — 25 USDT</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+100 GPU · 14 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="alert('VIP 2 paketini seçdiniz.')">PAKETİ SEÇ</button>
+                </div>
+
+                <div class="vip-card">
+                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 3 — 40 USDT</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+160 GPU · 30 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="alert('VIP 3 paketini seçdiniz.')">PAKETİ SEÇ</button>
                 </div>
             </div>
 
@@ -400,11 +401,11 @@
                 </div>
             </div>
 
-            <!-- Tab 5: Cüzdan (Orijinal Dizayn) -->
+            <!-- Tab 5: Cüzdan (Orijinal Depozit və Çıxarış) -->
             <div id="tab-cuzdan" class="tab-content">
                 <div class="balance-card">
-                    <div class="balance-title">MÖVCUD BALANS</div>
-                    <div class="balance-value"><span id="wallet-balance">716.0000</span> USDT</div>
+                    <div class="balance-title">Balans</div>
+                    <div class="balance-value"><span id="wallet-balance">0.0000</span> USDT</div>
                 </div>
 
                 <div class="content-card">
@@ -507,18 +508,20 @@
             document.getElementById('user-hsh-sub').innerText = Number(profile.hashes || 0).toFixed(4);
             document.getElementById('user-gpu').innerText = profile.gpu_power || 100;
             document.getElementById('user-gpu-sub').innerText = profile.gpu_power || 100;
-            document.getElementById('user-vip').innerText = 'VIP ' + (profile.vip_tier || 0);
-            document.getElementById('online-users-count').innerText = onlineUsers || 1;
+            document.getElementById('user-telegram-id').innerText = profile.telegram_id || '7842540003';
+            document.getElementById('online-users-count').innerText = onlineUsers || 25;
 
             const now = Date.now();
             const miningEnd = Number(profile.mining_end || 0);
 
             if (miningEnd > now) {
                 document.getElementById('mining-status-text').innerText = 'Mayninq aktivdir';
+                document.getElementById('user-mining-status').innerText = 'İşləyir';
                 document.getElementById('mining-btn').innerText = 'MAYNİNQİ DAYANDIR';
                 startTimer(miningEnd);
             } else {
                 document.getElementById('mining-status-text').innerText = 'Mayninq gözləyir';
+                document.getElementById('user-mining-status').innerText = 'Dayanıb';
                 document.getElementById('mining-btn').innerText = 'MAYNİNQİ BAŞLAT (24 SAAT)';
                 document.getElementById('mining-timer').innerText = '24:00:00';
                 clearInterval(miningInterval);

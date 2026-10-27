@@ -193,6 +193,45 @@
             border: 1px solid #222d42;
         }
 
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #f59e0b;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .vip-card, .package-card {
+            background: #1a233a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .leaderboard-list {
             display: flex;
             flex-direction: column;
@@ -275,7 +314,7 @@
     <div class="app-wrapper">
         <!-- Header -->
         <div class="header">
-            <div class="header-title">🐝 Honey Cloud Miner <span style="font-size: 0.65rem; color: #94a3b8; font-weight: normal;">v1.1</span></div>
+            <div class="header-title">🐝 Honey Cloud Miner <span style="font-size: 0.65rem; color: #94a3b8; font-weight: normal;">v1.2</span></div>
             <div class="online-badge"><span class="dot"></span> Onlayn: <span id="online-users-count">1</span></div>
         </div>
 
@@ -321,39 +360,68 @@
 
             <!-- Tab 2: Çarx -->
             <div id="tab-carx" class="tab-content">
-                <div class="content-card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">🎡 Çarx</h2>
-                    <p style="color: #94a3b8; font-size: 0.85rem;">Tezliklə aktivləşəcək...</p>
+                <div class="content-card" style="text-align: center;">
+                    <div class="card-title">🎡 Bəxt Çarxı</div>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər gün 1 dəfə pulsuz fırlat və hədiyyələr qazan!</p>
+                    <div style="font-size: 4rem; margin: 20px 0;">🎯</div>
+                    <button class="btn" onclick="alert('Çarx tezliklə tam aktivləşəcək!')">ÇARXI FIRLAT</button>
                 </div>
             </div>
 
             <!-- Tab 3: Güc/VIP -->
             <div id="tab-guc" class="tab-content">
-                <div class="content-card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">⚡ Güc/VIP</h2>
-                    <p style="color: #94a3b8; font-size: 0.85rem;">VIP paketlər bölməsi.</p>
+                <div class="card-title">⚡ VIP Paketlər & Güc</div>
+                <div class="vip-card">
+                    <div>
+                        <div style="font-weight: bold; font-size: 0.95rem;">👑 VIP 1 - Bronza</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">+50% HSH sürəti (30 gün)</div>
+                    </div>
+                    <button class="btn" style="width: auto; padding: 8px 14px; margin: 0;" onclick="alert('VIP 1 aktivləşdirmək üçün cüzdanda balans olmalıdır.')">10 USDT</button>
+                </div>
+                <div class="vip-card">
+                    <div>
+                        <div style="font-weight: bold; font-size: 0.95rem;">💎 VIP 2 - Gümüş</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">+120% HSH sürəti (30 gün)</div>
+                    </div>
+                    <button class="btn" style="width: auto; padding: 8px 14px; margin: 0;" onclick="alert('VIP 2 aktivləşdirmək üçün cüzdanda balans olmalıdır.')">25 USDT</button>
                 </div>
             </div>
 
             <!-- Tab 4: Referal -->
             <div id="tab-referal" class="tab-content">
                 <div class="content-card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">👥 Referal</h2>
-                    <p style="color: #94a3b8; font-size: 0.85rem;">Dostlarını dəvət et.</p>
+                    <div class="card-title">👥 Referal Sistemi</div>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Dostlarını dəvət et, hər dəvət üçün bonus HSH qazan!</p>
+                    <div class="input-group">
+                        <label>Sənin dəvət linkin:</label>
+                        <input type="text" class="input-field" id="ref-link" value="https://t.me/Honeyfarmbot/app" readonly>
+                    </div>
+                    <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('ref-link').value); alert('Link kopyalandı!');">LİNKİ KOPYALA</button>
                 </div>
             </div>
 
             <!-- Tab 5: Cüzdan -->
             <div id="tab-cuzdan" class="tab-content">
                 <div class="content-card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 8px;">💳 Cüzdan</h2>
-                    <p style="color: #94a3b8; font-size: 0.85rem;">Depozit və balans bölməsi.</p>
+                    <div class="card-title">💳 Depozit və Çıxarış</div>
+                    <div class="input-group">
+                        <label>Əməliyyat növü:</label>
+                        <select class="input-field" id="wallet-action-type">
+                            <option value="deposit">Depozit (Balans artırma)</option>
+                            <option value="withdraw">Çıxarış (Balansı çıxarma)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Məbləğ (USDT):</label>
+                        <input type="number" class="input-field" id="wallet-amount" placeholder="0.00">
+                    </div>
+                    <button class="btn" onclick="processWalletAction()">TƏSDİQ ET</button>
                 </div>
             </div>
 
             <!-- Tab 6: Liderlər -->
             <div id="tab-liderler" class="tab-content">
-                <h2 style="font-size: 1.1rem; margin-bottom: 12px;">🏆 Liderlər Lövhəsi</h2>
+                <div class="card-title">🏆 Liderlər Lövhəsi</div>
                 <div class="leaderboard-list" id="leaderboard-container">
                     <div style="text-align: center; color: #94a3b8;">Yüklənir...</div>
                 </div>
@@ -495,6 +563,21 @@
             } finally {
                 btn.disabled = false;
             }
+        }
+
+        function processWalletAction() {
+            const type = document.getElementById('wallet-action-type').value;
+            const amount = document.getElementById('wallet-amount').value;
+            if(!amount || amount <= 0) {
+                alert("Zəhmət olmasa düzgün məbləğ daxil edin!");
+                return;
+            }
+            if(type === 'deposit') {
+                alert(amount + " USDT depozit sorğusu yaradıldı!");
+            } else {
+                alert(amount + " USDT çıxarış sorğusu qəbul edildi!");
+            }
+            document.getElementById('wallet-amount').value = '';
         }
 
         async function loadLeaderboard() {

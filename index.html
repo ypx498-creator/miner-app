@@ -97,9 +97,9 @@
             <div id="tab-carx" class="tab-content">
                 <div class="content-card" style="text-align: center;">
                     <div class="card-title">🎡 Bəxt Çarxı</div>
-                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər gün 1 dəfə pulsuz fırlat və hədiyyələr qazan!</p>
-                    <div style="font-size: 4rem; margin: 20px 0;">🎯</div>
-                    <button class="btn" onclick="alert('Çarx tezliklə tam aktivləşəcək!')">ÇARXI FIRLAT</button>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər gün 1 dəfə pulsuz fırlat və hədiyyələr qazan! (0.10 - 0.60 USDT)</p>
+                    <div style="font-size: 4rem; margin: 20px 0; transition: transform 0.5s;" id="wheel-icon">🎯</div>
+                    <button class="btn" onclick="spinWheel()" id="spin-btn">ÇARXI FIRLAT</button>
                 </div>
             </div>
 
@@ -312,6 +312,43 @@
                 alert("Şəbəkə xətası baş verdi!");
             } finally {
                 btn.disabled = false;
+            }
+        }
+
+        async function spinWheel() {
+            const wheelIcon = document.getElementById('wheel-icon');
+            const btn = document.getElementById('spin-btn');
+            wheelIcon.style.transform = 'rotate(720deg)';
+            btn.disabled = true;
+            btn.innerText = "FIRLANIR...";
+
+            try {
+                const response = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'spin',
+                        initData: tg.initData || ''
+                    })
+                });
+
+                const data = await response.json();
+                setTimeout(() => {
+                    wheelIcon.style.transform = 'rotate(0deg)';
+                    btn.disabled = false;
+                    btn.innerText = "ÇARXI FIRLAT";
+                    if (data.ok) {
+                        alert(data.message);
+                        updateUI(data.profile, data.online_users);
+                    } else {
+                        alert("Xəta: " + (data.error || "Naməlum xəta"));
+                    }
+                }, 500);
+            } catch (err) {
+                wheelIcon.style.transform = 'rotate(0deg)';
+                btn.disabled = false;
+                btn.innerText = "ÇARXI FIRLAT";
+                alert("Şəbəkə xətası baş verdi!");
             }
         }
 

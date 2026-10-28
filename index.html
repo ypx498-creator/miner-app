@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TON Connect UI Kitabxanası -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -40,8 +39,22 @@
         .btn-exchange.disabled { background-color: #334155; color: #94a3b8; opacity: 0.7; cursor: not-allowed; }
         .btn-exchange.ready { background: linear-gradient(90deg, #22c55e, #16a34a); color: #ffffff; cursor: pointer; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
         
-        .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; text-align: center; }
-        .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; color: #f59e0b; }
+        .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; }
+        .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; color: #f59e0b; text-align: center; }
+        
+        /* Şəbəkə seçimi menyusu (Taxta üslubuna bənzər) */
+        .network-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .network-item { background: #472b18; border: 2px solid #6b3e1f; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .network-item:active { transform: scale(0.98); }
+        .network-info { display: flex; align-items: center; gap: 12px; }
+        .network-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+        .network-name { font-weight: bold; font-size: 0.95rem; color: #fff; }
+        .network-limit { font-size: 0.75rem; color: #d4a373; margin-top: 2px; }
+        
+        .input-group { margin-bottom: 10px; }
+        .input-group label { display: block; font-size: 0.75rem; color: #d4a373; margin-bottom: 4px; font-weight: bold; }
+        .input-field { width: 100%; padding: 10px; background: #2c1a0e; border: 1px solid #5c3a21; border-radius: 8px; color: #fff; font-size: 0.9rem; }
+        
         .vip-card { background: #151c2c; border: 1px solid #222d42; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
         .leaderboard-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .leader-item { display: flex; justify-content: space-between; align-items: center; background: #151c2c; padding: 10px 14px; border-radius: 10px; border: 1px solid #222d42; }
@@ -49,6 +62,7 @@
         .user-info { flex-grow: 1; text-align: left; }
         .user-id { font-weight: bold; font-size: 0.85rem; }
         .user-stats { font-size: 0.7rem; color: #94a3b8; }
+        
         .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: #151c2c; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222d42; z-index: 999; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #94a3b8; font-size: 0.65rem; cursor: pointer; background: none; border: none; outline: none; flex: 1; }
         .nav-item.active { color: #f59e0b; }
@@ -110,7 +124,7 @@
             </div>
 
             <div id="tab-carx" class="tab-content">
-                <div class="content-card">
+                <div class="content-card" style="text-align: center;">
                     <div class="card-title">🎡 Bəxt Çarxı</div>
                     <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər 24 saatdan bir fırlat və (0.10 - 0.60 USDT) qazan!</p>
                     <div style="font-size: 4rem; margin: 20px 0; transition: transform 0.5s;" id="wheel-icon">🎯</div>
@@ -120,7 +134,7 @@
             </div>
 
             <div id="tab-guc" class="tab-content">
-                <div class="card-title" style="margin-bottom: 12px;">⚡ GPU gücü / VIP Paketlər (30 Gün)</div>
+                <div class="card-title" style="margin-bottom: 12px; text-align: left;">⚡ GPU gücü / VIP Paketlər (30 Gün)</div>
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 1 — 10 USDT</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+150 GPU gücü · 30 gün</div>
@@ -150,11 +164,11 @@
 
             <div id="tab-referal" class="tab-content">
                 <div class="content-card" style="text-align: left;">
-                    <div class="card-title">👥 Referal Sistemi</div>
+                    <div class="card-title" style="text-align: left;">👥 Referal Sistemi</div>
                     <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Dostunu dəvət et, hər dəvət üçün <b style="color:#f59e0b;">10 USD</b> bonus qazan!</p>
                     <div class="input-group" style="margin-bottom: 10px;">
-                        <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">Sənin dəvət linkin:</label>
-                        <input type="text" class="input-field" id="ref-link" value="" readonly style="width: 100%; padding: 10px; background: #0b0f19; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.9rem;">
+                        <label>Sənin dəvət linkin:</label>
+                        <input type="text" class="input-field" id="ref-link" value="" readonly>
                     </div>
                     <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('ref-link').value); alert('Link kopyalandı!');">LİNKİ KOPYALA</button>
                     
@@ -165,21 +179,96 @@
                 </div>
             </div>
 
+            <!-- CÜZDAN VƏ ÇIXARIŞ BÖLMƏSİ (Şəbəkə seçimli yeni dizayn) -->
             <div id="tab-cuzdan" class="tab-content">
                 <div class="balance-card">
                     <div class="balance-title">Balans</div>
                     <div class="balance-value"><span id="wallet-balance">0.0000</span> USDT</div>
                 </div>
 
-                <div class="content-card">
-                    <div class="card-title" style="font-size: 1.05rem; margin-bottom: 15px;">💳 Cüzdanı Bağla</div>
-                    <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 20px;">Telegram Wallet və ya digər TON cüzdanınızı qoşmaq üçün aşağıdakı düyməni istifadə edin:</p>
+                <!-- 1. Əsas Şəbəkə Seçim Ekranı -->
+                <div id="wallet-menu-view" class="content-card">
+                    <div class="card-title">Bakiye Çek</div>
+                    <div class="network-list">
+                        <div class="network-item" onclick="openWithdrawModal('Gram (prev. Toncoin)', 'Asgari 4 Bal Peteği.')">
+                            <div class="network-info">
+                                <div class="network-icon" style="background: #0088cc; color: #fff;">💎</div>
+                                <div>
+                                    <div class="network-name">Gram (prev. Toncoin)</div>
+                                    <div class="network-limit">Asgari 4 Bal Peteği.</div>
+                                </div>
+                            </div>
+                            <span style="color: #d4a373;">➔</span>
+                        </div>
+
+                        <div class="network-item" onclick="openWithdrawModal('BNB - BEP20', 'Asgari 19 Bal Peteği.')">
+                            <div class="network-info">
+                                <div class="network-icon" style="background: #f3ba2f; color: #000;">🟡</div>
+                                <div>
+                                    <div class="network-name">BNB - BEP20</div>
+                                    <div class="network-limit">Asgari 19 Bal Peteği.</div>
+                                </div>
+                            </div>
+                            <span style="color: #d4a373;">➔</span>
+                        </div>
+
+                        <div class="network-item" onclick="openWithdrawModal('Tether USDt - BEP20', 'Asgari 58 Bal Peteği.')">
+                            <div class="network-info">
+                                <div class="network-icon" style="background: #26a17b; color: #fff;">₮</div>
+                                <div>
+                                    <div class="network-name">Tether USDt - BEP20</div>
+                                    <div class="network-limit">Asgari 58 Bal Peteği.</div>
+                                </div>
+                            </div>
+                            <span style="color: #d4a373;">➔</span>
+                        </div>
+
+                        <div class="network-item" onclick="openWithdrawModal('TRON - TRON', 'Asgari 3 Bal Peteği.')">
+                            <div class="network-info">
+                                <div class="network-icon" style="background: #ff0033; color: #fff;"> TRX </div>
+                                <div>
+                                    <div class="network-name">TRON - TRON</div>
+                                    <div class="network-limit">Asgari 3 Bal Peteği.</div>
+                                </div>
+                            </div>
+                            <span style="color: #d4a373;">➔</span>
+                        </div>
+                    </div>
+
+                    <!-- TON Connect Düyməsi aşağıda yerləşir -->
+                    <div style="margin-top: 20px; border-top: 1px solid #222d42; padding-top: 15px; text-align: center;">
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">Telegram Cüzdanı Bağlantısı:</div>
+                        <div id="ton-connect-button" style="display: flex; justify-content: center;"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Seçilmiş Şəbəkə Üzrə Çıxarış Forması (Gizli/Aktiv) -->
+                <div id="wallet-form-view" class="content-card" style="display: none;">
+                    <div class="card-title" id="withdraw-title-text">Bakiye Çek</div>
                     
-                    <!-- TON Connect Düyməsi -->
-                    <div id="ton-connect-button" style="display: flex; justify-content: center; margin-bottom: 15px;"></div>
-                    
-                    <div style="font-size: 0.75rem; color: #94a3b8; word-break: break-all;" id="connected-wallet-info">
-                        Cüzdan qoşulmayıb
+                    <div class="input-group">
+                        <label>Cüzdanın:</label>
+                        <input type="text" class="input-field" id="withdraw-address" placeholder="Cüzdan gir...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Memo (İsteğe bağlı)</label>
+                        <input type="text" class="input-field" id="withdraw-memo" placeholder="12345678">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Miktar gir</label>
+                        <input type="number" class="input-field" id="withdraw-amount" placeholder="Miktar gir...">
+                    </div>
+
+                    <div class="input-group">
+                        <label id="currency-label-text">Tutar</label>
+                        <input type="text" class="input-field" id="withdraw-calculated" value="0" readonly style="opacity: 0.7;">
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn" style="background: #5c3a21; flex: 1;" onclick="closeWithdrawModal()">Geri</button>
+                        <button class="btn" style="flex: 2; margin-top:0;" onclick="submitWithdrawal()">Çek</button>
                     </div>
                 </div>
             </div>
@@ -213,22 +302,31 @@
             console.log("Telegram WebApp tapılmadı");
         }
 
-        // TON Connect Quraşdırılması
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: window.location.origin + '/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // Cüzdan qoşulduqda və ya status dəyişdikdə
         tonConnectUI.onStatusChange(wallet => {
-            const infoEl = document.getElementById('connected-wallet-info');
             if (wallet && wallet.account && wallet.account.address) {
-                const addr = wallet.account.address;
-                infoEl.innerHTML = `<span style="color: #4cd964;">Qoşuldu:</span> ${addr.slice(0, 6)}...${addr.slice(-4)}`;
-            } else {
-                infoEl.innerHTML = "Cüzdan qoşulmayıb";
+                document.getElementById('withdraw-address').value = wallet.account.address;
             }
         });
+
+        let selectedNetwork = '';
+
+        function openWithdrawModal(networkName, limitText) {
+            selectedNetwork = networkName;
+            document.getElementById('wallet-menu-view').style.display = 'none';
+            document.getElementById('wallet-form-view').style.display = 'block';
+            document.getElementById('withdraw-title-text').innerText = `Bakiye Çek (${networkName})`;
+            document.getElementById('currency-label-text').innerText = `${networkName} cinsindən tutar`;
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('wallet-form-view').style.display = 'none';
+            document.getElementById('wallet-menu-view').style.display = 'block';
+        }
 
         let miningInterval = null;
         let wheelInterval = null;
@@ -363,19 +461,13 @@
         }
 
         async function buyVip(vipId) {
-            if (!confirm(`VIP ${vipId} paketini almaq istədiyinizə əminsinizmi? Məbləğ balansınızdan çıxılacaq və GPU gücünüz artacaq.`)) {
-                return;
-            }
+            if (!confirm(`VIP ${vipId} paketini almaq istədiyinizə əminsinizmi?`)) return;
 
             try {
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'buy_vip',
-                        vipId: vipId,
-                        initData: tg.initData || ''
-                    })
+                    body: JSON.stringify({ action: 'buy_vip', vipId: vipId, initData: tg.initData || '' })
                 });
 
                 const data = await response.json();
@@ -399,20 +491,13 @@
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'exchange',
-                        initData: tg.initData || ''
-                    })
+                    body: JSON.stringify({ action: 'exchange', initData: tg.initData || '' })
                 });
 
                 const data = await response.json();
                 if (data.ok) {
                     alert(data.message);
-                    if (data.profile) {
-                        updateUI(data.profile, data.online_users);
-                    } else {
-                        fetchStatus();
-                    }
+                    fetchStatus();
                 } else {
                     alert(data.error || "Xəta baş verdi!");
                     fetchStatus();
@@ -481,24 +566,16 @@
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'toggle',
-                        initData: tg.initData || ''
-                    })
+                    body: JSON.stringify({ action: 'toggle', initData: tg.initData || '' })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     if (data.ok && data.profile) {
                         updateUI(data.profile, data.online_users);
-                    } else {
-                        alert("Xəta: " + (data.error || "Naməlum xəta"));
                     }
-                } else {
-                    alert("Server xətası: " + response.status);
                 }
             } catch (err) {
-                console.error("Toggle xətası:", err);
                 alert("Şəbəkə xətası baş verdi!");
             } finally {
                 btn.disabled = false;
@@ -516,10 +593,7 @@
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'spin',
-                        initData: tg.initData || ''
-                    })
+                    body: JSON.stringify({ action: 'spin', initData: tg.initData || '' })
                 });
 
                 const data = await response.json();
@@ -539,6 +613,47 @@
                 btn.disabled = false;
                 btn.innerText = "ÇARXI FIRLAT";
                 alert("Şəbəkə xətası baş verdi!");
+            }
+        }
+
+        async function submitWithdrawal() {
+            const amount = document.getElementById('withdraw-amount').value;
+            const address = document.getElementById('withdraw-address').value;
+            const memo = document.getElementById('withdraw-memo').value;
+
+            if (!amount || amount <= 0) {
+                alert("Məbləğ daxil edin!");
+                return;
+            }
+            if (!address || address.length < 5) {
+                alert("Cüzdan ünvanını daxil edin!");
+                return;
+            }
+
+            try {
+                const response = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'withdraw',
+                        network: selectedNetwork,
+                        amount: Number(amount),
+                        address: address,
+                        memo: memo,
+                        initData: tg.initData || ''
+                    })
+                });
+
+                const data = await response.json();
+                if (data.ok) {
+                    alert(data.message || "Çıxarış sorğusu qəbul edildi!");
+                    updateUI(data.profile, data.online_users);
+                    closeWithdrawModal();
+                } else {
+                    alert(data.error || "Xəta baş verdi!");
+                }
+            } catch (err) {
+                alert("Şəbəkə xətası!");
             }
         }
 
@@ -574,8 +689,6 @@
                         `;
                         container.appendChild(item);
                     });
-                } else {
-                    container.innerHTML = `<div style="text-align: center; color: #ef4444;">Xəta baş verdi!</div>`;
                 }
             } catch (err) {
                 container.innerHTML = '<div style="text-align: center; color: #ef4444;">Server xətası!</div>';

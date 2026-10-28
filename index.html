@@ -311,7 +311,7 @@
             document.getElementById('online-users-count').innerText = onlineUsers || 25;
             document.getElementById('ref-link').value = `https://t.me/honeyfarmer_bot?start=${currentTelegramId}`;
             
-,            const refCount = profile.referrals_count || 0;
+            const refCount = profile.referrals_count || 0;
             document.getElementById('referral-count-val').innerText = `${refCount} nəfər`;
 
             const now = Date.now();
@@ -336,26 +336,16 @@
             startWheelTimer();
         }
 
-        // Nöqtədən əvvəl həmişə 0 olur, kəsr hissəsi 0.00000001-dən başlayaraq sağdan sola GPU gücünə görə artır
+        // Təhlükəsiz və donmayan canlı artım funksiyası
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-            const baseStep = 1;
+            const baseStep = 0.00000001;
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
 
                 const speedMultiplier = liveGpuPower / 100;
-                const addedValue = Math.floor(baseStep * speedMultiplier);
-
-                let strVal = liveHashes.toFixed(8);
-                let parts = strVal.split('.');
-                let decPart = parts[1];
-
-                let lastDigits = parseInt(decPart.slice(-4)) + addedValue;
-                let newDecPart = decPart.slice(0, -4) + String(lastDigits).padStart(4, '0');
-
-                // Tam hissə həmişə 0 olaraq təyin edilir
-                liveHashes = parseFloat(`0.${newDecPart}`);
+                liveHashes += (baseStep * speedMultiplier);
 
                 document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
                 document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);

@@ -281,8 +281,9 @@
             const liveGpuPower = Number(profile.gpu_power || 100);
             currentVipTier = Number(profile.vip_tier || 0);
 
+            // VİZUAL OLARAQ TAM HİSSƏ HƏMİŞƏ 0 OLUR, YALNIZ KƏSR HİSSƏ GÖSTƏRİLİR
             let rawDecimal = serverRealHashes - Math.floor(serverRealHashes);
-            if (liveHashes === 0) {
+            if (liveHashes === 0 || liveHashes >= 1) {
                 liveHashes = rawDecimal > 0 ? rawDecimal : 0.00000021;
             }
 
@@ -290,6 +291,7 @@
             document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
             
             const exBtn = document.getElementById('exchange-btn');
+            // Çevir düyməsi yalnız serverdəki real balans 1000 olduqda yaşıl yansın
             if (serverRealHashes >= 1000) {
                 exBtn.className = "btn-exchange ready";
                 exBtn.disabled = false;
@@ -342,13 +344,13 @@
             startWheelTimer();
         }
 
-        // VIP səviyyələrinə uyğun saniyəlik artım addımları (sağdan sola)
+        // Tam hissə həmişə 0 qalır, kəsr hissəsi təyin etdiyin dəyərlərə uyğun sağdan sola artır
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
 
-            // VIP səviyyələrinə görə saniyəlik artım addımları
+            // Sənin istədiyin VIP səviyyələrinə görə saniyəlik artım addımları
             let step = 0.00000021; // Standart
-            if (currentVipTier === 1) step = 0.00000015; // VIP 1 (qeyd: istədiyin dəyər)
+            if (currentVipTier === 1) step = 0.00000015; // VIP 1
             else if (currentVipTier === 2) step = 0.00000030; // VIP 2
             else if (currentVipTier === 3) step = 0.00000600; // VIP 3
             else if (currentVipTier === 4) step = 0.00000120; // VIP 4
@@ -365,6 +367,7 @@
                 let lastDigits = parseInt(decPart.slice(-8)) + addAmount;
                 let newDecPart = String(lastDigits).padStart(8, '0').slice(-8);
 
+                // Tam hissə həmişə 0 olaraq sabit qalır
                 liveHashes = parseFloat(`0.${newDecPart}`);
 
                 document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);

@@ -31,7 +31,12 @@
         .progress-fill { width: 30%; height: 100%; background: #f59e0b; border-radius: 3px; }
         .btn { background: linear-gradient(90deg, #f59e0b, #d97706); color: #fff; border: none; padding: 12px 15px; border-radius: 10px; font-size: 0.9rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-small { background: #334155; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        
+        /* Çevir düyməsinin dinamik rəngləri */
+        .btn-exchange { border: none; padding: 7px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .btn-exchange.disabled { background-color: #ef4444; color: #ffffff; opacity: 0.7; cursor: not-allowed; }
+        .btn-exchange.ready { background-color: #22c55e; color: #ffffff; cursor: pointer; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+        
         .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; }
         .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; color: #f59e0b; }
         .input-group { margin-bottom: 10px; }
@@ -44,7 +49,7 @@
         .user-info { flex-grow: 1; text-align: left; }
         .user-id { font-weight: bold; font-size: 0.85rem; }
         .user-stats { font-size: 0.7rem; color: #94a3b8; }
-        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: #151c2c; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222d42; z-index: 999; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: #151c2c; display: flex; justify-around: center; align-items: center; border-top: 1px solid #222d42; z-index: 999; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #94a3b8; font-size: 0.65rem; cursor: pointer; background: none; border: none; outline: none; flex: 1; }
         .nav-item.active { color: #f59e0b; }
         .nav-icon { font-size: 1.1rem; }
@@ -62,9 +67,9 @@
                 <div class="balance-card">
                     <div class="balance-title">MÖVCUD BALANS</div>
                     <div class="balance-value"><span id="user-balance">0.0000</span> USDT</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid #334155;">
                         <span style="font-size: 0.75rem; color: #94a3b8;">HSH balansı: <span id="user-hashes" style="color: #fff; font-weight: bold;">0.0000</span></span>
-                        <button class="btn-small" onclick="exchangeHashes()">USDT-yə Çevir</button>
+                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>USDT-yə Çevir (Min 1000)</button>
                     </div>
                 </div>
 
@@ -249,8 +254,23 @@
         function updateUI(profile, onlineUsers) {
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
-            document.getElementById('user-hashes').innerText = Number(profile.hashes || 0).toFixed(4);
-            document.getElementById('user-hsh-sub').innerText = Number(profile.hashes || 0).toFixed(4);
+            
+            const hashes = Number(profile.hashes || 0);
+            document.getElementById('user-hashes').innerText = hashes.toFixed(4);
+            document.getElementById('user-hsh-sub').innerText = hashes.toFixed(4);
+            
+            // DÜYMƏNİN RƏNG VƏ STATUS NƏZARƏTİ (1000 HSH)
+            const exBtn = document.getElementById('exchange-btn');
+            if (hashes >= 1000) {
+                exBtn.className = "btn-exchange ready";
+                exBtn.disabled = false;
+                exBtn.innerText = "USDT-yə Çevir";
+            } else {
+                exBtn.className = "btn-exchange disabled";
+                exBtn.disabled = true;
+                exBtn.innerText = "USDT-yə Çevir (Min 1000)";
+            }
+
             document.getElementById('user-gpu').innerText = profile.gpu_power || 100;
             document.getElementById('user-gpu-sub').innerText = profile.gpu_power || 100;
             
@@ -284,6 +304,10 @@
         }
 
         async function exchangeHashes() {
+            const exBtn = document.getElementById('exchange-btn');
+            exBtn.disabled = true;
+            exBtn.innerText = "ÇEVRİLİR...";
+
             try {
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
@@ -300,9 +324,11 @@
                     updateUI(data.profile, data.online_users);
                 } else {
                     alert(data.error || "Xəta baş verdi!");
+                    fetchStatus();
                 }
             } catch (err) {
                 alert("Şəbəkə xətası!");
+                fetchStatus();
             }
         }
 

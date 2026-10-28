@@ -40,11 +40,8 @@
         .btn-exchange.disabled { background-color: #334155; color: #94a3b8; opacity: 0.7; cursor: not-allowed; }
         .btn-exchange.ready { background: linear-gradient(90deg, #22c55e, #16a34a); color: #ffffff; cursor: pointer; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
         
-        .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; }
+        .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; text-align: center; }
         .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; color: #f59e0b; }
-        .input-group { margin-bottom: 10px; }
-        .input-group label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px; }
-        .input-field { width: 100%; padding: 10px; background: #0b0f19; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.9rem; }
         .vip-card { background: #151c2c; border: 1px solid #222d42; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
         .leaderboard-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .leader-item { display: flex; justify-content: space-between; align-items: center; background: #151c2c; padding: 10px 14px; border-radius: 10px; border: 1px solid #222d42; }
@@ -113,7 +110,7 @@
             </div>
 
             <div id="tab-carx" class="tab-content">
-                <div class="content-card" style="text-align: center;">
+                <div class="content-card">
                     <div class="card-title">🎡 Bəxt Çarxı</div>
                     <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">Hər 24 saatdan bir fırlat və (0.10 - 0.60 USDT) qazan!</p>
                     <div style="font-size: 4rem; margin: 20px 0; transition: transform 0.5s;" id="wheel-icon">🎯</div>
@@ -152,12 +149,12 @@
             </div>
 
             <div id="tab-referal" class="tab-content">
-                <div class="content-card">
+                <div class="content-card" style="text-align: left;">
                     <div class="card-title">👥 Referal Sistemi</div>
                     <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Dostunu dəvət et, hər dəvət üçün <b style="color:#f59e0b;">10 USD</b> bonus qazan!</p>
-                    <div class="input-group">
-                        <label>Sənin dəvət linkin:</label>
-                        <input type="text" class="input-field" id="ref-link" value="" readonly>
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">Sənin dəvət linkin:</label>
+                        <input type="text" class="input-field" id="ref-link" value="" readonly style="width: 100%; padding: 10px; background: #0b0f19; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.9rem;">
                     </div>
                     <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('ref-link').value); alert('Link kopyalandı!');">LİNKİ KOPYALA</button>
                     
@@ -175,42 +172,20 @@
                 </div>
 
                 <div class="content-card">
-                    <div class="card-title" style="font-size: 0.95rem;">📥 Avtomatik Depozit</div>
-                    <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px;">Ünvan: <b style="color:#fff;">THL125wrFMk5qFBZUkkb23QQ434TyR4Ffp</b></p>
-                    <div class="input-group">
-                        <label>Depozit məbləği (USDT):</label>
-                        <input type="number" class="input-field" id="deposit-amount" placeholder="10">
-                    </div>
-                    <button class="btn" onclick="processDeposit()">DEPOZİTİ TƏSDİQ ET</button>
-                </div>
-
-                <div class="content-card">
-                    <div class="card-title" style="font-size: 0.95rem;">📤 Avtomatik Pul Çıxarışı</div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px; color: #94a3b8;">
-                        <span>Minimum çıxarış</span>
-                        <span style="color: #fff; font-weight: bold;">10 USDT</span>
-                    </div>
+                    <div class="card-title" style="font-size: 1.05rem; margin-bottom: 15px;">💳 Cüzdanı Bağla</div>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 20px;">Telegram Wallet və ya digər TON cüzdanınızı qoşmaq üçün aşağıdakı düyməni istifadə edin:</p>
                     
-                    <!-- TON Connect Qoşulma Düyməsi Buradadır -->
-                    <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.75rem; color: #94a3b8;">Telegram Cüzdanı qoş:</span>
-                        <div id="ton-connect-button"></div>
+                    <!-- TON Connect Düyməsi -->
+                    <div id="ton-connect-button" style="display: flex; justify-content: center; margin-bottom: 15px;"></div>
+                    
+                    <div style="font-size: 0.75rem; color: #94a3b8; word-break: break-all;" id="connected-wallet-info">
+                        Cüzdan qoşulmayıb
                     </div>
-
-                    <div class="input-group">
-                        <label>Çıxarılacaq məbləğ (USDT):</label>
-                        <input type="number" class="input-field" id="withdraw-amount" placeholder="10">
-                    </div>
-                    <div class="input-group">
-                        <label>Cüzdan ünvanı (TON / TRC20)</label>
-                        <input type="text" class="input-field" id="withdraw-address" placeholder="Cüzdan ünvanı avtomatik düşəcək və ya yazın...">
-                    </div>
-                    <button class="btn" onclick="processWithdrawal()">AVTOMATİK ÇIXARIŞ ET</button>
                 </div>
             </div>
 
             <div id="tab-liderler" class="tab-content">
-                <div class="card-title">🏆 Liderlər Lövhəsi</div>
+                <div class="card-title" style="text-align: left;">🏆 Liderlər Lövhəsi</div>
                 <div class="leaderboard-list" id="leaderboard-container">
                     <div style="text-align: center; color: #94a3b8;">Yüklənir...</div>
                 </div>
@@ -238,17 +213,20 @@
             console.log("Telegram WebApp tapılmadı");
         }
 
-        // TON Connect Quraşdırılması (Bütün Telegram və TON cüzdanları üçün)
+        // TON Connect Quraşdırılması
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: window.location.origin + '/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // Cüzdan qoşulduqda ünvanı avtomatik olaraq çıxarış xanasına yazırıq
+        // Cüzdan qoşulduqda və ya status dəyişdikdə
         tonConnectUI.onStatusChange(wallet => {
+            const infoEl = document.getElementById('connected-wallet-info');
             if (wallet && wallet.account && wallet.account.address) {
-                // TON ünvanını istifadə rahatlığı üçün inputa yazırıq
-                document.getElementById('withdraw-address').value = wallet.account.address;
+                const addr = wallet.account.address;
+                infoEl.innerHTML = `<span style="color: #4cd964;">Qoşuldu:</span> ${addr.slice(0, 6)}...${addr.slice(-4)}`;
+            } else {
+                infoEl.innerHTML = "Cüzdan qoşulmayıb";
             }
         });
 
@@ -561,76 +539,6 @@
                 btn.disabled = false;
                 btn.innerText = "ÇARXI FIRLAT";
                 alert("Şəbəkə xətası baş verdi!");
-            }
-        }
-
-        async function processDeposit() {
-            const amount = document.getElementById('deposit-amount').value;
-            if (!amount || amount <= 0) {
-                alert("Düzgün məbləğ daxil edin!");
-                return;
-            }
-
-            try {
-                const response = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'deposit',
-                        amount: Number(amount),
-                        initData: tg.initData || ''
-                    })
-                });
-
-                const data = await response.json();
-                if (data.ok) {
-                    alert(data.message);
-                    updateUI(data.profile, data.online_users);
-                    document.getElementById('deposit-amount').value = '';
-                } else {
-                    alert("Xəta: " + (data.error || "Naməlum xəta"));
-                }
-            } catch (err) {
-                alert("Şəbəkə xətası!");
-            }
-        }
-
-        async function processWithdrawal() {
-            const amount = document.getElementById('withdraw-amount').value;
-            const address = document.getElementById('withdraw-address').value;
-
-            if (!amount || amount < 10) {
-                alert("Minimum çıxarış 10 USDT olmalıdır!");
-                return;
-            }
-            if (!address || address.length < 10) {
-                alert("Düzgün cüzdan ünvanı daxil edin!");
-                return;
-            }
-
-            try {
-                const response = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'withdraw',
-                        amount: Number(amount),
-                        address: address,
-                        initData: tg.initData || ''
-                    })
-                });
-
-                const data = await response.json();
-                if (data.ok) {
-                    alert(data.message);
-                    updateUI(data.profile, data.online_users);
-                    document.getElementById('withdraw-amount').value = '';
-                    document.getElementById('withdraw-address').value = '';
-                } else {
-                    alert("Xəta: " + (data.error || "Naməlum xəta"));
-                }
-            } catch (err) {
-                alert("Şəbəkə xətası!");
             }
         }
 

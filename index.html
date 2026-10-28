@@ -74,9 +74,9 @@
                     <div style="border-top: 1px solid #334155; padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
                         <div style="font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between;">
                             <span>HSH Balansı:</span>
-                            <span id="user-hashes" style="color: #fff; font-weight: bold;">0.00000000</span>
+                            <span id="user-hashes" style="color: #fff; font-weight: bold;">0</span>
                         </div>
-                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 1 USDT (ÇEVİR)</button>
+                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 0.0010 USDT (ÇEVİR)</button>
                     </div>
                 </div>
 
@@ -103,7 +103,7 @@
                     <div class="progress-bar"><div class="progress-fill"></div></div>
                     
                     <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 0.8rem; color: #94a3b8;">
-                        <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">0.0000</span></div>
+                        <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">0</span></div>
                         <div>GPU gücü: <span id="user-gpu-sub" style="color:#fff; font-weight:bold;">100</span></div>
                     </div>
                     <button class="btn" onclick="toggleMining()" id="mining-btn">MAYNİNQİ BAŞLAT (24 SAAT)</button>
@@ -124,27 +124,27 @@
                 <div class="card-title" style="margin-bottom: 12px;">⚡ GPU gücü / VIP Paketlər (30 Gün)</div>
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 1 — 10 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+75 GPU gücü · 30 gün</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+150 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(1)">PAKETİ AL (10 USDT)</button>
                 </div>
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 2 — 25 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+150 GPU gücü · 30 gün</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+300 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(2)">PAKETİ AL (25 USDT)</button>
                 </div>
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 3 — 50 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+300 GPU gücü · 30 gün</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+600 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(3)">PAKETİ AL (50 USDT)</button>
                 </div>
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px; color: #f59e0b;">VIP 4 — 100 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+600 GPU gücü · 30 gün</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+1200 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(4)">PAKETİ AL (100 USDT)</button>
                 </div>
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px; color: #f59e0b;">VIP 5 — 200 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+1250 GPU gücü · 30 gün</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+2500 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(5)">PAKETİ AL (200 USDT)</button>
                 </div>
             </div>
@@ -234,7 +234,7 @@
         let liveTimerInterval = null;
         let globalLastSpin = 0;
         let liveHashes = 0;
-        let serverRealHashes = 0;
+        let liveGpuPower = 100;
         let currentVipTier = 0;
         let isMiningActive = false;
 
@@ -277,28 +277,22 @@
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             
-            serverRealHashes = Number(profile.hashes || 0);
-            const liveGpuPower = Number(profile.gpu_power || 100);
+            liveHashes = Math.floor(Number(profile.hashes || 0));
+            liveGpuPower = Number(profile.gpu_power || 100);
             currentVipTier = Number(profile.vip_tier || 0);
 
-            // Tam hissə həmişə 0 qalır, kəsr hissəsi göstərilir
-            let rawDecimal = serverRealHashes - Math.floor(serverRealHashes);
-            if (liveHashes === 0 || liveHashes >= 1) {
-                liveHashes = rawDecimal > 0 ? rawDecimal : 0.00000010;
-            }
-
-            document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
-            document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
+            document.getElementById('user-hashes').innerText = liveHashes;
+            document.getElementById('user-hsh-sub').innerText = liveHashes;
             
             const exBtn = document.getElementById('exchange-btn');
-            if (serverRealHashes >= 1000) {
+            if (liveHashes >= 1000) {
                 exBtn.className = "btn-exchange ready";
                 exBtn.disabled = false;
-                exBtn.innerText = "1000 HSH = 1 USDT (ÇEVİR)";
+                exBtn.innerText = "1000 HSH = 0.0010 USDT (ÇEVİR)";
             } else {
                 exBtn.className = "btn-exchange disabled";
                 exBtn.disabled = true;
-                exBtn.innerText = "1000 HSH = 1 USDT (Min 1000)";
+                exBtn.innerText = "1000 HSH = 0.0010 USDT (Min 1000)";
             }
 
             document.getElementById('user-gpu').innerText = liveGpuPower;
@@ -343,39 +337,27 @@
             startWheelTimer();
         }
 
-        // Sürəti 2 dəfə azaldılmış saniyəlik artım addımları (Tam hissə həmişə 0)
+        // HSH artımı tam rəqəmlə (GPU gücünə mütənasib)
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-
-            let step = 0.00000010; // Standart (2 dəfə azaldılmış)
-            if (currentVipTier === 1) step = 0.000000075; // VIP 1
-            else if (currentVipTier === 2) step = 0.00000015; // VIP 2
-            else if (currentVipTier === 3) step = 0.00000300; // VIP 3
-            else if (currentVipTier === 4) step = 0.00000060; // VIP 4
-            else if (currentVipTier === 5) step = 0.00000125; // VIP 5
+            const baseStep = 1;
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
 
-                let strVal = liveHashes.toFixed(8);
-                let parts = strVal.split('.');
-                let decPart = parts[1] || "00000000";
+                const speedMultiplier = liveGpuPower / 100;
+                const addedValue = Math.max(1, Math.floor(baseStep * speedMultiplier));
+                
+                liveHashes += addedValue;
 
-                let addAmount = Math.round(step * 100000000);
-                let lastDigits = parseInt(decPart.slice(-8)) + addAmount;
-                let newDecPart = String(lastDigits).padStart(8, '0').slice(-8);
-
-                // Tam hissə həmişə 0 olaraq qalır
-                liveHashes = parseFloat(`0.${newDecPart}`);
-
-                document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
-                document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
+                document.getElementById('user-hashes').innerText = liveHashes;
+                document.getElementById('user-hsh-sub').innerText = liveHashes;
 
                 const exBtn = document.getElementById('exchange-btn');
-                if (serverRealHashes >= 1000) {
+                if (liveHashes >= 1000) {
                     exBtn.className = "btn-exchange ready";
                     exBtn.disabled = false;
-                    exBtn.innerText = "1000 HSH = 1 USDT (ÇEVİR)";
+                    exBtn.innerText = "1000 HSH = 0.0010 USDT (ÇEVİR)";
                 }
             }, 1000);
         }
@@ -656,7 +638,7 @@
                             <div class="rank">#${index + 1}</div>
                             <div class="user-info">
                                 <div class="user-id">ID: ${user.telegram_id}</div>
-                                <div class="user-stats">HSH: ${Number(user.hashes || 0).toFixed(2)} | GPU: ${user.gpu_power || 100}</div>
+                                <div class="user-stats">HSH: ${Math.floor(Number(user.hashes || 0))} | GPU: ${user.gpu_power || 100}</div>
                             </div>
                             <div style="font-size: 0.85rem; font-weight: bold; color: #f59e0b;">VIP ${user.vip_tier || 0}</div>
                         `;

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Honey Cloud Miner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         html, body { background-color: #0b0f19; color: #ffffff; height: 100%; overflow: hidden; }
@@ -42,7 +41,6 @@
         .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; }
         .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; color: #f59e0b; text-align: center; }
         
-        /* Şəbəkə seçimi menyusu (Taxta üslubuna bənzər) */
         .network-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .network-item { background: #472b18; border: 2px solid #6b3e1f; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
         .network-item:active { transform: scale(0.98); }
@@ -179,14 +177,14 @@
                 </div>
             </div>
 
-            <!-- CÜZDAN VƏ ÇIXARIŞ BÖLMƏSİ (Şəbəkə seçimli yeni dizayn) -->
+            <!-- CÜZDAN VƏ ÇIXARIŞ BÖLMƏSİ (Şəbəkə seçimi ilə) -->
             <div id="tab-cuzdan" class="tab-content">
                 <div class="balance-card">
                     <div class="balance-title">Balans</div>
                     <div class="balance-value"><span id="wallet-balance">0.0000</span> USDT</div>
                 </div>
 
-                <!-- 1. Əsas Şəbəkə Seçim Ekranı -->
+                <!-- 1. Şəbəkə Seçim Menyusu -->
                 <div id="wallet-menu-view" class="content-card">
                     <div class="card-title">Bakiye Çek</div>
                     <div class="network-list">
@@ -234,15 +232,9 @@
                             <span style="color: #d4a373;">➔</span>
                         </div>
                     </div>
-
-                    <!-- TON Connect Düyməsi aşağıda yerləşir -->
-                    <div style="margin-top: 20px; border-top: 1px solid #222d42; padding-top: 15px; text-align: center;">
-                        <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">Telegram Cüzdanı Bağlantısı:</div>
-                        <div id="ton-connect-button" style="display: flex; justify-content: center;"></div>
-                    </div>
                 </div>
 
-                <!-- 2. Seçilmiş Şəbəkə Üzrə Çıxarış Forması (Gizli/Aktiv) -->
+                <!-- 2. Çıxarış Forması -->
                 <div id="wallet-form-view" class="content-card" style="display: none;">
                     <div class="card-title" id="withdraw-title-text">Bakiye Çek</div>
                     
@@ -301,17 +293,6 @@
         } catch (e) {
             console.log("Telegram WebApp tapılmadı");
         }
-
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: window.location.origin + '/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect-button'
-        });
-
-        tonConnectUI.onStatusChange(wallet => {
-            if (wallet && wallet.account && wallet.account.address) {
-                document.getElementById('withdraw-address').value = wallet.account.address;
-            }
-        });
 
         let selectedNetwork = '';
 

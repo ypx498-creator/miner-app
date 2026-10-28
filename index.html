@@ -65,7 +65,6 @@
 
         <div class="main-container">
             <div id="tab-miner" class="tab-content active">
-                <!-- Balans və Çevirmə Bölməsi Sütun şəklində -->
                 <div class="balance-card">
                     <div>
                         <div class="balance-title">MÖVCUD BALANS</div>
@@ -77,7 +76,7 @@
                             <span>HSH Balansı:</span>
                             <span id="user-hashes" style="color: #fff; font-weight: bold;">0.00000000</span>
                         </div>
-                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 1 USDT (Çevir)</button>
+                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 1 USDT (ÇEVİR)</button>
                     </div>
                 </div>
 
@@ -123,31 +122,26 @@
 
             <div id="tab-guc" class="tab-content">
                 <div class="card-title" style="margin-bottom: 12px;">⚡ GPU gücü / VIP Paketlər (30 Gün)</div>
-                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 1 — 10 USDT</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+150 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(1)">PAKETİ AL (10 USDT)</button>
                 </div>
-                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 2 — 25 USDT</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+300 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(2)">PAKETİ AL (25 USDT)</button>
                 </div>
-                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 3 — 50 USDT</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+600 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(3)">PAKETİ AL (50 USDT)</button>
                 </div>
-                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px; color: #f59e0b;">VIP 4 — 100 USDT</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+1200 GPU gücü · 30 gün</div>
                     <button class="btn" style="margin-top: 0;" onclick="buyVip(4)">PAKETİ AL (100 USDT)</button>
                 </div>
-                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px; color: #f59e0b;">VIP 5 — 200 USDT</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+2500 GPU gücü · 30 gün</div>
@@ -342,17 +336,26 @@
             startWheelTimer();
         }
 
+        // Nöqtədən əvvəlki hissə sabit qalır, kəsr hissəsi sağdan sola doğru GPU gücünə görə artır
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-            const baseRatePerSecond = 0.00001286;
+            const baseStep = 1;
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
 
                 const speedMultiplier = liveGpuPower / 100;
-                const increment = baseRatePerSecond * speedMultiplier;
+                const addedValue = Math.floor(baseStep * speedMultiplier);
 
-                liveHashes += increment;
+                let strVal = liveHashes.toFixed(8);
+                let parts = strVal.split('.');
+                let intPart = parts[0];
+                let decPart = parts[1];
+
+                let lastDigits = parseInt(decPart.slice(-4)) + addedValue;
+                let newDecPart = decPart.slice(0, -4) + String(lastDigits).padStart(4, '0');
+
+                liveHashes = parseFloat(`${intPart}.${newDecPart}`);
 
                 document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
                 document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);

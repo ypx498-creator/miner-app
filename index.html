@@ -32,7 +32,6 @@
         .btn { background: linear-gradient(90deg, #f59e0b, #d97706); color: #fff; border: none; padding: 12px 15px; border-radius: 10px; font-size: 0.9rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         
-        /* Çevir düyməsinin dinamik rəngləri */
         .btn-exchange { border: none; padding: 7px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: all 0.3s; }
         .btn-exchange.disabled { background-color: #ef4444; color: #ffffff; opacity: 0.7; cursor: not-allowed; }
         .btn-exchange.ready { background-color: #22c55e; color: #ffffff; cursor: pointer; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
@@ -49,7 +48,7 @@
         .user-info { flex-grow: 1; text-align: left; }
         .user-id { font-weight: bold; font-size: 0.85rem; }
         .user-stats { font-size: 0.7rem; color: #94a3b8; }
-        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: #151c2c; display: flex; justify-around: center; align-items: center; border-top: 1px solid #222d42; z-index: 999; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; background: #151c2c; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222d42; z-index: 999; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #94a3b8; font-size: 0.65rem; cursor: pointer; background: none; border: none; outline: none; flex: 1; }
         .nav-item.active { color: #f59e0b; }
         .nav-icon { font-size: 1.1rem; }
@@ -113,22 +112,38 @@
                 </div>
             </div>
 
+            <!-- VIP Paketlər (Qiymət artan sıra ilə: 10, 25, 50, 100, 200 USDT) -->
             <div id="tab-guc" class="tab-content">
-                <div class="card-title" style="margin-bottom: 12px;">⚡ GPU gücü / VIP</div>
+                <div class="card-title" style="margin-bottom: 12px;">⚡ GPU gücü / VIP Paketlər (30 Gün)</div>
+                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 1 — 10 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+40 GPU · 7 gün</div>
-                    <button class="btn" style="margin-top: 0;" onclick="alert('VIP 1 paketini seçdiniz.')">PAKETİ SEÇ</button>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+150 GPU gücü · 30 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="buyVip(1)">PAKETİ AL (10 USDT)</button>
                 </div>
+                
                 <div class="vip-card">
                     <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 2 — 25 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+100 GPU · 14 gün</div>
-                    <button class="btn" style="margin-top: 0;" onclick="alert('VIP 2 paketini seçdiniz.')">PAKETİ SEÇ</button>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+300 GPU gücü · 30 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="buyVip(2)">PAKETİ AL (25 USDT)</button>
                 </div>
+                
                 <div class="vip-card">
-                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 3 — 40 USDT</div>
-                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+160 GPU · 30 gün</div>
-                    <button class="btn" style="margin-top: 0;" onclick="alert('VIP 3 paketini seçdiniz.')">PAKETİ SEÇ</button>
+                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px;">VIP 3 — 50 USDT</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+600 GPU gücü · 30 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="buyVip(3)">PAKETİ AL (50 USDT)</button>
+                </div>
+                
+                <div class="vip-card">
+                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px; color: #f59e0b;">VIP 4 — 100 USDT</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+1200 GPU gücü · 30 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="buyVip(4)">PAKETİ AL (100 USDT)</button>
+                </div>
+                
+                <div class="vip-card">
+                    <div style="font-weight: bold; font-size: 1rem; margin-bottom: 4px; color: #f59e0b;">VIP 5 — 200 USDT</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px;">+2500 GPU gücü · 30 gün</div>
+                    <button class="btn" style="margin-top: 0;" onclick="buyVip(5)">PAKETİ AL (200 USDT)</button>
                 </div>
             </div>
 
@@ -259,7 +274,6 @@
             document.getElementById('user-hashes').innerText = hashes.toFixed(4);
             document.getElementById('user-hsh-sub').innerText = hashes.toFixed(4);
             
-            // DÜYMƏNİN RƏNG VƏ STATUS NƏZARƏTİ (1000 HSH)
             const exBtn = document.getElementById('exchange-btn');
             if (hashes >= 1000) {
                 exBtn.className = "btn-exchange ready";
@@ -301,6 +315,34 @@
 
             globalLastSpin = Number(profile.last_spin || 0);
             startWheelTimer();
+        }
+
+        async function buyVip(vipId) {
+            if (!confirm(`VIP ${vipId} paketini almaq istədiyinizə əminsinizmi? Məbləğ balansınızdan çıxılacaq və GPU gücünüz artacaq.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'buy_vip',
+                        vipId: vipId,
+                        initData: tg.initData || ''
+                    })
+                });
+
+                const data = await response.json();
+                if (data.ok) {
+                    alert(data.message);
+                    updateUI(data.profile, data.online_users);
+                } else {
+                    alert(data.error || "Xəta baş verdi!");
+                }
+            } catch (err) {
+                alert("Şəbəkə xətası baş verdi!");
+            }
         }
 
         async function exchangeHashes() {

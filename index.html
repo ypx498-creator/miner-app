@@ -234,9 +234,9 @@
         let liveTimerInterval = null;
         let globalLastSpin = 0;
         let liveHashes = 0;
-        let liveGpuPower = 100;
+        let serverRealHashes = 0;
+        let currentVipTier = 0;
         let isMiningActive = false;
-        let serverRealHashes = 0; // Serverdən gələn əsl balans
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -278,12 +278,12 @@
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             
             serverRealHashes = Number(profile.hashes || 0);
-            liveGpuPower = Number(profile.gpu_power || 100);
+            const liveGpuPower = Number(profile.gpu_power || 100);
+            currentVipTier = Number(profile.vip_tier || 0);
 
-            // Vizual olaraq tam hissəni 0 edib kəsr hissəsindən başladırıq
             let rawDecimal = serverRealHashes - Math.floor(serverRealHashes);
             if (liveHashes === 0) {
-                liveHashes = rawDecimal > 0 ? rawDecimal : 0.00000001;
+                liveHashes = rawDecimal > 0 ? rawDecimal : 0.00000021;
             }
 
             document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
@@ -303,10 +303,9 @@
             document.getElementById('user-gpu').innerText = liveGpuPower;
             document.getElementById('user-gpu-sub').innerText = liveGpuPower;
 
-            const vipTier = Number(profile.vip_tier || 0);
             const statusEl = document.getElementById('user-mining-status');
-            if (vipTier > 0) {
-                statusEl.innerText = `VIP ${vipTier}`;
+            if (currentVipTier > 0) {
+                statusEl.innerText = `VIP ${currentVipTier}`;
                 statusEl.style.color = "#22c55e";
             } else {
                 statusEl.innerText = "Standart";
@@ -343,25 +342,29 @@
             startWheelTimer();
         }
 
-        // Tam hissə həmişə 0 qalır, kəsr hissəsi sağdan sola doğru GPU gücünə görə artır
+        // VIP səviyyələrinə uyğun saniyəlik artım addımları (sağdan sola)
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-            const baseStep = 1;
+
+            // VIP səviyyələrinə görə saniyəlik artım addımları
+            let step = 0.00000021; // Standart
+            if (currentVipTier === 1) step = 0.00000015; // VIP 1 (qeyd: istədiyin dəyər)
+            else if (currentVipTier === 2) step = 0.00000030; // VIP 2
+            else if (currentVipTier === 3) step = 0.00000600; // VIP 3
+            else if (currentVipTier === 4) step = 0.00000120; // VIP 4
+            else if (currentVipTier === 5) step = 0.00000250; // VIP 5
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
-
-                const speedMultiplier = liveGpuPower / 100;
-                const addedValue = Math.floor(baseStep * speedMultiplier);
 
                 let strVal = liveHashes.toFixed(8);
                 let parts = strVal.split('.');
                 let decPart = parts[1] || "00000000";
 
-                let lastDigits = parseInt(decPart.slice(-4)) + addedValue;
-                let newDecPart = decPart.slice(0, -4) + String(lastDigits).padStart(4, '0');
+                let addAmount = Math.round(step * 100000000);
+                let lastDigits = parseInt(decPart.slice(-8)) + addAmount;
+                let newDecPart = String(lastDigits).padStart(8, '0').slice(-8);
 
-                // Tam hissə həmişə 0 olaraq saxlanılır
                 liveHashes = parseFloat(`0.${newDecPart}`);
 
                 document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);

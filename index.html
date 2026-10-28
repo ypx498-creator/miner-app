@@ -94,7 +94,6 @@
                 </div>
             </div>
 
-            <!-- Çarx Bölməsi (24 saatlıq taymer ilə) -->
             <div id="tab-carx" class="tab-content">
                 <div class="content-card" style="text-align: center;">
                     <div class="card-title">🎡 Bəxt Çarxı</div>
@@ -124,15 +123,21 @@
                 </div>
             </div>
 
+            <!-- Referal Bölməsi (Yenilənmiş) -->
             <div id="tab-referal" class="tab-content">
                 <div class="content-card">
                     <div class="card-title">👥 Referal Sistemi</div>
-                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Dostlarını dəvət et, hər dəvət üçün bonus HSH qazan!</p>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px;">Dostunu dəvət et, hər dəvət üçün <b style="color:#f59e0b;">10 USD</b> bonus qazan!</p>
                     <div class="input-group">
                         <label>Sənin dəvət linkin:</label>
-                        <input type="text" class="input-field" id="ref-link" value="https://t.me/Honeyfarmbot/app" readonly>
+                        <input type="text" class="input-field" id="ref-link" value="" readonly>
                     </div>
                     <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('ref-link').value); alert('Link kopyalandı!');">LİNKİ KOPYALA</button>
+                    
+                    <div style="margin-top: 15px; padding-top: 12px; border-top: 1px solid #222d42; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; color: #94a3b8;">Dəvət etdiyin dostlar:</span>
+                        <span style="font-size: 1.1rem; font-weight: bold; color: #f59e0b;" id="referral-count-val">0 nəfər</span>
+                    </div>
                 </div>
             </div>
 
@@ -245,8 +250,17 @@
             document.getElementById('user-hsh-sub').innerText = Number(profile.hashes || 0).toFixed(4);
             document.getElementById('user-gpu').innerText = profile.gpu_power || 100;
             document.getElementById('user-gpu-sub').innerText = profile.gpu_power || 100;
-            document.getElementById('user-telegram-id').innerText = profile.telegram_id || '7842540003';
+            
+            const currentTelegramId = profile.telegram_id || '7842540003';
+            document.getElementById('user-telegram-id').innerText = currentTelegramId;
             document.getElementById('online-users-count').innerText = onlineUsers || 25;
+
+            // Referal linkini avtomatik yaratmaq (@honeyfarmer_bot?start=...)
+            document.getElementById('ref-link').value = `https://t.me/honeyfarmer_bot?start=${currentTelegramId}`;
+            
+            // Dəvət olunanların sayı (0, 1, 2, 3...)
+            const refCount = profile.referrals_count || 0;
+            document.getElementById('referral-count-val').innerText = `${refCount} nəfər`;
 
             const now = Date.now();
             const miningEnd = Number(profile.mining_end || 0);

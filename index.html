@@ -336,7 +336,7 @@
             startWheelTimer();
         }
 
-        // Nöqtədən əvvəlki hissə sabit qalır, kəsr hissəsi sağdan sola doğru GPU gücünə görə artır
+        // Tam hissə qətiyyən dəyişmir, kəsr hissə sağdan sola doğru GPU gücünə görə artır
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
             const baseStep = 1;
@@ -349,8 +349,8 @@
 
                 let strVal = liveHashes.toFixed(8);
                 let parts = strVal.split('.');
-                let intPart = parts[0];
-                let decPart = parts[1];
+                let intPart = parts[0]; // Tam hissə sabit qalır
+                let decPart = parts[1]; // Kəsr hissə
 
                 let lastDigits = parseInt(decPart.slice(-4)) + addedValue;
                 let newDecPart = decPart.slice(0, -4) + String(lastDigits).padStart(4, '0');

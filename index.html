@@ -236,6 +236,7 @@
         let liveHashes = 0;
         let liveGpuPower = 100;
         let isMiningActive = false;
+        let serverRealHashes = 0; // Serverdən gələn əsl balans
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -276,14 +277,20 @@
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             
-            liveHashes = Number(profile.hashes || 0);
+            serverRealHashes = Number(profile.hashes || 0);
             liveGpuPower = Number(profile.gpu_power || 100);
+
+            // Vizual olaraq tam hissəni 0 edib kəsr hissəsindən başladırıq
+            let rawDecimal = serverRealHashes - Math.floor(serverRealHashes);
+            if (liveHashes === 0) {
+                liveHashes = rawDecimal > 0 ? rawDecimal : 0.00000001;
+            }
 
             document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
             document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
             
             const exBtn = document.getElementById('exchange-btn');
-            if (liveHashes >= 1000) {
+            if (serverRealHashes >= 1000) {
                 exBtn.className = "btn-exchange ready";
                 exBtn.disabled = false;
                 exBtn.innerText = "1000 HSH = 1 USDT (ÇEVİR)";
@@ -336,22 +343,32 @@
             startWheelTimer();
         }
 
-        // Təhlükəsiz və donmayan canlı artım funksiyası
+        // Tam hissə həmişə 0 qalır, kəsr hissəsi sağdan sola doğru GPU gücünə görə artır
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-            const baseStep = 0.00000001;
+            const baseStep = 1;
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
 
                 const speedMultiplier = liveGpuPower / 100;
-                liveHashes += (baseStep * speedMultiplier);
+                const addedValue = Math.floor(baseStep * speedMultiplier);
+
+                let strVal = liveHashes.toFixed(8);
+                let parts = strVal.split('.');
+                let decPart = parts[1] || "00000000";
+
+                let lastDigits = parseInt(decPart.slice(-4)) + addedValue;
+                let newDecPart = decPart.slice(0, -4) + String(lastDigits).padStart(4, '0');
+
+                // Tam hissə həmişə 0 olaraq saxlanılır
+                liveHashes = parseFloat(`0.${newDecPart}`);
 
                 document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
                 document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
 
                 const exBtn = document.getElementById('exchange-btn');
-                if (liveHashes >= 1000) {
+                if (serverRealHashes >= 1000) {
                     exBtn.className = "btn-exchange ready";
                     exBtn.disabled = false;
                     exBtn.innerText = "1000 HSH = 1 USDT (ÇEVİR)";

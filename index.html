@@ -31,6 +31,7 @@
         .progress-fill { width: 30%; height: 100%; background: #f59e0b; border-radius: 3px; }
         .btn { background: linear-gradient(90deg, #f59e0b, #d97706); color: #fff; border: none; padding: 12px 15px; border-radius: 10px; font-size: 0.9rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-small { background: #334155; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; margin-top: 8px; }
         .content-card { background: #151c2c; border-radius: 14px; padding: 15px; margin-bottom: 12px; border: 1px solid #222d42; }
         .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; color: #f59e0b; }
         .input-group { margin-bottom: 10px; }
@@ -61,7 +62,10 @@
                 <div class="balance-card">
                     <div class="balance-title">MÖVCUD BALANS</div>
                     <div class="balance-value"><span id="user-balance">0.0000</span> USDT</div>
-                    <div style="font-size: 0.75rem; color: #94a3b8;">HSH balansı: <span id="user-hashes">0.0000</span></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                        <span style="font-size: 0.75rem; color: #94a3b8;">HSH balansı: <span id="user-hashes" style="color: #fff; font-weight: bold;">0.0000</span></span>
+                        <button class="btn-small" onclick="exchangeHashes()">USDT-yə Çevir</button>
+                    </div>
                 </div>
 
                 <div class="stats-grid">
@@ -123,7 +127,6 @@
                 </div>
             </div>
 
-            <!-- Referal Bölməsi (Yenilənmiş) -->
             <div id="tab-referal" class="tab-content">
                 <div class="content-card">
                     <div class="card-title">👥 Referal Sistemi</div>
@@ -255,10 +258,8 @@
             document.getElementById('user-telegram-id').innerText = currentTelegramId;
             document.getElementById('online-users-count').innerText = onlineUsers || 25;
 
-            // Referal linkini avtomatik yaratmaq (@honeyfarmer_bot?start=...)
             document.getElementById('ref-link').value = `https://t.me/honeyfarmer_bot?start=${currentTelegramId}`;
             
-            // Dəvət olunanların sayı (0, 1, 2, 3...)
             const refCount = profile.referrals_count || 0;
             document.getElementById('referral-count-val').innerText = `${refCount} nəfər`;
 
@@ -280,6 +281,29 @@
 
             globalLastSpin = Number(profile.last_spin || 0);
             startWheelTimer();
+        }
+
+        async function exchangeHashes() {
+            try {
+                const response = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'exchange',
+                        initData: tg.initData || ''
+                    })
+                });
+
+                const data = await response.json();
+                if (data.ok) {
+                    alert(data.message);
+                    updateUI(data.profile, data.online_users);
+                } else {
+                    alert(data.error || "Xəta baş verdi!");
+                }
+            } catch (err) {
+                alert("Şəbəkə xətası!");
+            }
         }
 
         function startTimer(endTime) {

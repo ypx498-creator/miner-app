@@ -60,7 +60,7 @@
     <div class="app-wrapper">
         <div class="header">
             <div class="header-title">🐝 Honey Cloud Miner <span style="font-size: 0.65rem; color: #94a3b8; font-weight: normal;">v1.1</span></div>
-            <div class="online-badge"><span class="dot"></span> Onlayn: <span id="online-users-count">25</span></div>
+            <div class="online-badge"><span class="dot"></span> İstifadəçilər: <span id="online-users-count">1</span></div>
         </div>
 
         <div class="main-container">
@@ -329,7 +329,7 @@
             
             const currentTelegramId = profile.telegram_id || '7842540003';
             document.getElementById('user-telegram-id').innerText = currentTelegramId;
-            document.getElementById('online-users-count').innerText = onlineUsers || 25;
+            document.getElementById('online-users-count').innerText = onlineUsers || 1;
             document.getElementById('ref-link').value = `https://t.me/honeyfarmer_bot?start=${currentTelegramId}`;
             
             const refCount = profile.referrals_count || 0;

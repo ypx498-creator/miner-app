@@ -76,7 +76,7 @@
                             <span>HSH Balansı:</span>
                             <span id="user-hashes" style="color: #fff; font-weight: bold;">0</span>
                         </div>
-                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 0.015 USDT (Min 1000)</button>
+                        <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 0.015 USDT (ÇEVİR)</button>
                     </div>
                 </div>
 
@@ -252,6 +252,7 @@
         let liveHashes = 0;
         let liveGpuPower = 100;
         let isMiningActive = false;
+        let isFetching = false; // Status sorğusu zamanı sayğacın qarışmasının qarşısını almaq üçün
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -267,6 +268,8 @@
         }
 
         async function fetchStatus() {
+            if (isFetching) return;
+            isFetching = true;
             try {
                 const response = await fetch(SUPABASE_FUNCTION_URL, {
                     method: 'POST',
@@ -285,6 +288,8 @@
                 }
             } catch (err) {
                 console.log("Status xətası:", err);
+            } finally {
+                isFetching = false;
             }
         }
 
@@ -292,7 +297,12 @@
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             
-            liveHashes = Math.floor(Number(profile.hashes || 0));
+            const serverHashes = Math.floor(Number(profile.hashes || 0));
+            // Əgər serverdən gələn rəqəm local rəqəmdən böyükdürsə yenilə
+            if (serverHashes > liveHashes || liveHashes === 0) {
+                liveHashes = serverHashes;
+            }
+
             liveGpuPower = Number(profile.gpu_power || 100);
 
             document.getElementById('user-hashes').innerText = liveHashes;
@@ -353,7 +363,7 @@
         }
 
         function startLiveMiningTicker() {
-            clearInterval(liveTimerInterval);
+            if (liveTimerInterval) return; // Əgər artıq işləyirsə təkrar başlatma
             const incrementPerSecond = Math.floor(1 * (liveGpuPower / 100));
 
             liveTimerInterval = setInterval(() => {
@@ -427,6 +437,7 @@
                 if (data.ok) {
                     alert(data.message);
                     if (data.profile) {
+                        liveHashes = 0; // Çevriləndə local olaraq dərhal sıfırlayırıq
                         updateUI(data.profile, data.online_users);
                     } else {
                         fetchStatus();
@@ -602,7 +613,7 @@
                 alert("Şəbəkə xətası baş verdi!");
             } finally {
                 depositBtn.disabled = false;
-                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİqƏ GÖNDƏR";
+                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR";
             }
         }
 

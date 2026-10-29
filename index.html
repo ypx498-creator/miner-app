@@ -172,7 +172,7 @@
                     <div class="balance-value"><span id="wallet-balance">0.0000</span> USDT</div>
                 </div>
 
-                <!-- YENİ DEPOZİT SİSTEMİ (Supabase deposits cədvəlinə qoşuldu) -->
+                <!-- ŞƏKİL (SCREENSHOT) YÜKLƏMƏLİ DEPOZİT FORMU -->
                 <div class="content-card">
                     <div class="card-title" style="font-size: 0.95rem;">📥 Balansı Artır (Depozit)</div>
                     <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px;">Ödəniş edə biləcəyiniz şəbəkələr və ünvanlar:</p>
@@ -190,11 +190,11 @@
                     </div>
 
                     <div class="input-group">
-                        <label>Ödəniş Qəbzi (Ekran görüntüsü linki və ya TXID):</label>
-                        <input type="text" class="input-field" id="receiptProof" placeholder="Qəbzin linkini və ya TXID nömrəsini yaz">
+                        <label>Ödəniş Qəbzi (Ekran görüntüsü şəkli):</label>
+                        <input type="file" class="input-field" id="receiptFile" accept="image/*" style="padding: 6px;">
                     </div>
 
-                    <button class="btn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR</button>
+                    <button class="btn" id="depositBtn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR</button>
                 </div>
 
                 <div class="content-card">
@@ -235,6 +235,8 @@
 
     <script>
         const SUPABASE_FUNCTION_URL = 'https://cpbwvuunjriknwibkric.supabase.co/functions/v1/Miner-sync';
+        const SUPABASE_URL = 'https://cpbwvuunjriknwibkric.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl';
         
         let tg = {};
         try {
@@ -495,7 +497,7 @@
 
         async function toggleMining() {
             const btn = document.getElementById('mining-btn');
-            btn.innerText = "YÜKLƏNİR...";
+            btn.innerText = "YÜKLənir...";
             btn.disabled = true;
 
             try {
@@ -563,24 +565,51 @@
             }
         }
 
-        // YENİ DEPOZİT GÖNDƏRMƏ FUNKSİYASI (Supabase deposits cədvəlinə yazır)
+        // ŞƏKİL YÜKLƏMƏ VƏ DEPOZİT GÖNDƏRMƏ FUNKSİYASI
         async function submitDeposit() {
             const amount = document.getElementById('depositAmount').value;
-            const receiptUrl = document.getElementById('receiptProof').value;
+            const fileInput = document.getElementById('receiptFile');
+            const file = fileInput.files[0];
             const telegramId = tg.initDataUnsafe?.user?.id || 7842540003;
+            const depositBtn = document.getElementById('depositBtn');
 
-            if (!amount || !receiptUrl) {
-                alert("Zəhmət olmasa məbləği və qəbz məlumatını daxil edin!");
+            if (!amount || !file) {
+                alert("Zəhmət olmasa məbləği daxil edin və ödəniş qəbzinin şəklini seçin!");
                 return;
             }
 
+            depositBtn.disabled = true;
+            depositBtn.innerText = "ŞƏKİL YÜKLƏNİR...";
+
             try {
-                const response = await fetch('https://cpbwvuunjriknwibkric.supabase.co/rest/v1/deposits', {
+                // 1. Şəkli Supabase Storage-ə (receipts bucket-inə) yükləyirik
+                const fileName = `${telegramId}_${Date.now()}_${file.name}`;
+                const uploadResponse = await fetch(`${SUPABASE_URL}/storage/v1/object/receipts/${fileName}`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': file.type
+                    },
+                    body: file
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error("Şəkil yüklənərkən xəta baş verdi.");
+                }
+
+                // 2. Yüklənən şəklin ümumi (public) linkini yaradırıq
+                const receiptUrl = `${SUPABASE_URL}/storage/v1/object/public/receipts/${fileName}`;
+
+                depositBtn.innerText = "GÖNDƏRİLİR...";
+
+                // 3. Məlumatları deposits cədvəlinə yazırıq
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/deposits`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'apikey': 'sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl',
-                        'Authorization': 'Bearer sb_publishable_3o2uzWB8NLmd3SZwR7dJDg_bWx5D_Sl'
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     },
                     body: JSON.stringify({
                         telegram_id: Number(telegramId),
@@ -591,14 +620,18 @@
                 });
 
                 if (response.ok) {
-                    alert("Depozit sorğunuz uğurla göndərildi! Admin təsdiqindən sonra balansınıza əlavə olunacaq.");
+                    alert("Depozit sorğunuz və qəbz şəkliniz uğurla göndərildi! Admin təsdiqindən sonra balansınıza əlavə olunacaq.");
                     document.getElementById('depositAmount').value = '';
-                    document.getElementById('receiptProof').value = '';
+                    fileInput.value = '';
                 } else {
-                    alert("Xəta baş verdi, yenidən sınayın.");
+                    alert("Bazaya yazılarkən xəta baş verdi.");
                 }
             } catch (err) {
-                alert("Şəbəkə xətası baş verdi!");
+                console.error(err);
+                alert("Xəta baş verdi: " + err.message);
+            } finally {
+                depositBtn.disabled = false;
+                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİqə GÖNDƏR";
             }
         }
 

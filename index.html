@@ -252,7 +252,7 @@
         let liveHashes = 0;
         let liveGpuPower = 100;
         let isMiningActive = false;
-        let isFetching = false; // Status sorğusu zamanı sayğacın qarışmasının qarşısını almaq üçün
+        let isFetching = false;
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -297,12 +297,7 @@
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             
-            const serverHashes = Math.floor(Number(profile.hashes || 0));
-            // Əgər serverdən gələn rəqəm local rəqəmdən böyükdürsə yenilə
-            if (serverHashes > liveHashes || liveHashes === 0) {
-                liveHashes = serverHashes;
-            }
-
+            liveHashes = Math.floor(Number(profile.hashes || 0));
             liveGpuPower = Number(profile.gpu_power || 100);
 
             document.getElementById('user-hashes').innerText = liveHashes;
@@ -363,7 +358,7 @@
         }
 
         function startLiveMiningTicker() {
-            if (liveTimerInterval) return; // Əgər artıq işləyirsə təkrar başlatma
+            if (liveTimerInterval) return;
             const incrementPerSecond = Math.floor(1 * (liveGpuPower / 100));
 
             liveTimerInterval = setInterval(() => {
@@ -437,7 +432,7 @@
                 if (data.ok) {
                     alert(data.message);
                     if (data.profile) {
-                        liveHashes = 0; // Çevriləndə local olaraq dərhal sıfırlayırıq
+                        liveHashes = 0;
                         updateUI(data.profile, data.online_users);
                     } else {
                         fetchStatus();

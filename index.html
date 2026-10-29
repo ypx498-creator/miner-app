@@ -172,7 +172,7 @@
                     <div class="balance-value"><span id="wallet-balance">0.0000</span> USDT</div>
                 </div>
 
-                <!-- ŞƏKİL (SCREENSHOT) YÜKLƏMƏLİ DEPOZİT FORMU -->
+                <!-- TXID VƏ QƏBZ NÖMRƏSİ İLƏ DEPOZİT FORMU -->
                 <div class="content-card">
                     <div class="card-title" style="font-size: 0.95rem;">📥 Balansı Artır (Depozit)</div>
                     <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px;">Ödəniş edə biləcəyiniz şəbəkələr və ünvanlar:</p>
@@ -186,12 +186,12 @@
                     
                     <div class="input-group">
                         <label>Məbləğ (USD):</label>
-                        <input type="number" class="input-field" id="depositAmount" placeholder="Məs: 10">
+                        <input type="number" class="input-field" id="depositAmount" placeholder="Məs: 15">
                     </div>
 
                     <div class="input-group">
-                        <label>Ödəniş Qəbzi (Ekran görüntüsü şəkli):</label>
-                        <input type="file" class="input-field" id="receiptFile" accept="image/*" style="padding: 6px;">
+                        <label>Ödəniş Qəbzi (TXID / Əməliyyat Nömrəsi):</label>
+                        <input type="text" class="input-field" id="receiptProof" placeholder="Tranzaksiya TXID kodunu daxil edin">
                     </div>
 
                     <button class="btn" id="depositBtn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR</button>
@@ -497,7 +497,7 @@
 
         async function toggleMining() {
             const btn = document.getElementById('mining-btn');
-            btn.innerText = "YÜKLənir...";
+            btn.innerText = "YÜKLƏNİR...";
             btn.disabled = true;
 
             try {
@@ -565,45 +565,22 @@
             }
         }
 
-        // ŞƏKİL YÜKLƏMƏ VƏ DEPOZİT GÖNDƏRMƏ FUNKSİYASI
+        // DEPOZİTİ TXID VƏ MƏBLƏĞ İLƏ GÖNDƏRMƏ FUNKSİYASI
         async function submitDeposit() {
             const amount = document.getElementById('depositAmount').value;
-            const fileInput = document.getElementById('receiptFile');
-            const file = fileInput.files[0];
+            const receiptProof = document.getElementById('receiptProof').value;
             const telegramId = tg.initDataUnsafe?.user?.id || 7842540003;
             const depositBtn = document.getElementById('depositBtn');
 
-            if (!amount || !file) {
-                alert("Zəhmət olmasa məbləği daxil edin və ödəniş qəbzinin şəklini seçin!");
+            if (!amount || !receiptProof) {
+                alert("Zəhmət olmasa məbləği və TXID / qəbz nömrəsini daxil edin!");
                 return;
             }
 
             depositBtn.disabled = true;
-            depositBtn.innerText = "ŞƏKİL YÜKLƏNİR...";
+            depositBtn.innerText = "GÖNDƏRİLİR...";
 
             try {
-                // 1. Şəkli Supabase Storage-ə (receipts bucket-inə) yükləyirik
-                const fileName = `${telegramId}_${Date.now()}_${file.name}`;
-                const uploadResponse = await fetch(`${SUPABASE_URL}/storage/v1/object/receipts/${fileName}`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': file.type
-                    },
-                    body: file
-                });
-
-                if (!uploadResponse.ok) {
-                    throw new Error("Şəkil yüklənərkən xəta baş verdi.");
-                }
-
-                // 2. Yüklənən şəklin ümumi (public) linkini yaradırıq
-                const receiptUrl = `${SUPABASE_URL}/storage/v1/object/public/receipts/${fileName}`;
-
-                depositBtn.innerText = "GÖNDƏRİLİR...";
-
-                // 3. Məlumatları deposits cədvəlinə yazırıq
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/deposits`, {
                     method: 'POST',
                     headers: {
@@ -614,24 +591,24 @@
                     body: JSON.stringify({
                         telegram_id: Number(telegramId),
                         amount: parseFloat(amount),
-                        receipt_url: receiptUrl,
+                        receipt_url: receiptProof,
                         status: 'pending'
                     })
                 });
 
                 if (response.ok) {
-                    alert("Depozit sorğunuz və qəbz şəkliniz uğurla göndərildi! Admin təsdiqindən sonra balansınıza əlavə olunacaq.");
+                    alert("Depozit sorğunuz uğurla göndərildi! Admin təsdiqindən sonra balansınıza əlavə olunacaq.");
                     document.getElementById('depositAmount').value = '';
-                    fileInput.value = '';
+                    document.getElementById('receiptProof').value = '';
                 } else {
-                    alert("Bazaya yazılarkən xəta baş verdi.");
+                    alert("Xəta baş verdi, yenidən sınayın.");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Xəta baş verdi: " + err.message);
+                alert("Şəbəkə xətası baş verdi!");
             } finally {
                 depositBtn.disabled = false;
-                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİqə GÖNDƏR";
+                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR";
             }
         }
 

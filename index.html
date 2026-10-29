@@ -193,7 +193,7 @@
                         <input type="text" class="input-field" id="receiptProof" placeholder="Tranzaksiya TXID kodunu daxil edin">
                     </div>
 
-                    <button class="btn" id="depositBtn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİqƏ GÖNDƏR</button>
+                    <button class="btn" id="depositBtn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR</button>
                 </div>
 
                 <div class="content-card">
@@ -354,13 +354,15 @@
 
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-            // Hər saniyə GPU gücünə görə təmiz rəqəmlərlə artır (məsələn 100 GPU ilə hər saniyə +1 HSH)
             const incrementPerSecond = Math.floor(1 * (liveGpuPower / 100));
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
 
-                liveHashes += incrementPerSecond;
+                if (liveHashes < 1000) {
+                    liveHashes += incrementPerSecond;
+                    if (liveHashes > 1000) liveHashes = 1000;
+                }
 
                 document.getElementById('user-hashes').innerText = liveHashes;
                 document.getElementById('user-hsh-sub').innerText = liveHashes;

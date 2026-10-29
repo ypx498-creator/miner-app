@@ -74,7 +74,7 @@
                     <div style="border-top: 1px solid #334155; padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
                         <div style="font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between;">
                             <span>HSH Balansı:</span>
-                            <span id="user-hashes" style="color: #fff; font-weight: bold;">0.00000000</span>
+                            <span id="user-hashes" style="color: #fff; font-weight: bold;">0</span>
                         </div>
                         <button id="exchange-btn" class="btn-exchange disabled" onclick="exchangeHashes()" disabled>1000 HSH = 0.015 USDT (Min 1000)</button>
                     </div>
@@ -103,7 +103,7 @@
                     <div class="progress-bar"><div class="progress-fill"></div></div>
                     
                     <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 0.8rem; color: #94a3b8;">
-                        <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">0.0000</span></div>
+                        <div>HSH: <span id="user-hsh-sub" style="color:#fff; font-weight:bold;">0</span></div>
                         <div>GPU gücü: <span id="user-gpu-sub" style="color:#fff; font-weight:bold;">100</span></div>
                     </div>
                     <button class="btn" onclick="toggleMining()" id="mining-btn">MAYNİNQİ BAŞLAT (24 SAAT)</button>
@@ -193,7 +193,7 @@
                         <input type="text" class="input-field" id="receiptProof" placeholder="Tranzaksiya TXID kodunu daxil edin">
                     </div>
 
-                    <button class="btn" id="depositBtn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR</button>
+                    <button class="btn" id="depositBtn" onclick="submitDeposit()">ÖDƏNİŞİ TƏSDİqƏ GÖNDƏR</button>
                 </div>
 
                 <div class="content-card">
@@ -292,11 +292,11 @@
             document.getElementById('user-balance').innerText = Number(profile.balance || 0).toFixed(4);
             document.getElementById('wallet-balance').innerText = Number(profile.balance || 0).toFixed(4);
             
-            liveHashes = Number(profile.hashes || 0);
+            liveHashes = Math.floor(Number(profile.hashes || 0));
             liveGpuPower = Number(profile.gpu_power || 100);
 
-            document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
-            document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
+            document.getElementById('user-hashes').innerText = liveHashes;
+            document.getElementById('user-hsh-sub').innerText = liveHashes;
             
             const exBtn = document.getElementById('exchange-btn');
             if (liveHashes >= 1000) {
@@ -354,15 +354,16 @@
 
         function startLiveMiningTicker() {
             clearInterval(liveTimerInterval);
-            const incrementPerSecond = 0.0001 * (liveGpuPower / 100);
+            // Hər saniyə GPU gücünə görə təmiz rəqəmlərlə artır (məsələn 100 GPU ilə hər saniyə +1 HSH)
+            const incrementPerSecond = Math.floor(1 * (liveGpuPower / 100));
 
             liveTimerInterval = setInterval(() => {
                 if (!isMiningActive) return;
 
                 liveHashes += incrementPerSecond;
 
-                document.getElementById('user-hashes').innerText = liveHashes.toFixed(8);
-                document.getElementById('user-hsh-sub').innerText = liveHashes.toFixed(8);
+                document.getElementById('user-hashes').innerText = liveHashes;
+                document.getElementById('user-hsh-sub').innerText = liveHashes;
 
                 const exBtn = document.getElementById('exchange-btn');
                 if (liveHashes >= 1000) {
@@ -599,7 +600,7 @@
                 alert("Şəbəkə xətası baş verdi!");
             } finally {
                 depositBtn.disabled = false;
-                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİQƏ GÖNDƏR";
+                depositBtn.innerText = "ÖDƏNİŞİ TƏSDİqƏ GÖNDƏR";
             }
         }
 
@@ -668,7 +669,7 @@
                             <div class="rank">#${index + 1}</div>
                             <div class="user-info">
                                 <div class="user-id">ID: ${user.telegram_id}</div>
-                                <div class="user-stats">HSH: ${Number(user.hashes || 0).toFixed(2)} | GPU: ${user.gpu_power || 100}</div>
+                                <div class="user-stats">HSH: ${Math.floor(Number(user.hashes || 0))} | GPU: ${user.gpu_power || 100}</div>
                             </div>
                             <div style="font-size: 0.85rem; font-weight: bold; color: #f59e0b;">VIP ${user.vip_tier || 0}</div>
                         `;
